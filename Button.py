@@ -50,6 +50,10 @@ class ButtonBackend(ABC):
     def update_style(self, style: ButtonStyle):
         pass
 
+    @abstractmethod
+    def bind_hover(self, on_enter: callable, on_leave: callable):
+        pass
+
 class Button:
 
     def __init__(self , label: str, backend: ButtonBackend , style: ButtonStyle, action:callable = None ):
@@ -80,9 +84,8 @@ class Button:
 
     def _handle_click(self):
 
-        if self._status == ButtonState.NORMAL:
-            if self.action:
-                self.action()
-        else:
-            pass
+        if self._status != ButtonState.NORMAL:
+            return
+        if self.action:
+            self.action()
   
