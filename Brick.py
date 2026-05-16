@@ -5,6 +5,10 @@ from typing import Optional
 
 from Button import ButtonStyle , ButtonBackend , Button
 
+from kivy.uix.button import Button as KivyButton
+from KivyHelper import KivyHelper
+from kivy.properties import ObjectProperty
+
 
 @dataclass(frozen=True)
 class LessonNote:
@@ -41,9 +45,6 @@ class BrickBackend(ButtonBackend):
 class Brick(Button):
    
     def __init__(self, data: CalendarBrickData, backend: BrickBackend, style: ButtonStyle):
-
-        # Wywołujemy konstruktor Buttona
-        # Jako label przekazujemy tytuł wydarzenia
         super().__init__(label=data.title, backend=backend, style=style)
         
         self.data = data
@@ -64,3 +65,21 @@ class Brick(Button):
     def _handle_click(self, event_id):
         if self._on_click_callback:
             self._on_click_callback(self.event)
+
+class BrickWidget(KivyButton):
+      style = ObjectProperty(None)
+
+class KivyBrickBackend(KivyHelper , BrickBackend):
+  
+
+    def __init__(self, parent=None):
+        self.parent = parent
+        self.widget = None
+
+    def create_brick(self, data: CalendarBrickData, style: ButtonStyle, on_click: callable):
+
+        self.widget = BrickWidget(text=data.title)
+        self.widget.style = style
+        self.widget.bind(on_release=lambda instance: on_click())
+
+        return self.widget
