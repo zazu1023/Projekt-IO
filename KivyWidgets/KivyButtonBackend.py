@@ -3,12 +3,28 @@ from kivy.uix.button import Button as KivyButton
 from Widgets.Button import ButtonBackend , ButtonStyle , ButtonState
 from KivyWidgets.KivyHelper import KivyHelper
 
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty , BooleanProperty
 from kivy.core.window import Window
 
 class CustomButtonWidget(KivyButton):
     style = ObjectProperty(None)
-  
+    hovered = BooleanProperty(False)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Window.bind(mouse_pos=self.on_mouse_pos)
+
+    def on_mouse_pos(self, window, pos):
+
+        if not self.get_root_window():
+            return
+            
+
+        inside = self.collide_point(*pos)
+
+        if self.hovered != inside:
+            self.hovered = inside
+     
      
 class KivyButtonBackend(KivyHelper,ButtonBackend):
 

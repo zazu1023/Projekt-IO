@@ -6,17 +6,26 @@
     halign: 'center'
     valign: 'middle'
     text_size: self.size
-
+    size_hint: None , None
+    size: 150 , 75
     canvas.before:
         Color:
             rgba: 
-                (root.style.bg_color[0]*0.8, root.style.bg_color[1]*0.8, root.style.bg_color[2]*0.8, 1) \
-                if self.state == 'down' else \
-                (root.style.bg_color if root.style else [0.2, 0.2, 0.2, 1])
+                (root.style.bg_color[0]*0.7, 
+                root.style.bg_color[1]*0.7, 
+                root.style.bg_color[2]*0.7, 1) \
+                if (self.state == 'down') else \
+                
+               
+                root.style.hover_bg_color \
+                if (self.hovered ) else \
+                
+            
+                root.style.bg_color if root.style else [0.2, 0.2, 0.2, 1]
         RoundedRectangle:
             pos: self.pos
             size: self.size
-            radius: [8,] 
+            radius: [root.style.border_radius] if root.style else [8,]
 
     # Kolor tekstu
     color: root.style.text_color if root.style else [1, 1, 1, 1]
@@ -81,4 +90,7 @@
         text_size: self.size
 
 <BlueBrick@BrickWidget>:
-    style: ButtonStyle(bg_color=get_color_from_hex("2e588c"),hover_bg_color=get_color_from_hex("2e587c") , text_color=[1,1,1,1], border_radius=20, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color=get_color_from_hex("2e588c"),hover_bg_color=get_color_from_hex("2e587c") , text_color=[1,1,1,1], border_radius=10, shape=Shapes.ROUNDED)
+
+<BlueButton@CustomButtonWidget>:
+    style: ButtonStyle(bg_color=get_color_from_hex("2e588c"),hover_bg_color=get_color_from_hex("2e587c") , text_color=[1,1,1,1], border_radius=15, shape=Shapes.ROUNDED)
