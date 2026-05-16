@@ -1,5 +1,4 @@
 <CustomButtonWidget>:
-    background_normal: ''
     background_color: (0, 0, 0, 0) 
     
     # Wyśrodkowanie tekstu
@@ -9,17 +8,20 @@
 
     canvas.before:
         Color:
-            rgba: root.style.bg_color if root.style else [0.2, 0.2, 0.2, 1]
+            rgba: 
+                (root.style.bg_color[0]*0.8, root.style.bg_color[1]*0.8, root.style.bg_color[2]*0.8, 1) \
+                if self.state == 'down' else \
+                (root.style.bg_color if root.style else [0.2, 0.2, 0.2, 1])
         RoundedRectangle:
             pos: self.pos
             size: self.size
             radius: [8,] 
 
     # Kolor tekstu
-    color: self.text_color
+    color: root.style.text_color if root.style else [1, 1, 1, 1]
 
 <BrickWidget>:
-    background_normal: ''
+
     background_color: (0, 0, 0, 0) 
     
     # Wyśrodkowanie tekstu
@@ -36,4 +38,4 @@
             radius: [8,] 
 
     # Kolor tekstu
-    color: self.text_color
+    color: root.style.text_color if root.style else [1, 1, 1, 1]

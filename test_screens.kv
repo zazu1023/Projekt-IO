@@ -1,0 +1,25 @@
+#:import ButtonStyle Button.ButtonStyle
+#:import Shapes Button.Shapes
+BoxLayout:
+    orientation: 'vertical'
+    spacing: 20
+    padding: 30
+
+    CustomButtonWidget:
+        text: "Kliknij mnie"
+        size_hint_y: None
+        height: 50
+        style: 
+            ButtonStyle( \
+            bg_color=[0.2, 0.6, 0.86, 1], \
+            text_color=[1, 1, 1, 1], \
+            hover_bg_color=[0.16, 0.5, 0.72, 1], \
+            hover_text_color=[1, 1, 1, 1], \
+            border_radius=15, \
+            border_color=[1, 1, 1, 1], \
+            border_width=2, \
+            shape=Shapes.ROUNDED \
+            )
+    BrickWidget:
+        text: "test"
+        info_text: "15:00 - 16:30"

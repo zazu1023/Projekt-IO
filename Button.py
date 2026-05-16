@@ -109,7 +109,7 @@ class KivyButtonBackend(KivyHelper,ButtonBackend):
        self.widget = None
 
     def create(self, label: str , onclick: callable , style: ButtonStyle):
-        self.widget = CustomButtonWidget(test=label)
+        self.widget = CustomButtonWidget(text=label)
         self.widget.bind(on_release=lambda x: onclick())
 
         self.apply_state(ButtonState.NORMAL, style)
