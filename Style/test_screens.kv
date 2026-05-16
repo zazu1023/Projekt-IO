@@ -1,25 +1,25 @@
 #:import ButtonStyle Widgets.Button.ButtonStyle
 #:import Shapes Widgets.Button.Shapes
 BoxLayout:
-    orientation: 'vertical'
-    spacing: 20
-    padding: 30
+    orientation: 'horizontal'  # Kafelki obok siebie
+    spacing: 10
+    padding: 20
 
-    CustomButtonWidget:
-        text: "Kliknij mnie"
-        size_hint_y: None
-        height: 50
-        style: 
-            ButtonStyle( \
-            bg_color=[0.2, 0.6, 0.86, 1], \
-            text_color=[1, 1, 1, 1], \
-            hover_bg_color=[0.16, 0.5, 0.72, 1], \
-            hover_text_color=[1, 1, 1, 1], \
-            border_radius=15, \
-            border_color=[1, 1, 1, 1], \
-            border_width=2, \
-            shape=Shapes.ROUNDED \
-            )
-    BrickWidget:
-        text: "test"
-        info_text: "15:00 - 16:30"
+    # Kafelek nr 1
+    BlueBrick:
+        title_text: "SK"
+        info_text: "10:30 | 1.5h"
+        has_note: True
+
+
+    # Kafelek nr 2
+    BlueBrick:
+        title_text: "WF"
+        info_text: "12:00 | 1.0h"
+        has_note: False
+      
+
+    # Kafelek nr 3
+    BlueBrick:
+        title_text: "MAT"
+        info_text: "13:30 | 2.0h"

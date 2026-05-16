@@ -2,6 +2,9 @@ from abc import ABC , abstractmethod
 from enum import Enum, auto
 from dataclasses import dataclass
 
+from typing import Optional
+
+
 class ButtonState(Enum):
     NORMAL = auto()
     HOVER = auto()
@@ -16,18 +19,18 @@ class Shapes(Enum):
 
 @dataclass(frozen=True)
 class ButtonStyle():
-    bg_color: str
-    text_color: str
+    bg_color: Optional[str] = None
+    text_color: Optional[str] = None
 
-    hover_bg_color: str
-    hover_text_color: str
+  
+    hover_bg_color: Optional[str] = None
+    hover_text_color: Optional[str] = None
 
-    border_radius: int
-    border_color: str
-    border_width: int
+    border_radius: int = 10
+    border_color: Optional[str] = None
+    border_width: int = 0
 
-    shape: Shapes
-
+    shape: Optional[any] = None
 
 class ButtonBackend(ABC):
 
