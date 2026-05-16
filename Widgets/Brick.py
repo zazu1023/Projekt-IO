@@ -3,12 +3,7 @@ from dataclasses import dataclass
 
 from typing import Optional
 
-from Button import ButtonStyle , ButtonBackend , Button
-
-from kivy.uix.button import Button as KivyButton
-from KivyHelper import KivyHelper
-from kivy.properties import ObjectProperty
-
+from Widgets.Button import ButtonStyle , ButtonBackend , Button
 
 @dataclass(frozen=True)
 class LessonNote:
@@ -66,20 +61,3 @@ class Brick(Button):
         if self._on_click_callback:
             self._on_click_callback(self.event)
 
-class BrickWidget(KivyButton):
-      style = ObjectProperty(None)
-
-class KivyBrickBackend(KivyHelper , BrickBackend):
-  
-
-    def __init__(self, parent=None):
-        self.parent = parent
-        self.widget = None
-
-    def create_brick(self, data: CalendarBrickData, style: ButtonStyle, on_click: callable):
-
-        self.widget = BrickWidget(text=data.title)
-        self.widget.style = style
-        self.widget.bind(on_release=lambda instance: on_click())
-
-        return self.widget
