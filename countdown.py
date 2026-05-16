@@ -1,12 +1,7 @@
-
+import Brick
 from datetime import datetime, timedelta
-class dialogstyle:
-    bg:str
-    font_size:int
-    text_colour:str
-
-    hight:int
-    width:int
+class dialogstyle(Brick.Brick):
+    
 
 def _open_dialog(self):
     pass
