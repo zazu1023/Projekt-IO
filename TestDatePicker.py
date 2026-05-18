@@ -1,33 +1,37 @@
-from datetime import date
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 
-from datePicker import DatePicker, DatePickerStyle
-from kivyDatePickerBackend import KivyDatePickerBackend
+from Widgets.datePicker import DatePicker, DatePickerStyle
+from KivyWidgets.kivyDatePickerBackend import KivyDatePickerBackend
 
 
-class TestApp(App):
+class TestDatePickerApp(App):
     def build(self):
-        layout = BoxLayout(padding=20)
+        root = BoxLayout(
+            orientation="vertical",
+            padding=20,
+            spacing=10
+        )
 
         style = DatePickerStyle(
-            bg_color="white",
-            selected_color="blue",
-            today_color="green",
-            text_color="black"
+            bg_color=(0.1, 0.1, 0.1, 1),
+            selected_color=(1, 0.4, 0.1, 1),
+            today_color=(0.2, 0.6, 1, 1),
+            text_color=(1, 1, 1, 1)
         )
 
         backend = KivyDatePickerBackend()
 
-        picker = DatePicker(
-            selected_date=date(2026, 5, 16),
+        self.date_picker = DatePicker(
+            selected_date=None,
             backend=backend,
             style=style
         )
 
-        layout.add_widget(picker.render())
+        root.add_widget(self.date_picker.render())
 
-        return layout
+        return root
 
 
-TestApp().run()
+if __name__ == "__main__":
+    TestDatePickerApp().run()
