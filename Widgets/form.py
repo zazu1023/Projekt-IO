@@ -1,38 +1,28 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
-from typing import List
+from typing import Dict
 
-from kivy.uix.textinput import TextInput as KivyTextInput
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label as KivyLabel
-from kivy.properties import ObjectProperty
-
-from KivyWidgets.KivyHelper import KivyHelper
-
+from kivy.uix.label import Label
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
 
 
-@dataclass(frozen=True)
-class InputStyle:
-    background_color: str
-    text_color: str
-    hint_text_color: str
-
-    font_size: int
-
-    border_radius: int = 0
 
 
-@dataclass(frozen=True)
-class FormField:
-    name: str
-    hint: str = ""
-    multiline: bool = False
-    password: bool = False
+class FormStyle:
+
+    def __init__(
+        self,
+        bg_color,
+        text_color,
+        button_color
+    ):
+
+        self.bg_color = bg_color
+        self.text_color = text_color
+        self.button_color = button_color
 
 
-@dataclass
-class FormData:
-    values: dict = field(default_factory=dict)
 
 
 class FormBackend(ABC):
@@ -40,143 +30,114 @@ class FormBackend(ABC):
     @abstractmethod
     def create(
         self,
-        fields: List[FormField],
-        style: InputStyle
+        fields: list,
+        style: FormStyle,
+        submit_callback
     ):
         pass
 
     @abstractmethod
-    def get_values(self) -> dict:
-        pass
-
-    @abstractmethod
-    def set_value(self, field_name: str, value: str):
-        pass
-
-    @abstractmethod
-    def update_style(self, style: InputStyle):
+    def getValues(self) -> Dict[str, str]:
         pass
 
 
-class Form:
-
-    def __init__(
-        self,
-        fields: List[FormField],
-        backend: FormBackend,
-        style: InputStyle
-    ):
-        self.fields = fields
-        self.style = style
-        self._backend = backend
-
-    def render(self):
-        return self._backend.create(
-            fields=self.fields,
-            style=self.style
-        )
-
-    def get_data(self) -> FormData:
-        return FormData(
-            values=self._backend.get_values()
-        )
-
-    def set_value(self, field_name: str, value: str):
-        self._backend.set_value(field_name, value)
-
-    def update_style(self, new_style: InputStyle):
-        self.style = new_style
-        self._backend.update_style(self.style)
 
 
-class CustomInputWidget(KivyTextInput):
-    style = ObjectProperty(None)
+class KivyFormBackend(FormBackend):
 
+    def __init__(self):
 
-class KivyFormBackend(KivyHelper, FormBackend):
-
-    def __init__(self, parent=None):
-
-        self.parent = parent
-        self.widget = None
-
+        self.layout = None
         self.inputs = {}
 
     def create(
         self,
-        fields: List[FormField],
-        style: InputStyle
+        fields: list,
+        style: FormStyle,
+        submit_callback
     ):
 
-        self.widget = BoxLayout(
+        self.layout = BoxLayout(
             orientation="vertical",
             spacing=10,
-            size_hint_y=None
+            padding=10
         )
 
         for field in fields:
 
-            label = KivyLabel(
-                text=field.name,
+            label = Label(
+                text=field,
                 size_hint_y=None,
-                height=30
+                height=30,
+                color=style.text_color
             )
 
-            input_widget = CustomInputWidget(
-                hint_text=field.hint,
-                multiline=field.multiline,
-                password=field.password,
+            text_input = TextInput(
+                multiline=False,
                 size_hint_y=None,
                 height=40
             )
 
-            self._apply_input_style(
-                input_widget,
-                style
+            self.inputs[field] = text_input
+
+            self.layout.add_widget(label)
+            self.layout.add_widget(text_input)
+
+        submit_button = Button(
+            text="Submit",
+            size_hint_y=None,
+            height=50,
+            background_color=style.button_color
+        )
+
+        submit_button.bind(
+            on_press=lambda instance: submit_callback(
+                self.getValues()
             )
+        )
 
-            self.inputs[field.name] = input_widget
+        self.layout.add_widget(submit_button)
 
-            self.widget.add_widget(label)
-            self.widget.add_widget(input_widget)
+        return self.layout
 
-        return self.widget
+    def getValues(self):
 
-    def get_values(self) -> dict:
+        values = {}
 
-        result = {}
+        for field, text_input in self.inputs.items():
 
-        for field_name, widget in self.inputs.items():
-            result[field_name] = widget.text
+            values[field] = text_input.text
 
-        return result
+        return values
 
-    def set_value(self, field_name: str, value: str):
 
-        if field_name in self.inputs:
-            self.inputs[field_name].text = value
 
-    def update_style(self, style: InputStyle):
 
-        for widget in self.inputs.values():
-            self._apply_input_style(widget, style)
+class FormWidget:
 
-    def _apply_input_style(
+    def __init__(
         self,
-        widget: KivyTextInput,
-        style: InputStyle
+        fields: list,
+        backend: FormBackend,
+        style: FormStyle
     ):
 
-        widget.background_color = self._parse_color(
-            style.background_color
+        self.fields = fields
+        self._backend = backend
+        self.style = style
+
+    def render(self):
+
+        return self._backend.create(
+            self.fields,
+            self.style,
+            self._on_submit
         )
 
-        widget.foreground_color = self._parse_color(
-            style.text_color
-        )
+    def _on_submit(self, values):
 
-        widget.hint_text_color = self._parse_color(
-            style.hint_text_color
-        )
+        print("Wysłane dane:")
 
-        widget.font_size = style.font_size
+        for key, value in values.items():
+
+            print(f"{key}: {value}")
