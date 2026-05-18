@@ -7,6 +7,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label as KivyLabel
 from kivy.properties import ObjectProperty
 
+from KivyWidgets.KivyHelper import KivyHelper
 
 
 
