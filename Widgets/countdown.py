@@ -1,42 +1,69 @@
 from abc import ABC, abstractmethod
 from enum import Enum, auto
-from dataclasses import dataclass
 from datetime import datetime
 
 from kivy.clock import Clock
-from kivy.uix.label import Label as KivyLabel
-from kivy.properties import ObjectProperty
-
-from KivyWidgets.KivyHelper import KivyHelper
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
 
 
 
-class TimerState(Enum):
+
+class CountdownState(Enum):
     RUNNING = auto()
+    COMPLETED = auto()
     STOPPED = auto()
-    PAUSED = auto()
 
 
-@dataclass(frozen=True)
-class TimerStyle:
-    text_color: str
-    font_size: int
-    bold: bool = False
+class CountdownStyle:
+
+    def __init__(self, bg_color, text_color):
+        self.bg_color = bg_color
+        self.text_color = text_color
+
+
 
 
 class CountdownBackend(ABC):
 
     @abstractmethod
-    def create(self, target_date: datetime, style: TimerStyle):
+    def create(self, style: CountdownStyle):
         pass
 
     @abstractmethod
-    def update_text(self, text: str):
+    def setTime(self, text: str):
         pass
 
-    @abstractmethod
-    def update_style(self, style: TimerStyle):
-        pass
+
+
+
+class KivyCountdownBackend(CountdownBackend):
+
+    def __init__(self):
+
+        self.layout = None
+        self.label = None
+
+    def create(self, style: CountdownStyle):
+
+        self.layout = BoxLayout(
+            orientation="vertical",
+            padding=10,
+            spacing=10
+        )
+
+        self.label = Label(
+            text="",
+            color=style.text_color
+        )
+
+        self.layout.add_widget(self.label)
+
+        return self.layout
+
+    def setTime(self, text: str):
+
+        self.label.text = text
 
 
 class CountdownWidget:
@@ -45,58 +72,63 @@ class CountdownWidget:
         self,
         target_date: datetime,
         backend: CountdownBackend,
-        style: TimerStyle
+        style: CountdownStyle
     ):
-        self.target_date = target_date
-        self.style = style
-        self._backend = backend
 
-        self._state = TimerState.STOPPED
+        self.target_date = target_date
+        self._backend = backend
+        self.style = style
+
+        self._state = CountdownState.RUNNING
+
         self._event = None
 
     def render(self):
-        widget = self._backend.create(
-            target_date=self.target_date,
-            style=self.style
-        )
 
-        self.start()
+        widget = self._backend.create(self.style)
+
+        # natychmiast pokazuje aktualny czas
+        self._update_time()
+
+        # aktualizacja co 1 sekundę
+        self._event = Clock.schedule_interval(
+        lambda dt: self._update_time(),
+        1
+    )
 
         return widget
 
-    def start(self):
-        if self._state == TimerState.RUNNING:
+    def stop(self):
+
+        self._state = CountdownState.STOPPED
+
+        if self._event:
+            self._event.cancel()
+
+    def _tick(self, dt):
+
+        if self._state != CountdownState.RUNNING:
             return
 
-        self._state = TimerState.RUNNING
-        self._event = Clock.schedule_interval(self._update, 1)
+        self._update_time()
 
-    def stop(self):
-        if self._event:
-            self._event.cancel()
+    def _update_time(self):
 
-        self._state = TimerState.STOPPED
-
-    def pause(self):
-        if self._event:
-            self._event.cancel()
-
-        self._state = TimerState.PAUSED
-
-    def update_style(self, new_style: TimerStyle):
-        self.style = new_style
-        self._backend.update_style(self.style)
-
-    def _update(self, dt):
         now = datetime.now()
 
-        delta = self.target_date - now
+        remaining = self.target_date - now
 
-        total_seconds = int(delta.total_seconds())
+        total_seconds = int(remaining.total_seconds())
 
         if total_seconds <= 0:
-            self._backend.update_text("00:00:00")
-            self.stop()
+
+            self._state = CountdownState.COMPLETED
+
+            self._backend.setTime("00d 00h 00m 00s")
+
+            if self._event:
+                self._event.cancel()
+
             return
 
         days = total_seconds // 86400
@@ -104,39 +136,12 @@ class CountdownWidget:
         minutes = (total_seconds % 3600) // 60
         seconds = total_seconds % 60
 
-        text = f"{days}d {hours:02}:{minutes:02}:{seconds:02}"
-
-        self._backend.update_text(text)
-
-
-class CustomCountdownWidget(KivyLabel):
-    style = ObjectProperty(None)
-
-
-class KivyCountdownBackend(KivyHelper, CountdownBackend):
-
-    def __init__(self, parent=None):
-        self.parent = parent
-        self.widget = None
-
-    def create(self, target_date: datetime, style: TimerStyle):
-
-        self.widget = CustomCountdownWidget(
-            text="Loading..."
+        time_text = (
+            f"{days:02}d "
+            f"{hours:02}h "
+            f"{minutes:02}m "
+            f"{seconds:02}s"
         )
 
-        self.update_style(style)
-
-        return self.widget
-
-    def update_text(self, text: str):
-
-        if self.widget:
-            self.widget.text = text
-
-    def update_style(self, style: TimerStyle):
-
-        if self.widget:
-            self.widget.color = self._parse_color(style.text_color)
-            self.widget.font_size = style.font_size
-            self.widget.bold = style.bold
+        
+        self._backend.setTime(time_text)
