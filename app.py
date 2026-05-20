@@ -11,8 +11,13 @@ from components.calendarWidget import CalendarWidget
 from components.rightPanel import RightPanel
 
 
+import json
+
 class StudentPlannerApp(App):
     def build(self):
+        
+        
+
         self.styles = styles
         Builder.load_file("kv/topbar.kv")
         Builder.load_file("kv/sidebar.kv")

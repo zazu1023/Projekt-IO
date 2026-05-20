@@ -18,9 +18,10 @@ class CustomButtonWidget(KivyButton):
 
         if not self.get_root_window():
             return
-            
 
-        inside = self.collide_point(*pos)
+        local_pos = self.to_widget(*pos)
+
+        inside = self.collide_point(*local_pos)
 
         if self.hovered != inside:
             self.hovered = inside

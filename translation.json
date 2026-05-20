@@ -1,0 +1,15 @@
+{
+"pl" :{
+    "my_subjects_text": "Moje Przedmioty",
+    "my_subject_inprogress" : "W trakcie",
+    "my_subject_completed" : "Zaliczony",
+    "my_subject_danger" : "Zagrożony"
+},
+
+"en" :{
+    "my_subjects_text": "My Subjects",
+    "my_subject_inprogress" : "In progress",
+    "my_subject_completed" : "Completed",
+    "my_subject_danger" : "Zagrożony"
+}
+}

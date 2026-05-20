@@ -14,7 +14,12 @@ class BrickWidget( CustomButtonWidget, BoxLayout):
       title_text = StringProperty()
       has_note = BooleanProperty(False)
      
-     
+class DashboardBrick( CustomButtonWidget, BoxLayout ):
+    info_text = StringProperty()
+    title_text = StringProperty()
+    status_text = StringProperty()
+    subtitle_text = StringProperty()
+
 class KivyBrickBackend(KivyHelper , BrickBackend):
   
 
