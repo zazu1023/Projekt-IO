@@ -1,52 +1,55 @@
 
 #:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import ButtonStyle Widgets.Button.ButtonStyle
 
-<SuccessButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#3fe37d", text_color="#000000", border_radius=6)
 
-<WarningButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#f8c84d", text_color="#000000", border_radius=6)
+<BaseButton@CustomButtonWidget>:
+    # KRYTYCZNE: Nadpisujemy "size: 150, 75" z Twojego pliku Python!
+    size_hint: 1, 1 
+    radius: [dp(10)]
 
-<DangerButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#f97d7f", text_color="#000000", border_radius=6)
-
-<PrimaryButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#165b9a", text_color="#ffffff", border_radius=8)
-
-<BackButton@CustomButtonWidget>:
+<BackButton@BaseButton>:
     style: ButtonStyle(bg_color="#c0c2c4", text_color="#000000", border_radius=8)
+    radius: [dp(8)]
 
-<MinusButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#9e373a", text_color="#ffffff", border_radius=6)
+<SuccessButton@BaseButton>:
+    style: ButtonStyle(bg_color="#2ecc71", text_color="#000000", border_radius=15)
+    radius: [dp(15)]
 
-<PlusButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#215e98", text_color="#ffffff", border_radius=6)
+<WarningButton@BaseButton>:
+    style: ButtonStyle(bg_color="#f1c40f", text_color="#000000", border_radius=15)
+    radius: [dp(15)]
 
+<DangerButton@BaseButton>:
+    style: ButtonStyle(bg_color="#e74c3c", text_color="#000000", border_radius=15)
+    radius: [dp(15)]
 
+<PrimaryButton@BaseButton>:
+    style: ButtonStyle(bg_color="#114c85", text_color="#ffffff", border_radius=10)
+
+<MinusButton@BaseButton>:
+    style: ButtonStyle(bg_color="#c0392b", text_color="#ffffff", border_radius=8)
+    radius: [dp(8)]
+
+<PlusButton@BaseButton>:
+    style: ButtonStyle(bg_color="#2980b9", text_color="#ffffff", border_radius=8)
+    radius: [dp(8)]
+
+# ========================================================
+# 2. SZABLON: Ciemne pole tekstowe
+# ========================================================
 <DarkRoundedInput@TextInput>:
     background_normal: ''
-    background_active: ''
-    background_color: 0, 0, 0, 0 # Całkowicie ukrywa domyślny kwadrat Kivy
+    background_color: get_color_from_hex("#322d2d") # Ciemne tło pola
     foreground_color: 1, 1, 1, 1 # Biały tekst
     cursor_color: 1, 1, 1, 1
     size_hint_y: None
     height: dp(35)
     multiline: False
-    padding: [dp(10), (self.height - self.line_height) / 2] # Wyśrodkowanie pionowe
-    canvas.before:
-        Color:
-            rgba: get_color_from_hex("#343030") # Odcień ciemnego tła z makiety
-        RoundedRectangle:
-            pos: self.pos
-            size: self.size
-            radius: [6]
-        # Delikatna, jaśniejsza ramka wokół pola (jak na obrazku)
-        Color:
-            rgba: get_color_from_hex("#4a4545")
-        Line:
-            rounded_rectangle: (self.x, self.y, self.width, self.height, 6)
-            width: 1
-
+    padding_y: [self.height / 2.0 - (self.line_height / 2.0), 0] # Wyśrodkowanie tekstu w pionie
+# ========================================================
+# 3. GŁÓWNY WIDOK EKRANU
+# ========================================================
 <SzczegolyPrzedmiotuScreen@Screen>:
     BoxLayout:
         orientation: 'vertical'
@@ -54,80 +57,66 @@
         spacing: dp(20)
         canvas.before:
             Color:
-                rgba: get_color_from_hex("#343030") # Tło główne
+                rgba: get_color_from_hex("#3b3232")
             Rectangle:
                 pos: self.pos
                 size: self.size
 
-        # ==========================================
-        # GÓRNY PASEK
-        # ==========================================
+        # --- GÓRNY PASEK ---
         BoxLayout:
+            orientation: 'vertical'  # Układa elementy jeden pod drugim
             size_hint_y: None
-            height: dp(40)
-            spacing: dp(15)
+            height: dp(80)           # Zwiększona wysokość, bo mamy dwa wiersze
+            spacing: dp(10)          # Odstęp między tytułem a przyciskiem
             
-            # Przycisk "Wróć" (Jasny, zaokrąglony)
-            Button:
-                text: '← Wróć'
-                size_hint_x: None
-                width: dp(90)
-                background_normal: ''
-                background_color: 0, 0, 0, 0 # Ukrycie kwadratu
-                color: 0, 0, 0, 1
-                bold: True
-                on_release: app.go_back()
-                canvas.before:
-                    Color:
-                        rgba: get_color_from_hex("#c0c2c4")
-                    RoundedRectangle:
-                        pos: self.pos
-                        size: self.size
-                        radius: [8]
-                
             Label:
                 text: f"Szczegóły przedmiotu: {root.selectedSubject.title if root.selectedSubject else ''}"
-                font_size: '26sp'
+                font_size: '28sp'    # Troszkę większa czcionka, jak na makiecie
                 bold: True
                 halign: 'left'
                 valign: 'middle'
                 text_size: self.size
 
-        # ==========================================
-        # GŁÓWNA ZAWARTOŚĆ (Podział 50/50)
-        # ==========================================
+            BackButton:
+                text: '<- Wróć'
+                size_hint: None, None
+                size: dp(90), dp(35)
+                pos_hint: {'x': 0}   # Przykleja przycisk mocno do lewej krawędzi!
+                on_release: app.go_back()
+
+        # --- GŁÓWNA ZAWARTOŚĆ ---
         BoxLayout:
             spacing: dp(20)
             
-            # --- LEWA KOLUMNA (Ze stylizowanym ScrollView) ---
+            # --- LEWA KOLUMNA ---
             ScrollView:
                 do_scroll_x: False
                 size_hint_x: 0.5
-                # Stylizacja paska przewijania (widoczny na makiecie)
-                bar_width: dp(6)
-                bar_color: get_color_from_hex("#7a7a7a")
-                bar_inactive_color: get_color_from_hex("#505050")
+                bar_width: dp(8)
+                bar_color: get_color_from_hex("#888888")
+                bar_inactive_color: get_color_from_hex("#666666")
                 
                 BoxLayout:
                     orientation: 'vertical'
                     spacing: dp(15)
                     size_hint_y: None
                     height: self.minimum_height
+                    padding: [0, 0, dp(10), 0]
                     
-                    # 1. PANEL: AKTUALNY STATUS
+                    # 1. PANEL STATUSU
                     BoxLayout:
                         orientation: 'vertical'
                         size_hint_y: None
-                        height: dp(120)
+                        height: dp(135) # Lekko powiększony, by przyciski oddychały
                         padding: dp(15)
                         spacing: dp(10)
                         canvas.before:
                             Color:
-                                rgba: get_color_from_hex("#0a3d6e")
+                                rgba: get_color_from_hex("#063e6e")
                             RoundedRectangle:
                                 pos: self.pos
                                 size: self.size
-                                radius: [10]
+                                radius: [dp(12)]
                                 
                         Label:
                             text: "Aktualny status"
@@ -139,7 +128,7 @@
                             
                         Label:
                             text: root.selectedSubject.status if root.selectedSubject else "Zaliczony"
-                            color: get_color_from_hex("#3fe37d")
+                            color: get_color_from_hex("#2ecc71")
                             bold: True
                             size_hint_y: None
                             height: dp(20)
@@ -149,46 +138,16 @@
                         BoxLayout:
                             spacing: dp(10)
                             size_hint_y: None
-                            height: dp(32) # Sztywna wysokość przycisków, by nie były wielkie
-                            
-                            Button:
+                            height: dp(35) 
+                            # Przyciski wypełnią tę przestrzeń, bo dostały size_hint: 1, 1
+                            SuccessButton:
                                 text: "Zaliczony"
-                                color: 0, 0, 0, 1
-                                background_normal: ''
-                                background_color: 0, 0, 0, 0
-                                canvas.before:
-                                    Color:
-                                        rgba: get_color_from_hex("#3fe37d")
-                                    RoundedRectangle:
-                                        pos: self.pos
-                                        size: self.size
-                                        radius: [6]
-                            Button:
+                            WarningButton:
                                 text: "W trakcie"
-                                color: 0, 0, 0, 1
-                                background_normal: ''
-                                background_color: 0, 0, 0, 0
-                                canvas.before:
-                                    Color:
-                                        rgba: get_color_from_hex("#f8c84d")
-                                    RoundedRectangle:
-                                        pos: self.pos
-                                        size: self.size
-                                        radius: [6]
-                            Button:
+                            DangerButton:
                                 text: "Zagrożony"
-                                color: 0, 0, 0, 1
-                                background_normal: ''
-                                background_color: 0, 0, 0, 0
-                                canvas.before:
-                                    Color:
-                                        rgba: get_color_from_hex("#f97d7f")
-                                    RoundedRectangle:
-                                        pos: self.pos
-                                        size: self.size
-                                        radius: [6]
 
-                    # 2. PANEL: NIEOBECNOŚCI
+                    # 2. PANEL NIEOBECNOŚCI
                     BoxLayout:
                         orientation: 'vertical'
                         size_hint_y: None
@@ -197,11 +156,11 @@
                         spacing: dp(10)
                         canvas.before:
                             Color:
-                                rgba: get_color_from_hex("#0a3d6e")
+                                rgba: get_color_from_hex("#063e6e")
                             RoundedRectangle:
                                 pos: self.pos
                                 size: self.size
-                                radius: [10]
+                                radius: [dp(12)]
                                 
                         Label:
                             text: "Nieobecności"
@@ -213,7 +172,7 @@
                             
                         Label:
                             text: f"{root.selectedSubject.absences}/{root.selectedSubject.max_absences}" if root.selectedSubject else "1/2"
-                            font_size: '34sp' # Znacznie powiększona czcionka z makiety
+                            font_size: '34sp'
                             bold: True
                             size_hint_y: None
                             height: dp(35)
@@ -222,47 +181,33 @@
                             
                         BoxLayout:
                             spacing: dp(10)
-                            size_hint_x: None
-                            width: dp(100)
                             size_hint_y: None
-                            height: dp(30) # Małe przyciski
-                            Button:
+                            height: dp(30) 
+                            
+                            MinusButton:
                                 text: "-"
-                                background_normal: ''
-                                background_color: 0, 0, 0, 0
-                                canvas.before:
-                                    Color:
-                                        rgba: get_color_from_hex("#9e373a")
-                                    RoundedRectangle:
-                                        pos: self.pos
-                                        size: self.size
-                                        radius: [6]
-                            Button:
+                                size_hint: None, 1
+                                width: dp(40) # Kwadratowy mały przycisk
+                            PlusButton:
                                 text: "+"
-                                background_normal: ''
-                                background_color: 0, 0, 0, 0
-                                canvas.before:
-                                    Color:
-                                        rgba: get_color_from_hex("#215e98")
-                                    RoundedRectangle:
-                                        pos: self.pos
-                                        size: self.size
-                                        radius: [6]
+                                size_hint: None, 1
+                                width: dp(40) # Kwadratowy mały przycisk
+                            Widget: # Pychacz, żeby przyciski były do lewej krawędzi!
 
-                    # 3. PANEL: EDYTUJ PRZEDMIOT
+                    # 3. PANEL EDYCJI
                     BoxLayout:
                         orientation: 'vertical'
                         size_hint_y: None
                         height: dp(420) 
                         padding: dp(15)
-                        spacing: dp(8) # Ciaśniejsze odstępy (jak na obrazku)
+                        spacing: dp(8) 
                         canvas.before:
                             Color:
-                                rgba: get_color_from_hex("#0a3d6e")
+                                rgba: get_color_from_hex("#063e6e")
                             RoundedRectangle:
                                 pos: self.pos
                                 size: self.size
-                                radius: [10]
+                                radius: [dp(12)]
                                 
                         Label:
                             text: "Edytuj przedmiot"
@@ -272,7 +217,7 @@
                             text_size: self.size
                             halign: 'left'
                             
-                        # Korzystamy z naszego szablonu z samej góry pliku!
+                        # UWAGA: Usunięto bindowania "text: ...", zrobimy to w Pythonie
                         Label:
                             text: "Przedmiot"
                             size_hint_y: None
@@ -281,8 +226,6 @@
                             halign: 'left'
                         DarkRoundedInput:
                             id: input_title
-                            text: root.selectedSubject.title if root.selectedSubject else ""
-                            on_text: if root.selectedSubject: root.selectedSubject.title = self.text
 
                         Label:
                             text: "Prowadzący"
@@ -292,9 +235,7 @@
                             halign: 'left'
                         DarkRoundedInput:
                             id: input_teacher
-                            text: root.selectedSubject.teacher if root.selectedSubject else ""
-                            on_text: if root.selectedSubject: root.selectedSubject.teacher = self.text
-                            
+                        
                         Label:
                             text: "Warunki zaliczenia"
                             size_hint_y: None
@@ -303,8 +244,6 @@
                             halign: 'left'
                         DarkRoundedInput:
                             id: input_conditions
-                            text: root.selectedSubject.conditions if root.selectedSubject else ""
-                            on_text: if root.selectedSubject: root.selectedSubject.conditions = self.text
 
                         Label:
                             text: "Dopuszczalne nieobecności"
@@ -314,8 +253,6 @@
                             halign: 'left'
                         DarkRoundedInput:
                             id: input_max_absences
-                            text: str(root.selectedSubject.max_absences) if root.selectedSubject else ""
-                            on_text: if root.selectedSubject and self.text.isdigit(): root.selectedSubject.max_absences = int(self.text)
                             
                         Label:
                             text: "Max liczba plusów"
@@ -325,11 +262,10 @@
                             halign: 'left'
                         DarkRoundedInput:
                             id: input_max_pluses
-                            text: str(root.selectedSubject.max_pluses) if root.selectedSubject else ""
                             
                         Widget: 
 
-            # --- PRAWA KOLUMNA (Notatka ogólna) ---
+            # --- PRAWA KOLUMNA (Notatka) ---
             BoxLayout:
                 orientation: 'vertical'
                 padding: dp(15)
@@ -337,11 +273,11 @@
                 size_hint_x: 0.5
                 canvas.before:
                     Color:
-                        rgba: get_color_from_hex("#0a3d6e")
+                        rgba: get_color_from_hex("#063e6e")
                     RoundedRectangle:
                         pos: self.pos
                         size: self.size
-                        radius: [10]
+                        radius: [dp(12)]
 
                 Label:
                     text: "Notatka ogólna"
@@ -350,39 +286,23 @@
                     height: dp(20)
                     text_size: self.size
                     halign: 'left'
-
-                # Notatka (Zaokrąglona, jasne tło)
+                
+                # UWAGA: Tu też usunięto bindowanie "text:"
                 TextInput:
                     id: input_note
                     multiline: True
-                    background_normal: ''
-                    background_active: ''
-                    background_color: 0, 0, 0, 0
-                    foreground_color: 0, 0, 0, 1 # Czarny tekst
-                    cursor_color: 0, 0, 0, 1
-                    padding: dp(15)
+                    background_color: get_color_from_hex("#e0e0e0") # Jasnoszare tło z docelowego
                     text: root.selectedSubject.note if root.selectedSubject else ""
-                    on_text: if root.selectedSubject: root.selectedSubject.note = self.text
-                    canvas.before:
-                        Color:
-                            rgba: get_color_from_hex("#dbdbdb") # Szarawe tło
-                        RoundedRectangle:
-                            pos: self.pos
-                            size: self.size
-                            radius: [8]
+                    # on_text: if root.selectedSubject: root.selectedSubject.note = self.text
                     
-                # Przycisk "Zapisz notatkę"
-                Button:
+                    
+                PrimaryButton:
                     text: "Zapisz notatkę"
-                    background_normal: ''
-                    background_color: 0, 0, 0, 0
-                    size_hint_y: None
+                    size_hint: 1, None # Wymuszamy pełną szerokość
                     height: dp(40)
-                    on_release: print("Zapisano notatkę!")
-                    canvas.before:
-                        Color:
-                            rgba: get_color_from_hex("#165b9a") # Ciemniejszy niebieski
-                        RoundedRectangle:
-                            pos: self.pos
-                            size: self.size
-                            radius: [8]
+                    on_release: 
+                        if root.selectedSubject: root.selectedSubject.title = input_title.text
+                        if root.selectedSubject: root.selectedSubject.teacher = input_teacher.text
+                        if root.selectedSubject: root.selectedSubject.conditions = input_conditions.text
+                        if root.selectedSubject: root.selectedSubject.note = input_note.text
+                        print("Zapisano!")

@@ -22,19 +22,19 @@ class ButtonStyle():
     shape: Shapes = Shapes.ROUNDED
  
     border_radius: Union[int, List[int]] = 10 
-    border_color: Optional[str] = None
+    border_color: Optional[str] = "#FFFFFF"
     border_width: int = 0
 
-    bg_color: Optional[str] = None
+    bg_color: Optional[str] = "#FFFFFF"
     text_color: Optional[str] = "#FFFFFF" # Domyślnie biały tekst
     
 
-    hover_bg_color: Optional[str] = None
-    hover_text_color: Optional[str] = None
+    hover_bg_color: Optional[str] = "#FFFFFF"
+    hover_text_color: Optional[str] ="#FFFFFF"
 
 
-    pressed_bg_color: Optional[str] = None
-    pressed_text_color: Optional[str] = None
+    pressed_bg_color: Optional[str] = "#FFFFFF"
+    pressed_text_color: Optional[str] = "#FFFFFF"
 
     disabled_bg_color: Optional[str] = "#555555" # Standardowy szary dla zablokowanych
     disabled_text_color: Optional[str] = "#888888"
