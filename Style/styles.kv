@@ -11,17 +11,17 @@
     canvas.before:
         Color:
             rgba: 
-                (root.style.bg_color[0]*0.7, 
-                root.style.bg_color[1]*0.7, 
-                root.style.bg_color[2]*0.7, 1) \
+                (get_color_from_hex(root.style.bg_color[0])*0.7, 
+                get_color_from_hex(root.style.bg_color[1])*0.7, 
+                get_color_from_hex(root.style.bg_color[2])*0.7, 1) \
                 if (self.state == 'down') else \
                 
                
-                root.style.hover_bg_color \
+                get_color_from_hex(root.style.hover_bg_color)\
                 if (self.hovered ) else \
                 
             
-                root.style.bg_color if root.style else [0.2, 0.2, 0.2, 1]
+                get_color_from_hex(root.style.bg_color) if root.style else [0.2, 0.2, 0.2, 1]
         RoundedRectangle:
             pos: self.pos
             size: self.size

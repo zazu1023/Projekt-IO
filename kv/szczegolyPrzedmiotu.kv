@@ -1,0 +1,388 @@
+
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+
+<SuccessButton@CustomButtonWidget>:
+    style: ButtonStyle(bg_color="#3fe37d", text_color="#000000", border_radius=6)
+
+<WarningButton@CustomButtonWidget>:
+    style: ButtonStyle(bg_color="#f8c84d", text_color="#000000", border_radius=6)
+
+<DangerButton@CustomButtonWidget>:
+    style: ButtonStyle(bg_color="#f97d7f", text_color="#000000", border_radius=6)
+
+<PrimaryButton@CustomButtonWidget>:
+    style: ButtonStyle(bg_color="#165b9a", text_color="#ffffff", border_radius=8)
+
+<BackButton@CustomButtonWidget>:
+    style: ButtonStyle(bg_color="#c0c2c4", text_color="#000000", border_radius=8)
+
+<MinusButton@CustomButtonWidget>:
+    style: ButtonStyle(bg_color="#9e373a", text_color="#ffffff", border_radius=6)
+
+<PlusButton@CustomButtonWidget>:
+    style: ButtonStyle(bg_color="#215e98", text_color="#ffffff", border_radius=6)
+
+
+<DarkRoundedInput@TextInput>:
+    background_normal: ''
+    background_active: ''
+    background_color: 0, 0, 0, 0 # Całkowicie ukrywa domyślny kwadrat Kivy
+    foreground_color: 1, 1, 1, 1 # Biały tekst
+    cursor_color: 1, 1, 1, 1
+    size_hint_y: None
+    height: dp(35)
+    multiline: False
+    padding: [dp(10), (self.height - self.line_height) / 2] # Wyśrodkowanie pionowe
+    canvas.before:
+        Color:
+            rgba: get_color_from_hex("#343030") # Odcień ciemnego tła z makiety
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [6]
+        # Delikatna, jaśniejsza ramka wokół pola (jak na obrazku)
+        Color:
+            rgba: get_color_from_hex("#4a4545")
+        Line:
+            rounded_rectangle: (self.x, self.y, self.width, self.height, 6)
+            width: 1
+
+<SzczegolyPrzedmiotuScreen@Screen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(20)
+        canvas.before:
+            Color:
+                rgba: get_color_from_hex("#343030") # Tło główne
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # ==========================================
+        # GÓRNY PASEK
+        # ==========================================
+        BoxLayout:
+            size_hint_y: None
+            height: dp(40)
+            spacing: dp(15)
+            
+            # Przycisk "Wróć" (Jasny, zaokrąglony)
+            Button:
+                text: '← Wróć'
+                size_hint_x: None
+                width: dp(90)
+                background_normal: ''
+                background_color: 0, 0, 0, 0 # Ukrycie kwadratu
+                color: 0, 0, 0, 1
+                bold: True
+                on_release: app.go_back()
+                canvas.before:
+                    Color:
+                        rgba: get_color_from_hex("#c0c2c4")
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [8]
+                
+            Label:
+                text: f"Szczegóły przedmiotu: {root.selectedSubject.title if root.selectedSubject else ''}"
+                font_size: '26sp'
+                bold: True
+                halign: 'left'
+                valign: 'middle'
+                text_size: self.size
+
+        # ==========================================
+        # GŁÓWNA ZAWARTOŚĆ (Podział 50/50)
+        # ==========================================
+        BoxLayout:
+            spacing: dp(20)
+            
+            # --- LEWA KOLUMNA (Ze stylizowanym ScrollView) ---
+            ScrollView:
+                do_scroll_x: False
+                size_hint_x: 0.5
+                # Stylizacja paska przewijania (widoczny na makiecie)
+                bar_width: dp(6)
+                bar_color: get_color_from_hex("#7a7a7a")
+                bar_inactive_color: get_color_from_hex("#505050")
+                
+                BoxLayout:
+                    orientation: 'vertical'
+                    spacing: dp(15)
+                    size_hint_y: None
+                    height: self.minimum_height
+                    
+                    # 1. PANEL: AKTUALNY STATUS
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: dp(120)
+                        padding: dp(15)
+                        spacing: dp(10)
+                        canvas.before:
+                            Color:
+                                rgba: get_color_from_hex("#0a3d6e")
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [10]
+                                
+                        Label:
+                            text: "Aktualny status"
+                            bold: True
+                            size_hint_y: None
+                            height: dp(20)
+                            text_size: self.size
+                            halign: 'left'
+                            
+                        Label:
+                            text: root.selectedSubject.status if root.selectedSubject else "Zaliczony"
+                            color: get_color_from_hex("#3fe37d")
+                            bold: True
+                            size_hint_y: None
+                            height: dp(20)
+                            text_size: self.size
+                            halign: 'left'
+                            
+                        BoxLayout:
+                            spacing: dp(10)
+                            size_hint_y: None
+                            height: dp(32) # Sztywna wysokość przycisków, by nie były wielkie
+                            
+                            Button:
+                                text: "Zaliczony"
+                                color: 0, 0, 0, 1
+                                background_normal: ''
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: get_color_from_hex("#3fe37d")
+                                    RoundedRectangle:
+                                        pos: self.pos
+                                        size: self.size
+                                        radius: [6]
+                            Button:
+                                text: "W trakcie"
+                                color: 0, 0, 0, 1
+                                background_normal: ''
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: get_color_from_hex("#f8c84d")
+                                    RoundedRectangle:
+                                        pos: self.pos
+                                        size: self.size
+                                        radius: [6]
+                            Button:
+                                text: "Zagrożony"
+                                color: 0, 0, 0, 1
+                                background_normal: ''
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: get_color_from_hex("#f97d7f")
+                                    RoundedRectangle:
+                                        pos: self.pos
+                                        size: self.size
+                                        radius: [6]
+
+                    # 2. PANEL: NIEOBECNOŚCI
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: dp(130)
+                        padding: dp(15)
+                        spacing: dp(10)
+                        canvas.before:
+                            Color:
+                                rgba: get_color_from_hex("#0a3d6e")
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [10]
+                                
+                        Label:
+                            text: "Nieobecności"
+                            bold: True
+                            size_hint_y: None
+                            height: dp(20)
+                            text_size: self.size
+                            halign: 'left'
+                            
+                        Label:
+                            text: f"{root.selectedSubject.absences}/{root.selectedSubject.max_absences}" if root.selectedSubject else "1/2"
+                            font_size: '34sp' # Znacznie powiększona czcionka z makiety
+                            bold: True
+                            size_hint_y: None
+                            height: dp(35)
+                            text_size: self.size
+                            halign: 'left'
+                            
+                        BoxLayout:
+                            spacing: dp(10)
+                            size_hint_x: None
+                            width: dp(100)
+                            size_hint_y: None
+                            height: dp(30) # Małe przyciski
+                            Button:
+                                text: "-"
+                                background_normal: ''
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: get_color_from_hex("#9e373a")
+                                    RoundedRectangle:
+                                        pos: self.pos
+                                        size: self.size
+                                        radius: [6]
+                            Button:
+                                text: "+"
+                                background_normal: ''
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: get_color_from_hex("#215e98")
+                                    RoundedRectangle:
+                                        pos: self.pos
+                                        size: self.size
+                                        radius: [6]
+
+                    # 3. PANEL: EDYTUJ PRZEDMIOT
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: dp(420) 
+                        padding: dp(15)
+                        spacing: dp(8) # Ciaśniejsze odstępy (jak na obrazku)
+                        canvas.before:
+                            Color:
+                                rgba: get_color_from_hex("#0a3d6e")
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [10]
+                                
+                        Label:
+                            text: "Edytuj przedmiot"
+                            bold: True
+                            size_hint_y: None
+                            height: dp(30)
+                            text_size: self.size
+                            halign: 'left'
+                            
+                        # Korzystamy z naszego szablonu z samej góry pliku!
+                        Label:
+                            text: "Przedmiot"
+                            size_hint_y: None
+                            height: dp(15)
+                            text_size: self.size
+                            halign: 'left'
+                        DarkRoundedInput:
+                            id: input_title
+                            text: root.selectedSubject.title if root.selectedSubject else ""
+                            on_text: if root.selectedSubject: root.selectedSubject.title = self.text
+
+                        Label:
+                            text: "Prowadzący"
+                            size_hint_y: None
+                            height: dp(15)
+                            text_size: self.size
+                            halign: 'left'
+                        DarkRoundedInput:
+                            id: input_teacher
+                            text: root.selectedSubject.teacher if root.selectedSubject else ""
+                            on_text: if root.selectedSubject: root.selectedSubject.teacher = self.text
+                            
+                        Label:
+                            text: "Warunki zaliczenia"
+                            size_hint_y: None
+                            height: dp(15)
+                            text_size: self.size
+                            halign: 'left'
+                        DarkRoundedInput:
+                            id: input_conditions
+                            text: root.selectedSubject.conditions if root.selectedSubject else ""
+                            on_text: if root.selectedSubject: root.selectedSubject.conditions = self.text
+
+                        Label:
+                            text: "Dopuszczalne nieobecności"
+                            size_hint_y: None
+                            height: dp(15)
+                            text_size: self.size
+                            halign: 'left'
+                        DarkRoundedInput:
+                            id: input_max_absences
+                            text: str(root.selectedSubject.max_absences) if root.selectedSubject else ""
+                            on_text: if root.selectedSubject and self.text.isdigit(): root.selectedSubject.max_absences = int(self.text)
+                            
+                        Label:
+                            text: "Max liczba plusów"
+                            size_hint_y: None
+                            height: dp(15)
+                            text_size: self.size
+                            halign: 'left'
+                        DarkRoundedInput:
+                            id: input_max_pluses
+                            text: str(root.selectedSubject.max_pluses) if root.selectedSubject else ""
+                            
+                        Widget: 
+
+            # --- PRAWA KOLUMNA (Notatka ogólna) ---
+            BoxLayout:
+                orientation: 'vertical'
+                padding: dp(15)
+                spacing: dp(15)
+                size_hint_x: 0.5
+                canvas.before:
+                    Color:
+                        rgba: get_color_from_hex("#0a3d6e")
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10]
+
+                Label:
+                    text: "Notatka ogólna"
+                    bold: True
+                    size_hint_y: None
+                    height: dp(20)
+                    text_size: self.size
+                    halign: 'left'
+
+                # Notatka (Zaokrąglona, jasne tło)
+                TextInput:
+                    id: input_note
+                    multiline: True
+                    background_normal: ''
+                    background_active: ''
+                    background_color: 0, 0, 0, 0
+                    foreground_color: 0, 0, 0, 1 # Czarny tekst
+                    cursor_color: 0, 0, 0, 1
+                    padding: dp(15)
+                    text: root.selectedSubject.note if root.selectedSubject else ""
+                    on_text: if root.selectedSubject: root.selectedSubject.note = self.text
+                    canvas.before:
+                        Color:
+                            rgba: get_color_from_hex("#dbdbdb") # Szarawe tło
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [8]
+                    
+                # Przycisk "Zapisz notatkę"
+                Button:
+                    text: "Zapisz notatkę"
+                    background_normal: ''
+                    background_color: 0, 0, 0, 0
+                    size_hint_y: None
+                    height: dp(40)
+                    on_release: print("Zapisano notatkę!")
+                    canvas.before:
+                        Color:
+                            rgba: get_color_from_hex("#165b9a") # Ciemniejszy niebieski
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [8]

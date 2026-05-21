@@ -1,5 +1,7 @@
 #:import ButtonStyle Widgets.Button.ButtonStyle
 #:import Shapes Widgets.Button.Shapes
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+
 <DashboardBrick>:
     orientation: 'vertical'
     padding: dp(15)
@@ -14,13 +16,15 @@
             # Używamy koloru ze stylu lub domyślnego
         
             rgba: 
-                (root.style.bg_color[0]*0.7, 
-                root.style.bg_color[1]*0.7, 
-                root.style.bg_color[2]*0.7, 1) \
+                (root.style.bg_color[0]*0.4, 
+                root.style.bg_color[1]*0.4, 
+                root.style.bg_color[2]*0.4, 1) \
                 if (self.state == 'down') else \
                 
                
-                root.style.hover_bg_color \
+                (root.style.bg_color[0]*0.7, 
+                root.style.bg_color[1]*0.7, 
+                root.style.bg_color[2]*0.7, 1) \
                 if (self.hovered ) else \
                 
             
@@ -59,83 +63,82 @@
 
 <SubjectGreen@DashboardBrick>:
     status_text: app.translate('my_subject_completed')
-    style: ButtonStyle(bg_color=get_color_from_hex("2e588c"),hover_bg_color=get_color_from_hex("2e587c") , text_color=[1,1,1,1], border_radius=10, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color=get_color_from_hex("62c57b"),hover_bg_color=get_color_from_hex("2e587c") , text_color=[1,1,1,1], border_radius=10, shape=Shapes.ROUNDED)
 
 <SubjectRed@DashboardBrick>:
     status_text: app.translate('my_subject_danger')
-    style: ButtonStyle(bg_color=get_color_from_hex("2e588c"),hover_bg_color=get_color_from_hex("2e587c") , text_color=[1,1,1,1], border_radius=10, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color=get_color_from_hex("f28b82"),hover_bg_color=get_color_from_hex("2e587c") , text_color=[1,1,1,1], border_radius=10, shape=Shapes.ROUNDED)
 
-<SubjectYellow@DashboardBrick>:
+<SubjectWhite@DashboardBrick>:
     status_text: app.translate('my_subject_inprogress')
-    style: ButtonStyle(bg_color=get_color_from_hex("2e588c"),hover_bg_color=get_color_from_hex("2e587c") , text_color=[1,1,1,1], border_radius=10, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color=get_color_from_hex("d9d9d7"),hover_bg_color=get_color_from_hex("2e587c") , text_color=[1,1,1,1], border_radius=10, shape=Shapes.ROUNDED)
     
-BoxLayout:
-    
-    orientation: 'vertical'
-    padding: dp(20)
-    spacing: dp(15)
-    
-    # Ciemnoszare tło całej aplikacji (jak na screenie poza niebieskim obszarem)
-    canvas.before:
-        Color:
-            rgba: get_color_from_hex("#332b2b")
-        Rectangle:
-            pos: self.pos
-            size: self.size
-
-    # Nagłówek
-    Label:
-        text: "Moje przedmioty"
-        font_size: '24sp'
-        bold: True
-        size_hint_y: None
-        height: dp(40)
-        text_size: self.size
-        halign: 'left'
-        valign: 'middle'
-
-    # Niebieski kontener na kafelki
+<MojePrzedmiotyScreen@Screen>
     BoxLayout:
-        padding: dp(15)
+        
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(15)
+        
+        # Ciemnoszare tło całej aplikacji (jak na screenie poza niebieskim obszarem)
         canvas.before:
             Color:
-                rgba: get_color_from_hex("#1c4271") # Niebieskie tło
-            RoundedRectangle:
+                rgba: get_color_from_hex("#332b2b")
+            Rectangle:
                 pos: self.pos
                 size: self.size
-                radius: [10,]
 
-        # Siatka, która automatycznie układa kafelki od lewej do prawej
-        ScrollView:
-            do_scroll_x: False
+        # Nagłówek
+        Label:
+            text: "Moje przedmioty"
+            font_size: '24sp'
+            bold: True
+            size_hint_y: None
+            height: dp(40)
+            text_size: self.size
+            halign: 'left'
+            valign: 'middle'
 
-            GridLayout:
-                id: grid_przedmiotow
-                cols: 3 # Ilość kolumn (dostosuj do szerokości okna)
-                spacing: dp(15)
-                
-                # Ważne: to pozwala siatce rosnąć w dół, jeśli dodasz więcej kafelków
-                size_hint_y: None
-                height: self.minimum_height
+        # Niebieski kontener na kafelki
+        BoxLayout:
+            padding: dp(15)
+            canvas.before:
+                Color:
+                    rgba: get_color_from_hex("#1c4271") # Niebieskie tło
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10,]
 
-                # --- TUTAJ WRZUCASZ SWOJE KAFELKI ---
-                # To jest przykład statyczny. Docelowo wrzucisz je tu z Pythona
-                # lub przez podpięcie backendu, o którym rozmawialiśmy wcześniej.
-                
-                SubjectGreen:
-                    title_text: "3referfd"
-                    subtitle_text: "efefedfef"
-                
-                    # Wymaga podania obiektu stylu z odpowiednim kolorem!
+            # Siatka, która automatycznie układa kafelki od lewej do prawej
+            ScrollView:
+                do_scroll_x: False
+
+                GridLayout:
+                    id: grid_przedmiotow
+                    cols: 3 # Ilość kolumn (dostosuj do szerokości okna)
+                    spacing: dp(15)
                     
-                SubjectRed:
-                    title_text: "ASD"
-                    subtitle_text: "JŚW"
+                    # Ważne: to pozwala siatce rosnąć w dół, jeśli dodasz więcej kafelków
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    # --- TUTAJ WRZUCASZ SWOJE KAFELKI ---
+                    # To jest przykład statyczny. Docelowo wrzucisz je tu z Pythona
+                    # lub przez podpięcie backendu, o którym rozmawialiśmy wcześniej.
                     
-                    style: ButtonStyle(bg_color=get_color_from_hex("2e588c"),hover_bg_color=get_color_from_hex("2e587c") , text_color="ffffff", border_radius=10, shape=Shapes.ROUNDED)
-                SubjectYellow:
-                    title_text: "ASD"
-                    subtitle_text: "JŚW"
-                   
-                    style: ButtonStyle(bg_color=get_color_from_hex("2e588c"),hover_bg_color=get_color_from_hex("2e587c") , text_color="ffffff", border_radius=10, shape=Shapes.ROUNDED)
+                    SubjectGreen:
+                        title_text: "3referfd"
+                        subtitle_text: "efefedfef"
+                    
+                        # Wymaga podania obiektu stylu z odpowiednim kolorem!
+                        
+                    SubjectRed:
+                        title_text: "ASD"
+                        subtitle_text: "JŚW"
+                        
+                    SubjectWhite:
+                        title_text: "ASD"
+                        subtitle_text: "JŚW"
+                    
 

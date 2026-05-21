@@ -2,7 +2,7 @@ from abc import ABC , abstractmethod
 from enum import Enum, auto
 from dataclasses import dataclass
 
-from typing import Optional
+from typing import Optional ,Union,List
 
 
 class ButtonState(Enum):
@@ -19,18 +19,31 @@ class Shapes(Enum):
 
 @dataclass(frozen=True)
 class ButtonStyle():
-    bg_color: Optional[str] = None
-    text_color: Optional[str] = None
-
-  
-    hover_bg_color: Optional[str] = None
-    hover_text_color: Optional[str] = None
-
-    border_radius: int = 10
+    shape: Shapes = Shapes.ROUNDED
+ 
+    border_radius: Union[int, List[int]] = 10 
     border_color: Optional[str] = None
     border_width: int = 0
 
-    shape: Optional[any] = None
+    bg_color: Optional[str] = None
+    text_color: Optional[str] = "#FFFFFF" # Domyślnie biały tekst
+    
+
+    hover_bg_color: Optional[str] = None
+    hover_text_color: Optional[str] = None
+
+
+    pressed_bg_color: Optional[str] = None
+    pressed_text_color: Optional[str] = None
+
+    disabled_bg_color: Optional[str] = "#555555" # Standardowy szary dla zablokowanych
+    disabled_text_color: Optional[str] = "#888888"
+
+    font_size: str = "14sp"
+    font_name: str = "Roboto"
+    bold: bool = False
+    
+    icon_source: Optional[str] = None # Ścieżka do obrazka, jeśli przycisk ma ikonę
 
 class ButtonBackend(ABC):
 
@@ -86,9 +99,9 @@ class Button:
         self._backend.apply_state(self._state, self.style)
 
     def _handle_click(self):
-
-        if self._status != ButtonState.NORMAL:
+        if self._state in (ButtonState.DISABLED, ButtonState.LOADING):
             return
+            
         if self.action:
             self.action()
  
