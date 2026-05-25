@@ -9,44 +9,19 @@ from KivyWidgets.KivyButtonBackend import KivyButton
 from KivyWidgets.KivyBrickBackend import BrickWidget
 from kivy.uix.screenmanager import ScreenManager, Screen
 
-from views.mojePrzedmioty import MojePrzedmiotyScreen , SzczegolyPrzedmiotuScreen
+from views.mojePrzedmioty import MojePrzedmiotyScreen , SzczegolyPrzedmiotuScreen , SubjectData
 
 import json
 from kivy.event import EventDispatcher
 from kivy.properties import StringProperty , NumericProperty
 
-# 1. Upewnij się, że masz klasę danych (dziedziczącą po EventDispatcher, żeby UI reagowało na zmiany)
-class SubjectData(EventDispatcher):
-    title = StringProperty("")
-    teacher = StringProperty("")
-    note = StringProperty("")
-    
-    # NOWE POLA Z DOCELOWEGO EKRANU:
-    status = StringProperty("Zaliczony")
-    absences = NumericProperty(1)
-    max_absences = NumericProperty(2)
-    conditions = StringProperty("bleble")
-    max_pluses = NumericProperty(10.0)
-    
-    def __init__(self, title, teacher, note, **kwargs):
-        super().__init__(**kwargs)
-        self.title = title
-        self.teacher = teacher
-        self.note = note
-# 2. Klasa udająca Twój kafelek (zawiera w sobie pole 'data')
-class MockBrick:
-    def __init__(self, data):
-        self.data = data
-
-# ==========================================
-# 3. TWORZENIE OBIEKTU TESTOWEGO W PRAKTYCE
-# ==========================================
 
 # Tworzymy przykładowe dane przedmiotu
 testowe_dane = SubjectData(
     title="Algebra Liniowa",
     teacher="prof. dr hab. Jan Kowalski",
-    note="Pamiętać o powtórzeniu macierzy i wyznaczników przed kolokwium!"
+    note="Pamiętać o powtórzeniu macierzy i wyznaczników przed kolokwium!",
+    max_absences = 5
 )
 
 # Pakujemy dane w "kafelek"

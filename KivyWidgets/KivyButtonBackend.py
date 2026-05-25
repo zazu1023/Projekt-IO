@@ -9,7 +9,8 @@ from kivy.core.window import Window
 class CustomButtonWidget(KivyButton):
     style = ObjectProperty(None)
     hovered = BooleanProperty(False)
-
+    btn_state = ObjectProperty(ButtonState.NORMAL)
+    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         Window.bind(mouse_pos=self.on_mouse_pos)

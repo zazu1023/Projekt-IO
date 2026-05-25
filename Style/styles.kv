@@ -11,13 +11,15 @@
     canvas.before:
         Color:
             rgba: 
-                (get_color_from_hex(root.style.bg_color[0])*0.7, 
-                get_color_from_hex(root.style.bg_color[1])*0.7, 
-                get_color_from_hex(root.style.bg_color[2])*0.7, 1) \
+                (get_color_from_hex(root.style.bg_color)[0]*0.5, 
+                get_color_from_hex(root.style.bg_color)[1]*0.5, 
+                get_color_from_hex(root.style.bg_color)[2]*0.5, 1) \
                 if (self.state == 'down') else \
                 
                
-                get_color_from_hex(root.style.hover_bg_color)\
+                (get_color_from_hex(root.style.bg_color)[0]*0.8, 
+                get_color_from_hex(root.style.bg_color)[1]*0.8, 
+                get_color_from_hex(root.style.bg_color)[2]*0.8, 1) \
                 if (self.hovered ) else \
                 
             

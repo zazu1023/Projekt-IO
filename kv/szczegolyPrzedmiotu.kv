@@ -1,10 +1,9 @@
 
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 #:import ButtonStyle Widgets.Button.ButtonStyle
-
+#:import ButtonState Widgets.Button.ButtonState
 
 <BaseButton@CustomButtonWidget>:
-    # KRYTYCZNE: Nadpisujemy "size: 150, 75" z Twojego pliku Python!
     size_hint: 1, 1 
     radius: [dp(10)]
 
@@ -50,7 +49,7 @@
 # ========================================================
 # 3. GŁÓWNY WIDOK EKRANU
 # ========================================================
-<SzczegolyPrzedmiotuScreen@Screen>:
+<SzczegolyPrzedmiotuScreen>:
     BoxLayout:
         orientation: 'vertical'
         padding: dp(20)
@@ -127,8 +126,8 @@
                             halign: 'left'
                             
                         Label:
-                            text: root.selectedSubject.status if root.selectedSubject else "Zaliczony"
-                            color: get_color_from_hex("#2ecc71")
+                            text: app.translate('my_subject_' + root.selectedSubject.status) if root.selectedSubject else app.translate('my_subject_completed')
+                            color: get_color_from_hex("#f1c40f") if root.selectedSubject and root.selectedSubject.status == 'inprogress' else (get_color_from_hex("#e74c3c") if root.selectedSubject and root.selectedSubject.status == 'atrisk' else get_color_from_hex("#2ecc71"))
                             bold: True
                             size_hint_y: None
                             height: dp(20)
@@ -141,11 +140,17 @@
                             height: dp(35) 
                             # Przyciski wypełnią tę przestrzeń, bo dostały size_hint: 1, 1
                             SuccessButton:
-                                text: "Zaliczony"
+                                state: 'down' if root.selectedSubject and root.selectedSubject.status == self.text else 'normal'
+                                text: app.translate('my_subject_completed')
+                                on_release: root.change_status('completed')
                             WarningButton:
-                                text: "W trakcie"
+                                state: 'down' if root.selectedSubject and root.selectedSubject.status == self.text else 'normal'
+                                text: app.translate('my_subject_inprogress')
+                                on_release: root.change_status('inprogress')
                             DangerButton:
-                                text: "Zagrożony"
+                                state: 'down' if root.selectedSubject and root.selectedSubject.status == self.text else 'normal'
+                                text: app.translate('my_subject_atrisk')
+                                on_release: root.change_status('atrisk')
 
                     # 2. PANEL NIEOBECNOŚCI
                     BoxLayout:
@@ -171,7 +176,8 @@
                             halign: 'left'
                             
                         Label:
-                            text: f"{root.selectedSubject.absences}/{root.selectedSubject.max_absences}" if root.selectedSubject else "1/2"
+                            
+                            text: str(root.selectedSubject.absences) + "/" + str(root.selectedSubject.max_absences) if root.selectedSubject else "1/2"
                             font_size: '34sp'
                             bold: True
                             size_hint_y: None
@@ -188,10 +194,12 @@
                                 text: "-"
                                 size_hint: None, 1
                                 width: dp(40) # Kwadratowy mały przycisk
+                                on_release: root.decrement_absences()
                             PlusButton:
                                 text: "+"
                                 size_hint: None, 1
                                 width: dp(40) # Kwadratowy mały przycisk
+                                on_release: root.increment_absences()
                             Widget: # Pychacz, żeby przyciski były do lewej krawędzi!
 
                     # 3. PANEL EDYCJI

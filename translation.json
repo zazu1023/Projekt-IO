@@ -3,13 +3,39 @@
     "my_subjects_text": "Moje Przedmioty",
     "my_subject_inprogress" : "W trakcie",
     "my_subject_completed" : "Zaliczony",
-    "my_subject_danger" : "Zagrożony"
+    "my_subject_atrisk" : "Zagrożony",
+
+    "subject_details_title": "Szczegóły przedmiotu: ",
+    "back_button": "<- Wróć",
+    "current_status": "Aktualny status",
+    "absences": "Nieobecności",
+    "edit_subject": "Edytuj przedmiot",
+    "subject_name": "Przedmiot",
+    "teacher": "Prowadzący",
+    "passing_conditions": "Warunki zaliczenia",
+    "max_absences": "Dopuszczalne nieobecności",
+    "max_pluses": "Max liczba plusów",
+    "general_note": "Notatka ogólna",
+    "save_note": "Zapisz notatkę"
 },
 
 "en" :{
     "my_subjects_text": "My Subjects",
     "my_subject_inprogress" : "In progress",
     "my_subject_completed" : "Completed",
-    "my_subject_danger" : "Zagrożony"
+    "my_subject_atrisk" : "At risk",
+
+    "subject_details_title": "Subject details: ",
+    "back_button": "<- Back",
+    "current_status": "Current status",
+    "absences": "Absences",
+    "edit_subject": "Edit subject",
+    "subject_name": "Subject",
+    "teacher": "Teacher",
+    "passing_conditions": "Passing conditions",
+    "max_absences": "Allowed absences",
+    "max_pluses": "Max pluses",
+    "general_note": "General note",
+    "save_note": "Save note"
 }
 }
