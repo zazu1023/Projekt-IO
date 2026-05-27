@@ -10,10 +10,10 @@
     # Ustawiamy sztywny rozmiar kafelka, żeby siatka wyglądała równo
     size_hint: 1 , None
     height: dp(120)
-
+    on_release: app.change_screen('subjectDetails', selectedSubject=self.subject_obj)
     # 1. Tytuł (Pogrubiony)
     Label:
-        text: root.title_text
+        text: root.subject_obj.title
         bold: True
         color: [0, 0, 0, 1] # Czarny tekst
         text_size: self.size
@@ -22,7 +22,7 @@
 
     # 2. Podtytuł (Zwykły)
     Label:
-        text: root.subtitle_text
+        text: root.subject_obj.teacher
         color: [0.1, 0.1, 0.1, 1]
         text_size: self.size
         halign: 'left'
@@ -30,14 +30,13 @@
 
     # 3. Status (Pogrubiony, mniejszy na dole)
     Label:
-        text: root.status_text
+        text: root.subject_obj.status
         bold: True
         font_size: '12sp'
         color: [0, 0, 0, 1]
         text_size: self.size
         halign: 'left'
         valign: 'bottom'
-
 <SubjectGreen@DashboardBrick>:
     status_text: app.translate('my_subject_completed')
     style: ButtonStyle(bg_color="#62c57b",hover_bg_color="#2e587c" , text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
@@ -104,18 +103,4 @@
                     # To jest przykład statyczny. Docelowo wrzucisz je tu z Pythona
                     # lub przez podpięcie backendu, o którym rozmawialiśmy wcześniej.
                     
-                    SubjectGreen:
-                        title_text: "3referfd"
-                        subtitle_text: "efefedfef"
-                    
-                        # Wymaga podania obiektu stylu z odpowiednim kolorem!
-                        
-                    SubjectRed:
-                        title_text: "ASD"
-                        subtitle_text: "JŚW"
-                        
-                    SubjectWhite:
-                        title_text: "ASD"
-                        subtitle_text: "JŚW"
-                    
-
+                   

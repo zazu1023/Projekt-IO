@@ -1,0 +1,124 @@
+MainLayout:
+
+# 2. DEFINICJA WYGLĄDU:
+<MainLayout@BoxLayout>:
+    orientation: 'vertical' # Układ góra-dół
+
+    # ==========================================
+    # GÓRNY PASEK (Biały, przez całą szerokość)
+    # ==========================================
+    BoxLayout:
+        size_hint_y: None
+        height: dp(60)
+        padding: dp(5)
+        canvas.before:
+            Color:
+                rgba: get_color_from_hex("#f8f9fa") # Jasnoszare/białe tło
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # Obszar Logo (szerokość równa lewemu menu)
+        BoxLayout:
+            size_hint_x: None
+            width: dp(220)
+            padding: dp(5)
+            # Tu wstawisz docelowo obrazek Image:
+            Label:
+                text: "[b]STUDENT[/b]\nPLANNER"
+                markup: True
+                color: get_color_from_hex("#1565c0")
+                halign: 'left'
+
+        # Środkowy tekst (Najbliższe...)
+        Label:
+            text: "Najbliższe: Brak nadchodzących kolokwiów/egzaminów"
+            color: get_color_from_hex("#1565c0")
+            bold: True
+
+        # Prawa strona (Przyciski Ciemny motyw / Język)
+        BoxLayout:
+            size_hint_x: None
+            width: dp(120)
+            spacing: dp(10)
+            padding: dp(10)
+            Button:
+                text: "O" # Tu dasz ikonę księżyca
+                size_hint_x: None
+                width: dp(40)
+            Button:
+                text: "ANG"
+                size_hint_x: None
+                width: dp(60)
+
+    # ==========================================
+    # DOLNA CZĘŚĆ (Menu po lewej + Ekrany po prawej)
+    # ==========================================
+    BoxLayout:
+        orientation: 'horizontal'
+
+        # --- LEWY PANEL (Ciemnoniebieski) ---
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_x: None
+            width: dp(180)
+            padding: dp(10)
+            spacing: dp(5)
+            canvas.before:
+                Color:
+                    rgba: get_color_from_hex("#0b3d91") # Ciemnoniebieski kolor z obrazka
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            # Przyciski nawigacyjne
+            Button:
+                text: "Start / Kalendarz"
+                size_hint_y: None
+                height: dp(40)
+                on_release: app.change_screen('calendar')
+            Button:
+                text: "Moje przedmioty"
+                size_hint_y: None
+                height: dp(40)
+                on_release: app.change_screen('mySubjects')
+            Button:
+                text: "Dodaj przedmiot"
+                size_hint_y: None
+                height: dp(40)
+            
+            Widget: # Wypychacz, spycha Sesję na dół
+
+            # Panel Sesji
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: dp(80)
+                padding: dp(10)
+                canvas.before:
+                    Color:
+                        rgba: get_color_from_hex("#1565c0") # Jaśniejszy niebieski
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(10)]
+                Label:
+                    text: "Sesja"
+                    bold: True
+                    text_size: self.size
+                    halign: 'left'
+                Label:
+                    text: "Pozostało: 24 dni 13 god"
+                    font_size: '12sp'
+                    text_size: self.size
+                    halign: 'left'
+
+        # --- GŁÓWNY OBSZAR ROBOCZY (Ciemny) ---
+        ScreenManager:
+            id: sm
+            canvas.before:
+                Color:
+                    rgba: get_color_from_hex("#2c2c2e") # Ciemnoszare tło z prawej strony obrazka
+                Rectangle:
+                    pos: self.pos
+                    size: self.size

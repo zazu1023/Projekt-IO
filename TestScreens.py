@@ -10,6 +10,7 @@ from KivyWidgets.KivyBrickBackend import BrickWidget
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 from views.mojePrzedmioty import MojePrzedmiotyScreen , SzczegolyPrzedmiotuScreen , SubjectData
+from views.startKalendarz import StartKalendarz
 
 import json
 from kivy.event import EventDispatcher
@@ -26,6 +27,8 @@ testowe_dane = SubjectData(
 
 # Pakujemy dane w "kafelek"
 
+
+
 class TestApp(App):
     
     def build(self):
@@ -38,49 +41,70 @@ class TestApp(App):
          self.language = 'pl'
 
          Builder.load_file('Style/styles.kv')
-         Builder.load_file('kv/mojePrzedmioty.kv')
-         Builder.load_file('kv/szczegolyPrzedmiotu.kv')
 
-         self.sm = ScreenManager()
+         root_widget = Builder.load_file('Style/main.kv')
+
+         self.sm = root_widget.ids.sm
+
+        #  Builder.load_file('kv/mojePrzedmioty.kv')
+        #  Builder.load_file('kv/szczegolyPrzedmiotu.kv')
+
 
         #  screen_mojePrzedmioty = MojePrzedmiotyScreen(name='moje_przedmioty_screen')
-         screen_mojePrzedmioty = SzczegolyPrzedmiotuScreen(name='moje_przedmioty_screen')
-         screen_mojePrzedmioty.selectedSubject = testowe_dane
-         self.sm.add_widget(screen_mojePrzedmioty)
-         return self.sm
+
+         self.change_screen('mySubjects' , selectedSubject=testowe_dane)
+         return root_widget
       
     def translate(self, text:str):
         return self.translations[self.language].get(text)
     
-    def change_screen(self, target_screen):
-        # logika ladowania by oszczedzic czas i pamiec
-        # wczytuj pojedynczo ekrany, tylko wtedy gdy sa konieczne
+    def change_screen(self, target_screen , **kwargs):
+        # Twoja logika ładowania by oszczędzić czas i pamięć
         if not self.sm.has_screen(target_screen):
-
+            
+            # DODANE: Słownik trzyma też ścieżki do plików .kv!
             screens = {
-                'mySubjects': MojePrzedmiotyScreen,
-                'subjectDetails': SzczegolyPrzedmiotuScreen,
+                'mySubjects': {'class': MojePrzedmiotyScreen, 'kv': 'kv/mojePrzedmioty.kv'},
+                'subjectDetails': {'class': SzczegolyPrzedmiotuScreen, 'kv': 'kv/szczegolyPrzedmiotu.kv'},
+                'calendar' : {'class':StartKalendarz, 'kv': 'kv/calendar.kv'}
             }
             
-            screen = screens.get(target_screen)
+            config = screens.get(target_screen)
             
-            if screen:
-                new_screen = screen(name=target_screen)
+            if config:
+                # Najpierw ładujemy szablon wyglądu!
+                Builder.load_file(config['kv'])
+                # Potem tworzymy ekran
+                new_screen = config['class'](name=target_screen)
                 self.sm.add_widget(new_screen)
             else:
                 print(f"Error invaild scren name {target_screen}")
                 return
+            
+        docelowy_ekran = self.sm.get_screen(target_screen)
+    
+        for klucz, wartosc in kwargs.items():
+            setattr(docelowy_ekran, klucz, wartosc)
 
         self.sm.current = target_screen
-        def open_details(self, clicked_brick_logic):
-            if not self.sm.has_screen('subjectDetails'):
-                self.sm.add_widget(SzczegolyPrzedmiotuScreen(name='subjectDetails'))
-      
-            ekran_detali = self.sm.get_screen('subjectDetails')
 
-            ekran_detali.selectedSubject = clicked_brick_logic
 
-            self.sm.current = 'subjectDetails'
+    def open_details(self, clicked_brick_logic):
+        if not self.sm.has_screen('subjectDetails'):
+            self.sm.add_widget(SzczegolyPrzedmiotuScreen(name='subjectDetails'))
+    
+        ekran_detali = self.sm.get_screen('subjectDetails')
 
+        ekran_detali.selectedSubject = clicked_brick_logic
+
+        self.sm.current = 'subjectDetails'
+    def get_subjects_from_db(self):
+    
+        return [
+            SubjectData(title="Algebra", teacher="Jan Kowalski", status="completed" , note=""),
+            SubjectData(title="ASD", teacher="JŚW", status="completed", note=""),
+            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="completed", note="")
+        ]
+    
 if __name__ == "__main__":
     TestApp().run()
