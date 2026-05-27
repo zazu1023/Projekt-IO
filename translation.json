@@ -1,5 +1,15 @@
 {
 "pl" :{
+    "nearest_text": "Najbliższe: Brak nadchodzących kolokwiów/egzaminów",
+    "language_button": "ANG",
+
+    "start_calendar": "Start / Kalendarz",
+    "add_subject": "Dodaj przedmiot",
+    "exams_tests": "Egzaminy i kolokwia",
+    "rules_repository": "Repozytorium zasad",
+    "progress_tracker": "Tracker progresu",
+    "countdown_text": "Do końca sesji zostało:",
+
     "my_subjects_text": "Moje Przedmioty",
     "my_subject_inprogress" : "W trakcie",
     "my_subject_completed" : "Zaliczony",
@@ -20,6 +30,16 @@
 },
 
 "en" :{
+    "nearest_text": "Upcoming: No upcoming tests/exams",
+    "language_button": "PL",
+
+    "start_calendar": "Start / Calendar",
+    "add_subject": "Add subject",
+    "exams_tests": "Exams and tests",
+    "rules_repository": "Rules repository",
+    "progress_tracker": "Progress tracker",
+    "countdown_text": "Until the end of exam session:",
+
     "my_subjects_text": "My Subjects",
     "my_subject_inprogress" : "In progress",
     "my_subject_completed" : "Completed",

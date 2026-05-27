@@ -1,4 +1,28 @@
 #:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import ButtonStyle Widgets.Button.ButtonStyle
+#:import Shapes Widgets.Button.Shapes
+<SidebarButton@Button>:
+    size_hint_y: None
+    height: 50
+
+    background_normal: ""
+    background_down: ""
+    background_color: 0, 0, 0, 0
+
+    color: app.styles.LIGHT_COLOR
+
+    font_size: 15
+    bold: True
+
+    canvas.before:
+        Color:
+            rgba: app.styles.SIDE_BUTTON_ACTIVE_COLOR if self.state == "down" else app.styles.SIDE_BUTTON_COLOR
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [25]
+    on_state:
+        self.canvas.ask_update()
 <CustomButtonWidget>:
     background_color: (0, 0, 0, 0) 
     

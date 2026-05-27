@@ -1,0 +1,58 @@
+<TopBarButton>:
+    size_hint: None, None
+
+    background_normal: ""
+    background_down: ""
+    background_color: 0, 0, 0, 0
+
+    color: app.styles.TOP_BUTTON_TEXT_COLOR
+    font_size: 12
+    bold: True
+
+    canvas.before:
+        Color:
+            rgba: app.styles.NAV_COLOR if self.state == "down" else app.styles.TOP_BUTTON_COLOR
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [10]
+
+
+<TopBar>:
+    size_hint_y: None
+    height: 75
+    padding: 20
+    spacing: 20
+
+    canvas.before:
+        Color:
+            rgba: app.styles.TOP_BAR_COLOR
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Label:
+        text: "SP"
+        color: app.styles.NAV_COLOR
+        font_size: 24
+        bold: True
+        size_hint_x: None
+        width: 120
+
+    Label:
+        text: app.translations[app.language]["nearest_text"]
+        color: app.styles.NAV_COLOR
+        font_size: 16
+        bold: True
+
+    TopBarButton:
+        text: "● 2"
+        width: 42
+        height: 24
+        on_release: root.show_notifications()
+
+    TopBarButton:
+        text: app.translations[app.language]["language_button"]
+        width: 90
+        height: 28
+        on_release: app.change_language()

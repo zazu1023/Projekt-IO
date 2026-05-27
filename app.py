@@ -1,5 +1,8 @@
+import json
+
 from kivy.app import App
 from kivy.lang import Builder
+from kivy.properties import StringProperty
 from kivy.uix.screenmanager import ScreenManager
 
 import Style.stylesMain as styles
@@ -11,14 +14,16 @@ from components.calendarWidget import CalendarWidget
 from components.rightPanel import RightPanel
 
 
-import json
-
 class StudentPlannerApp(App):
-    def build(self):
-        
-        
+    language = StringProperty("pl")
 
+    def build(self):
         self.styles = styles
+
+        with open("translation.json", "r", encoding="utf-8") as file:
+            self.translations = json.load(file)
+
+        Builder.load_file("Style/styles.kv")
         Builder.load_file("kv/topbar.kv")
         Builder.load_file("kv/sidebar.kv")
         Builder.load_file("kv/calendar.kv")
@@ -29,3 +34,14 @@ class StudentPlannerApp(App):
         screen_manager.add_widget(StartKalendarz(name="start"))
 
         return screen_manager
+
+    def translate(self, key):
+        return self.translations[self.language][key]
+
+    def change_language(self):
+        if self.language == "pl":
+            self.language = "en"
+        else:
+            self.language = "pl"
+
+        print("Zmieniono język na:", self.language)
