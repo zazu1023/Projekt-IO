@@ -68,9 +68,9 @@
     canvas.before:
         Color:
             rgba: 
-                (root.style.bg_color[0]*0.7, 
-                root.style.bg_color[1]*0.7, 
-                root.style.bg_color[2]*0.7, 1) \
+                (get_color_from_hex(root.style.bg_color)[0]*0.7, 
+                get_color_from_hex(root.style.bg_color)[1]*0.7, 
+                get_color_from_hex(root.style.bg_color)[2]*0.7, 1) \
                 if (self.state == 'down' and self.has_note) else \
                 
                

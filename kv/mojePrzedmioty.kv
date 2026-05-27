@@ -11,29 +11,6 @@
     size_hint: 1 , None
     height: dp(120)
 
-    canvas.before:
-        Color:
-            # Używamy koloru ze stylu lub domyślnego
-        
-            rgba: 
-                (root.style.bg_color[0]*0.4, 
-                root.style.bg_color[1]*0.4, 
-                root.style.bg_color[2]*0.4, 1) \
-                if (self.state == 'down') else \
-                
-               
-                (root.style.bg_color[0]*0.7, 
-                root.style.bg_color[1]*0.7, 
-                root.style.bg_color[2]*0.7, 1) \
-                if (self.hovered ) else \
-                
-            
-                root.style.bg_color if root.style else [0.2, 0.2, 0.2, 1]
-        RoundedRectangle:
-            pos: self.pos
-            size: self.size
-            radius: [10,]
-
     # 1. Tytuł (Pogrubiony)
     Label:
         text: root.title_text
@@ -63,15 +40,15 @@
 
 <SubjectGreen@DashboardBrick>:
     status_text: app.translate('my_subject_completed')
-    style: ButtonStyle(bg_color="62c57b",hover_bg_color="2e587c" , text_color=[1,1,1,1], border_radius=10, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color="#62c57b",hover_bg_color="#2e587c" , text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
 
 <SubjectRed@DashboardBrick>:
-    status_text: app.translate('my_subject_danger')
-    style: ButtonStyle(bg_color="f28b82",hover_bg_color="2e587c" , text_color=[1,1,1,1], border_radius=10, shape=Shapes.ROUNDED)
+    status_text: app.translate('my_subject_atrisk')
+    style: ButtonStyle(bg_color="#f28b82",hover_bg_color="#2e587c" , text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
 
 <SubjectWhite@DashboardBrick>:
     status_text: app.translate('my_subject_inprogress')
-    style: ButtonStyle(bg_color="d9d9d7",hover_bg_color="2e587c" , text_color=[1,1,1,1], border_radius=10, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color="#d9d9d7",hover_bg_color="#2e587c" , text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
     
 <MojePrzedmiotyScreen@Screen>
     BoxLayout:

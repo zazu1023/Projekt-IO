@@ -19,7 +19,7 @@ class DashboardBrick( CustomButtonWidget, BoxLayout ):
     title_text = StringProperty()
     status_text = StringProperty()
     subtitle_text = StringProperty()
-
+    style = ObjectProperty()
 class KivyBrickBackend(KivyHelper , BrickBackend):
   
 
