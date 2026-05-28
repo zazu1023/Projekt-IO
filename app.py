@@ -1,4 +1,12 @@
 import json
+from database import init_db, get_connection
+
+
+from kivy.config import Config
+
+Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
+
+
 
 from kivy.app import App
 from kivy.lang import Builder
@@ -13,6 +21,9 @@ class StudentPlannerApp(App):
 
 
     def build(self):
+
+        self.screens = SCREENS # wczytanie screenow z screenHandler
+
         with open('translation.json' , 'r' , encoding='utf-8') as file:
             data = json.load(file)
         
@@ -50,13 +61,9 @@ class StudentPlannerApp(App):
     def change_screen(self, target_screen , **kwargs):
         if not self.sm.has_screen(target_screen):
             
-            screens = {
-                'mySubjects': {'class': MojePrzedmiotyScreen, 'kv': 'kv/mojePrzedmioty.kv'},
-                'subjectDetails': {'class': SzczegolyPrzedmiotuScreen, 'kv': 'kv/szczegolyPrzedmiotu.kv'},
-                'calendar' : {'class':StartKalendarz, 'kv': 'kv/calendar.kv'}
-            }
             
-            config = screens.get(target_screen)
+            
+            config = self.screens.get(target_screen)
             
             if config:
                 
@@ -89,3 +96,20 @@ class StudentPlannerApp(App):
             SubjectData(title="ASD", teacher="JŚW", status="completed", note=""),
             SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="completed", note="")
         ]
+    
+
+
+if __name__ == "__main__":
+    from database import init_db, get_connection # Importujemy narzędzia z bazy
+
+    init_db()
+
+    # 2. TYMCZASOWE WYPEŁNIENIE BAZY DO TESTÓW KALENDARZA
+    # To rozwiązuje błąd FOREIGN KEY. Dodajemy przedmioty z ID 1, 2, 3
+    conn = get_connection()
+    conn.execute("INSERT OR IGNORE INTO subjects (id, name) VALUES (1, 'IO')")
+    conn.execute("INSERT OR IGNORE INTO subjects (id, name) VALUES (2, 'SK')")
+    conn.execute("INSERT OR IGNORE INTO subjects (id, name) VALUES (3, 'RPiS')")
+    conn.commit()
+
+    StudentPlannerApp().run()
