@@ -16,6 +16,7 @@ from kivy.clock import Clock
 from kivy.metrics import dp 
 from kivy.uix.popup import Popup 
 from kivy.uix.label import Label
+from kivy.core.window import Window
 
 from KivyWidgets.KivyButtonBackend import CustomButtonWidget 
 import database as db 
@@ -39,7 +40,7 @@ if db_test.execute("SELECT COUNT(*) FROM subjects").fetchone()[0] == 0:
     db_test.execute("INSERT INTO subjects (name, teacher) VALUES (?, ?)", ("Sieci", "Dr Edward Szczypka"))
     db_test.execute("INSERT INTO subjects (name, teacher) VALUES (?, ?)", ("Sieci", "Dr Edward Szczypka"))
     db_test.execute("INSERT INTO subjects (name, teacher) VALUES (?, ?)", ("Sieci", "Dr Edward Szczypka"))
-    
+
     db_test.commit()
 # -------------------------------------------------------------------------
 
@@ -193,4 +194,6 @@ class ExamsAndColloquiumsApp(App):
 
 if __name__ == "__main__":
     Window.clearcolor = (0.08, 0.12, 0.18, 1)
+    Window.minimum_width = 1000
+    Window.minimum_height = 700
     ExamsAndColloquiumsApp().run()
