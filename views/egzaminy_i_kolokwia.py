@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 
 # Automatycznie znajdujemy główny folder projektu
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -17,7 +18,8 @@ from kivy.metrics import dp
 from kivy.uix.popup import Popup 
 from kivy.uix.label import Label
 from kivy.core.window import Window
-
+from kivymd.uix.pickers import MDDatePicker
+from kivymd.app import MDApp
 from KivyWidgets.KivyButtonBackend import CustomButtonWidget 
 import database as db 
 
@@ -44,10 +46,8 @@ if db_test.execute("SELECT COUNT(*) FROM subjects").fetchone()[0] == 0:
     db_test.commit()
 # -------------------------------------------------------------------------
 
-# Rejestrujemy klasę z pliku Twojego kolegi w globalnej fabryce Kivy
 Factory.register('CustomButtonWidget', cls=CustomButtonWidget)
 
-# Dynamicznie ładujemy plik .kv
 kv_path = os.path.join(parent_dir, 'kv', 'egzaminy_i_kolokwia.kv')
 Builder.load_file(kv_path)
 
@@ -124,27 +124,66 @@ class ExamsAndColloquiumsScreen(BoxLayout):
             container.add_widget(card)
 
     def submit_event(self):
+
+        # 1. Sprawdzenie, czy wybrano przedmiot
         if not self.selected_subject_id:
+            self.show_error_popup("Najpierw wybierz przedmiot z listy powyżej!")
             return 
-            
-        event_title = self.ids.input_event_title.text
-        event_date = self.ids.input_event_date.text
-        event_time = self.ids.input_event_time.text
-        full_event_start = f"{event_date} {event_time}".strip()
+        event_title = self.ids.input_event_title.text.strip()
+        event_date = self.ids.input_event_date.text.strip()
+        event_time = self.ids.input_event_time.text.strip()
         
-        if event_title and full_event_start:
-            db_connection = db.get_connection()
-            db_connection.execute(
-                "INSERT INTO events (subject_id, type, title, date_time) VALUES (?, ?, ?, ?)", 
-                (self.selected_subject_id, 'Exam', event_title, full_event_start)
-            )
-            db_connection.commit()
-            
-            self.load_events()
-            
-            self.ids.input_event_title.text = ""
-            self.ids.input_event_date.text = ""
-            self.ids.input_event_time.text = ""
+        # 2. Walidacja tytułu (nie może być pusty)
+        if not event_title:
+            self.show_error_popup("Tytuł wydarzenia nie może być pusty!")
+            return
+
+        # 3. Walidacja daty (format YYYY-MM-DD)
+        if not re.match(r"^\d{4}-\d{2}-\d{2}$", event_date):
+            self.show_error_popup("Data musi być w formacie RRRR-MM-DD\n(np. 2026-05-28)")
+            return
+
+        # 4. Walidacja godziny (format HH:MM)
+        if not re.match(r"^([01]\d|2[0-3]):([0-5]\d)$", event_time):
+            self.show_error_popup("Godzina musi być w formacie HH:MM\n(np. 14:30)")
+            return
+
+        # Jeśli wszystko jest perfekcyjne, zapisujemy do bazy:
+        full_event_start = f"{event_date} {event_time}"
+        
+        db_connection = db.get_connection()
+        db_connection.execute(
+            "INSERT INTO events (subject_id, type, title, date_time) VALUES (?, ?, ?, ?)", 
+            (self.selected_subject_id, 'Exam', event_title, full_event_start)
+        )
+        db_connection.commit()
+        
+        self.load_events()
+        
+        self.ids.input_event_title.text = ""
+        self.ids.input_event_date.text = ""
+        self.ids.input_event_time.text = ""
+
+    def show_error_popup(self, error_message):
+        content = BoxLayout(orientation='vertical', padding=dp(20), spacing=dp(20))
+        label = Label(text=error_message, halign='center', valign='middle')
+        label.bind(size=label.setter('text_size'))
+        content.add_widget(label)
+
+        btn_ok = Factory.DangerButton()
+        btn_ok.text = "Poprawię"
+        btn_ok.size_hint_y = None
+        btn_ok.height = dp(40)
+        content.add_widget(btn_ok)
+
+        popup = Popup(
+            title="Błąd wprowadzania danych", 
+            content=content, 
+            size_hint=(None, None), size=(dp(400), dp(200)), 
+            auto_dismiss=True
+        )
+        btn_ok.bind(on_release=popup.dismiss)
+        popup.open()
 
     def show_delete_popup(self, event_id, event_title):
         content = BoxLayout(orientation='vertical', padding=dp(20), spacing=dp(20))
@@ -184,11 +223,24 @@ class ExamsAndColloquiumsScreen(BoxLayout):
         self.load_events()
 
     def open_calendar(self):
-        pass
+        # 1. Tworzymy okienko kalendarza
+        date_dialog = MDDatePicker()
+        
+        # 2. "Kiedy użytkownik kliknie OK (on_save), odpala sie funkcja on_date_selected
+        date_dialog.bind(on_save=self.on_date_selected)
+        
+        # 3. Wyświetlam kalendarz na ekranie
+        date_dialog.open()
 
+    def on_date_selected(self, instance, value, date_range):
+        # Zmienna 'value' przechowuje datę wybraną przez Ciebie w kalendarzu.
+        # Zamieniam ją na zwykły tekst i wrzucamy prosto do pola tekstowego
+        self.ids.input_event_date.text = str(value)
 
-class ExamsAndColloquiumsApp(App):
+class ExamsAndColloquiumsApp(MDApp):
     def build(self):
+        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.primary_palette = "Blue"
         return ExamsAndColloquiumsScreen()
 
 
