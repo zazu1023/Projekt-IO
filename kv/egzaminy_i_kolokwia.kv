@@ -165,13 +165,17 @@
                     text_size: self.size
                     halign: 'left'
 
-                # Pusta siatka, do której Python dodaje przedmioty
-                GridLayout:
-                    id: subjects_grid
-                    cols: 4
-                    spacing: dp(10)
-                    size_hint_y: None
-                    height: self.minimum_height
+                ScrollView:
+                    size_hint_y: 1 
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    
+                    GridLayout:
+                        id: subjects_grid
+                        cols: 3
+                        spacing: dp(10)
+                        size_hint_y: None
+                        height: self.minimum_height
 
                 Label:
                     id: label_selected_subject
@@ -190,22 +194,18 @@
                     text_size: self.size
                     halign: 'left'
                 
-                # Dodajemy kontener z niewidzialnym klockiem po prawej
                 BoxLayout:
                     orientation: 'horizontal'
                     size_hint_y: None
                     height: dp(35)
                     spacing: dp(10)
-                    
                     DarkRoundedInput:
                         id: input_event_title
-                        size_hint_x: 1 # Rozciąga się maksymalnie
-                        
+                        size_hint_x: 1 
                     Widget:
                         size_hint_x: None
-                        width: dp(40) # Pusty klocek o szerokości kalendarza!
+                        width: dp(40) 
 
-                # --- DATA ---
                 Label:
                     text: "Data wydarzenia"
                     size_hint_y: None
@@ -218,18 +218,15 @@
                     size_hint_y: None
                     height: dp(35)
                     spacing: dp(10)
-
                     DarkRoundedInput:
                         id: input_event_date
                         size_hint_x: 1
-
                     IconButton:
-                        source: 'Images/ikona_kalendarz.png'
+                        source: 'images/ikona_kalendarz.png'
                         size_hint_x: None
                         width: dp(40)
                         on_release: root.open_calendar()
 
-                # --- GODZINA ---
                 Label:
                     text: "Godzina (HH:MM)"
                     size_hint_y: None
@@ -237,22 +234,17 @@
                     text_size: self.size
                     halign: 'left'
                     
-                # Dodajemy kontener z niewidzialnym klockiem po prawej
                 BoxLayout:
                     orientation: 'horizontal'
                     size_hint_y: None
                     height: dp(35)
                     spacing: dp(10)
-                    
                     DarkRoundedInput:
                         id: input_event_time
-                        size_hint_x: 1 # Rozciąga się maksymalnie
-                        
+                        size_hint_x: 1 
                     Widget:
                         size_hint_x: None
-                        width: dp(40) # Pusty klocek o szerokości kalendarza!
-
-                Widget: # Puste miejsce rozpychające (sprężyna) w dół
+                        width: dp(40) 
 
                 PrimaryButton:
                     text: "Potwierdź i dodaj"
@@ -260,8 +252,9 @@
                     size: dp(160), dp(40)
                     pos_hint: {'x': 0}
                     on_release: root.submit_event()
+
             # ========================================================
-            # PRAWA KOLUMNA (Zapisane wydarzenia)
+            # PRAWA KOLUMNA (Zapisane wydarzenia) - ONA MUSI TU BYĆ!
             # ========================================================
             BoxLayout:
                 orientation: 'vertical'
@@ -284,12 +277,14 @@
                     text_size: self.size
                     halign: 'left'
 
-                # Kontener na listę wydarzeń - tutaj Python wstrzyknie "EventCards"
-                BoxLayout:
-                    id: events_container
-                    orientation: 'vertical'
-                    spacing: dp(10)
-                    size_hint_y: None
-                    height: self.minimum_height
-
-                Widget:
+                # To jest to brakujące ID, przez które wysypywał się Python:
+                ScrollView:
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    
+                    BoxLayout:
+                        id: events_container
+                        orientation: 'vertical'
+                        spacing: dp(10)
+                        size_hint_y: None
+                        height: self.minimum_height
