@@ -1,0 +1,298 @@
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import ButtonStyle Widgets.Button.ButtonStyle
+#:import ButtonState Widgets.Button.ButtonState
+
+# Zwróć uwagę, że nie ma już tutaj definicji <CustomButtonWidget>!
+# Kivy zaczerpnie ten widżet bezpośrednio z importu w Pythonie.
+
+<BaseButton@CustomButtonWidget>:
+    is_selected: False 
+    background_color: 0, 0, 0, 0
+    background_normal: ''
+    size_hint: 1, 1 
+    canvas.before:
+        Color:
+           
+            rgba: get_color_from_hex("#082440") if (self.hovered or self.is_selected) else get_color_from_hex("#114c85")
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(15)]
+
+<PrimaryButton@BaseButton>:
+    style: ButtonStyle(bg_color="#114c85", text_color="#ffffff", border_radius=15)
+
+<DangerButton@BaseButton>:
+    style: ButtonStyle(bg_color="#e74c3c", text_color="#ffffff", border_radius=15)
+
+<IconButton@ButtonBehavior+Image>:
+    color: (0.7, 0.7, 0.7, 1) if self.state == 'down' else (1, 1, 1, 1)
+
+<DarkRoundedInput@TextInput>:
+    # ... (tutaj reszta pliku zostaje całkowicie bez zmian)
+
+<DarkRoundedInput@TextInput>:
+    background_normal: ''
+    background_color: get_color_from_hex("#322d2d")
+    foreground_color: 1, 1, 1, 1
+    cursor_color: 1, 1, 1, 1
+    size_hint_y: None
+    height: dp(35)
+    multiline: False
+    padding_y: [self.height / 2.0 - (self.line_height / 2.0), 0]
+
+# --- SZABLON KARTY WYDARZENIA Z PRZYCISKIEM 'X' ---
+<EventCard@BoxLayout>:
+    subject_text: ""
+    date_text: ""
+    title_text: ""
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: dp(75)
+    padding: dp(12)
+    spacing: dp(10)
+    canvas.before:
+        Color:
+            rgba: get_color_from_hex("#114c85")
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(12)]
+    
+    # 1. LEWA STRONA: Dane wydarzenia (Data i Tytuł)
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_x: 1
+        Label:
+            text: root.date_text
+            font_size: '12sp'
+            size_hint_y: None
+            height: dp(15)
+            text_size: self.size
+            halign: 'left'
+        Label:
+            text: root.title_text
+            bold: True
+            text_size: self.size
+            halign: 'left'
+            valign: 'middle'
+            
+    # 2. PRAWA STRONA: Kolumna grupująca X (na górze) oraz Przedmiot (na dole)
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_x: None
+        width: dp(120) # Zapas szerokości na nazwy przedmiotów
+        
+        # Pozycjonowanie przycisku usuwania w prawym górnym rogu tej kolumny
+        AnchorLayout:
+            anchor_x: 'right'
+            anchor_y: 'top'
+            size_hint_y: 1
+            Button:
+                id: btn_delete
+                text: "X"
+                bold: True
+                size_hint: None, None
+                size: dp(25), dp(25)
+                background_normal: ''
+                background_color: get_color_from_hex("#e74c3c")
+                canvas.before:
+                    Color:
+                        rgba: get_color_from_hex("#c0392b") if self.state == 'down' else get_color_from_hex("#e74c3c")
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(6)]
+                        
+        Label:
+            text: root.subject_text
+            font_size: '10sp'
+            bold: True
+            color: 1, 1, 1, 1 # Czysty, wyraźny biały kolor
+            size_hint_y: None
+            height: dp(15)
+            text_size: self.size
+            halign: 'right'
+            valign: 'bottom'
+
+<ExamsAndColloquiumsScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(20)
+        canvas.before:
+            Color:
+                rgba: get_color_from_hex("#3b3232")
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # --- GÓRNY PASEK ---
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: dp(60)
+            Label:
+                text: "Egzaminy i kolokwia"
+                font_size: '28sp'
+                bold: True
+                halign: 'left'
+                valign: 'middle'
+                text_size: self.size
+
+        # --- GŁÓWNA ZAWARTOŚĆ ---
+        BoxLayout:
+            spacing: dp(20)
+            
+            # ========================================================
+            # LEWA KOLUMNA (Formularz i kafelki)
+            # ========================================================
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.6
+                padding: dp(15)
+                spacing: dp(10)
+                canvas.before:
+                    Color:
+                        rgba: get_color_from_hex("#063e6e") 
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(12)]
+
+                Label:
+                    text: "Przedmioty"
+                    bold: True
+                    size_hint_y: None
+                    height: dp(20)
+                    text_size: self.size
+                    halign: 'left'
+
+                # Pusta siatka, do której Python dodaje przedmioty
+                GridLayout:
+                    id: subjects_grid
+                    cols: 4
+                    spacing: dp(10)
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                Label:
+                    id: label_selected_subject
+                    text: "Wybierz przedmiot z listy powyżej..."
+                    size_hint_y: None
+                    height: dp(30)
+                    text_size: self.size
+                    halign: 'left'
+                    valign: 'middle'
+
+                # --- Sekcja Formularza ---
+                Label:
+                    text: "Tytuł wydarzenia"
+                    size_hint_y: None
+                    height: dp(15)
+                    text_size: self.size
+                    halign: 'left'
+                
+                # Dodajemy kontener z niewidzialnym klockiem po prawej
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: dp(35)
+                    spacing: dp(10)
+                    
+                    DarkRoundedInput:
+                        id: input_event_title
+                        size_hint_x: 1 # Rozciąga się maksymalnie
+                        
+                    Widget:
+                        size_hint_x: None
+                        width: dp(40) # Pusty klocek o szerokości kalendarza!
+
+                # --- DATA ---
+                Label:
+                    text: "Data wydarzenia"
+                    size_hint_y: None
+                    height: dp(15)
+                    text_size: self.size
+                    halign: 'left'
+
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: dp(35)
+                    spacing: dp(10)
+
+                    DarkRoundedInput:
+                        id: input_event_date
+                        size_hint_x: 1
+
+                    IconButton:
+                        source: 'Images/ikona_kalendarz.png'
+                        size_hint_x: None
+                        width: dp(40)
+                        on_release: root.open_calendar()
+
+                # --- GODZINA ---
+                Label:
+                    text: "Godzina (HH:MM)"
+                    size_hint_y: None
+                    height: dp(15)
+                    text_size: self.size
+                    halign: 'left'
+                    
+                # Dodajemy kontener z niewidzialnym klockiem po prawej
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: dp(35)
+                    spacing: dp(10)
+                    
+                    DarkRoundedInput:
+                        id: input_event_time
+                        size_hint_x: 1 # Rozciąga się maksymalnie
+                        
+                    Widget:
+                        size_hint_x: None
+                        width: dp(40) # Pusty klocek o szerokości kalendarza!
+
+                Widget: # Puste miejsce rozpychające (sprężyna) w dół
+
+                PrimaryButton:
+                    text: "Potwierdź i dodaj"
+                    size_hint: None, None
+                    size: dp(160), dp(40)
+                    pos_hint: {'x': 0}
+                    on_release: root.submit_event()
+            # ========================================================
+            # PRAWA KOLUMNA (Zapisane wydarzenia)
+            # ========================================================
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.4
+                padding: dp(15)
+                spacing: dp(10)
+                canvas.before:
+                    Color:
+                        rgba: get_color_from_hex("#063e6e")
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(12)]
+
+                Label:
+                    text: "Zapisane wydarzenia"
+                    bold: True
+                    size_hint_y: None
+                    height: dp(20)
+                    text_size: self.size
+                    halign: 'left'
+
+                # Kontener na listę wydarzeń - tutaj Python wstrzyknie "EventCards"
+                BoxLayout:
+                    id: events_container
+                    orientation: 'vertical'
+                    spacing: dp(10)
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                Widget:
