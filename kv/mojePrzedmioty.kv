@@ -38,15 +38,15 @@
         halign: 'left'
         valign: 'bottom'
 <SubjectGreen@DashboardBrick>:
-    status_text: app.translate('my_subject_completed')
+    status_text: app.translate('my_subject_completed' , app.language)
     style: ButtonStyle(bg_color="#62c57b",hover_bg_color="#2e587c" , text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
 
 <SubjectRed@DashboardBrick>:
-    status_text: app.translate('my_subject_atrisk')
+    status_text: app.translate('my_subject_atrisk' , app.language)
     style: ButtonStyle(bg_color="#f28b82",hover_bg_color="#2e587c" , text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
 
 <SubjectWhite@DashboardBrick>:
-    status_text: app.translate('my_subject_inprogress')
+    status_text: app.translate('my_subject_inprogress' , app.language)
     style: ButtonStyle(bg_color="#d9d9d7",hover_bg_color="#2e587c" , text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
     
 <MojePrzedmiotyScreen@Screen>

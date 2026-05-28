@@ -87,7 +87,10 @@
 
 
 <BlueBrick@BrickWidget>:
-    style: ButtonStyle(bg_color=get_color_from_hex("2e588c"),hover_bg_color=get_color_from_hex("2e587c") , text_color=[1,1,1,1], border_radius=10, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color="2e588c",hover_bg_color="2e587c" , text_color=[1,1,1,1], border_radius=10, shape=Shapes.ROUNDED)
 
 <BlueButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color=get_color_from_hex("2e588c"),hover_bg_color=get_color_from_hex("2e587c") , text_color=[1,1,1,1], border_radius=15, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color="2e588c",hover_bg_color="2e587c" , text_color=[1,1,1,1], border_radius=9, shape=Shapes.ROUNDED)
+    size_hint_y: None
+    height: dp(40)
+    text_size: root.width, None

@@ -92,7 +92,11 @@ class TestApp(App):
         return [
             SubjectData(title="Algebra", teacher="Jan Kowalski", status="completed" , note=""),
             SubjectData(title="ASD", teacher="JŚW", status="completed", note=""),
-            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="completed", note="")
+            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="completed", note=""),
+            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="atrisk", note=""),
+            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="atrisk", note=""),
+            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="completed", note=""),
+            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="inprogress", note="")
         ]
     
 if __name__ == "__main__":

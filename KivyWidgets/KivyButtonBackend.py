@@ -3,7 +3,7 @@ from kivy.uix.button import Button as KivyButton
 from Widgets.Button import ButtonStyle , ButtonState
 from KivyWidgets.KivyHelper import KivyHelper
 
-from kivy.properties import ObjectProperty , BooleanProperty
+from kivy.properties import ObjectProperty , BooleanProperty , StringProperty
 from kivy.core.window import Window
 
 class CustomButtonWidget(KivyButton):

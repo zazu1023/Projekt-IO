@@ -19,6 +19,7 @@ from screenHandler import *
 
 class StudentPlannerApp(App):
 
+    language = StringProperty("pl")
 
     def build(self):
 
@@ -28,7 +29,6 @@ class StudentPlannerApp(App):
             data = json.load(file)
         
         self.translations = data
-        self.language = 'pl'
 
         Builder.load_file('Style/styles.kv')
 
@@ -55,7 +55,7 @@ class StudentPlannerApp(App):
         # screen_manager.add_widget(StartKalendarz(name="start"))
 
 
-    def translate(self, text:str):
+    def translate(self, text:str, langtrigger ):
                 return self.translations[self.language].get(text)
 
     def change_screen(self, target_screen , **kwargs):
@@ -94,7 +94,15 @@ class StudentPlannerApp(App):
         return [
             SubjectData(title="Algebra", teacher="Jan Kowalski", status="completed" , note=""),
             SubjectData(title="ASD", teacher="JŚW", status="completed", note=""),
-            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="completed", note="")
+            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="completed", note=""),
+            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="atrisk", note=""),
+            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="atrisk", note=""),
+            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="completed", note=""),
+            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="inprogress", note=""),
+            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="atrisk", note=""),
+            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="atrisk", note=""),
+            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="completed", note=""),
+            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="inprogress", note="")
         ]
     
 

@@ -30,7 +30,7 @@ class SubjectGreen(DashboardBrick):
     pass
 class SubjectRed(DashboardBrick):
     pass
-class SubjectYellow(DashboardBrick):
+class SubjectWhite(DashboardBrick):
     pass
 
 class MojePrzedmiotyScreen(Screen):
@@ -47,8 +47,15 @@ class MojePrzedmiotyScreen(Screen):
         # 3. Pętla budująca kafelki
         for przedmiot in wszystkie_przedmioty:
             # Tworzymy widżet kafelka i OD RAZU wstrzykujemy mu obiekt z danymi
-            nowy_kafelek = SubjectGreen(subject_obj=przedmiot)
-            
+            print(przedmiot.status)
+            if przedmiot.status == "completed":
+                nowy_kafelek = SubjectGreen(subject_obj=przedmiot)
+            elif przedmiot.status == "inprogress":
+                nowy_kafelek = SubjectWhite(subject_obj=przedmiot)
+            elif przedmiot.status == "atrisk":
+                nowy_kafelek = SubjectRed(subject_obj=przedmiot)
+            else:
+                raise ValueError()
             # Dodajemy gotowy kafelek do ekranu
             self.ids.grid_przedmiotow.add_widget(nowy_kafelek)
 

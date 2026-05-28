@@ -9,7 +9,7 @@ MainLayout:
     # ==========================================
     BoxLayout:
         size_hint_y: None
-        height: dp(60)
+        height: dp(80)
         padding: dp(5)
         canvas.before:
             Color:
@@ -39,17 +39,23 @@ MainLayout:
         # Prawa strona (Przyciski Ciemny motyw / Język)
         BoxLayout:
             size_hint_x: None
-            width: dp(120)
+            width: dp(180)
             spacing: dp(10)
-            padding: dp(10)
-            Button:
+            padding: dp(10) , dp(10) , dp(10) , dp(20)
+
+            CustomButtonWidget:
+                style: ButtonStyle(bg_color="9ea6b3" , text_color=[0,0,0,1], border_radius=6, shape=Shapes.ROUNDED)
                 text: "O" # Tu dasz ikonę księżyca
                 size_hint_x: None
                 width: dp(40)
-            Button:
-                text: "ANG"
+                height: dp(30)
+            CustomButtonWidget:
+                style: ButtonStyle(bg_color="9ea6b3" , text_color=[0,0,0,1], border_radius=6, shape=Shapes.ROUNDED)
+                text: "ANG" if app.language == "pl" else "PL"
                 size_hint_x: None
-                width: dp(60)
+                width: dp(120)
+                height: dp(30)
+                on_release: app.change_language()
 
     # ==========================================
     # DOLNA CZĘŚĆ (Menu po lewej + Ekrany po prawej)
@@ -72,46 +78,54 @@ MainLayout:
                     size: self.size
 
             # Przyciski nawigacyjne
-            Button:
-                text: "Start / Kalendarz"
-                size_hint_y: None
-                height: dp(40)
+            BlueButton:
+                text: app.translate("start_calendar", app.language)
                 on_release: app.change_screen('calendar')
-            Button:
-                text: "Moje przedmioty"
-                size_hint_y: None
-                height: dp(40)
+            BlueButton:
+                text: app.translate("my_subjects_text", app.language)
+                
                 on_release: app.change_screen('mySubjects')
-            Button:
-                text: "Dodaj przedmiot"
-                size_hint_y: None
-                height: dp(40)
+            BlueButton:
+                text: app.translate("add_subject", app.language)
+            BlueButton:
+                text: app.translate("exams_tests", app.language)
+                on_release: app.change_screen('calendar')
+            BlueButton:
+                text: app.translate("rules_repository", app.language)
+                on_release: app.change_screen('mySubjects')
+            BlueButton:
+                text: app.translate("progress_tracker", app.language)
+            
             
             Widget: # Wypychacz, spycha Sesję na dół
 
             # Panel Sesji
             BoxLayout:
-                orientation: 'vertical'
+                id: countdown_box
+                orientation: "vertical"
                 size_hint_y: None
-                height: dp(80)
-                padding: dp(10)
+                height: 105
+                padding: 10
+                spacing: 4
+
                 canvas.before:
                     Color:
-                        rgba: get_color_from_hex("#1565c0") # Jaśniejszy niebieski
+                        rgba: (0.176, 0.345, 0.549, 1)
                     RoundedRectangle:
                         pos: self.pos
                         size: self.size
-                        radius: [dp(10)]
+                        radius: [12]
+
                 Label:
-                    text: "Sesja"
+                    text: app.translations[app.language]["countdown_text"]
+                    color: 1, 1, 1, 1
                     bold: True
+                    font_size: 15
+                    size_hint_y: None
+                    height: 28
+                    halign: "left"
+                    valign: "middle"
                     text_size: self.size
-                    halign: 'left'
-                Label:
-                    text: "Pozostało: 24 dni 13 god"
-                    font_size: '12sp'
-                    text_size: self.size
-                    halign: 'left'
 
         # --- GŁÓWNY OBSZAR ROBOCZY (Ciemny) ---
         ScreenManager:

@@ -126,7 +126,7 @@
                             halign: 'left'
                             
                         Label:
-                            text: app.translate('my_subject_' + root.selectedSubject.status) if root.selectedSubject else app.translate('my_subject_completed')
+                            text: app.translate('my_subject_' + root.selectedSubject.status , app.language) if root.selectedSubject else app.translate('my_subject_completed', app.language)
                             color: get_color_from_hex("#f1c40f") if root.selectedSubject and root.selectedSubject.status == 'inprogress' else (get_color_from_hex("#e74c3c") if root.selectedSubject and root.selectedSubject.status == 'atrisk' else get_color_from_hex("#2ecc71"))
                             bold: True
                             size_hint_y: None
@@ -141,15 +141,15 @@
                             # Przyciski wypełnią tę przestrzeń, bo dostały size_hint: 1, 1
                             SuccessButton:
                                 state: 'down' if root.selectedSubject and root.selectedSubject.status == self.text else 'normal'
-                                text: app.translate('my_subject_completed')
+                                text: app.translate('my_subject_completed', app.language)
                                 on_release: root.change_status('completed')
                             WarningButton:
                                 state: 'down' if root.selectedSubject and root.selectedSubject.status == self.text else 'normal'
-                                text: app.translate('my_subject_inprogress')
+                                text: app.translate('my_subject_inprogress', app.language)
                                 on_release: root.change_status('inprogress')
                             DangerButton:
                                 state: 'down' if root.selectedSubject and root.selectedSubject.status == self.text else 'normal'
-                                text: app.translate('my_subject_atrisk')
+                                text: app.translate('my_subject_atrisk', app.language)
                                 on_release: root.change_status('atrisk')
 
                     # 2. PANEL NIEOBECNOŚCI
