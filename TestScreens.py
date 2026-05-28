@@ -17,6 +17,8 @@ from kivy.event import EventDispatcher
 from kivy.properties import StringProperty , NumericProperty
 
 
+
+
 # Tworzymy przykładowe dane przedmiotu
 testowe_dane = SubjectData(
     title="Algebra Liniowa",
