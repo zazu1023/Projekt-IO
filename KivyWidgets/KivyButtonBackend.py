@@ -1,6 +1,6 @@
 
 from kivy.uix.button import Button as KivyButton
-from Widgets.Button import ButtonBackend , ButtonStyle , ButtonState
+from Widgets.Button import ButtonStyle , ButtonState
 from KivyWidgets.KivyHelper import KivyHelper
 
 from kivy.properties import ObjectProperty , BooleanProperty
@@ -26,35 +26,35 @@ class CustomButtonWidget(KivyButton):
 
         if self.hovered != inside:
             self.hovered = inside
-     
-     
-class KivyButtonBackend(KivyHelper,ButtonBackend):
 
-    def __init__(self , parent = None):
-       self.parent = parent
-       self.widget = None
+    def on_mouse_pos(self, window, pos):
+        if not self.get_root_window():
+            return
+            
+        local_pos = self.to_widget(*pos)
+        inside = self.collide_point(*local_pos)
 
-    def create(self, label: str , onclick: callable , style: ButtonStyle):
-        self.widget = CustomButtonWidget(text=label)
-        self.widget.bind(on_release=lambda x: onclick())
+        if self.hovered != inside:
+            self.hovered = inside
+            self._update_logic_state()
 
-        self.apply_state(ButtonState.NORMAL, style)
+    def on_state(self, instance, value):
+        # Ta wbudowana metoda odpala się, gdy Kivy wykryje wciśnięcie (value == 'down') 
+        # lub puszczenie przycisku (value == 'normal')
+        self._update_logic_state()
 
-        return self.widget
+    def on_disabled(self, instance, value):
+        # Ta wbudowana metoda odpala się, gdy zrobisz: moj_przycisk.disabled = True
+        self._update_logic_state()
 
-    def set_label(self , label: str ):
-        if self.widget:
-            self.widget.text = label
-
-    def apply_state(self, state: ButtonState, style: ButtonStyle):
-        if self.widget:
-            pass
-   
-    def update_style(self, style: ButtonStyle):
-        if self.widget:
-            self.widget.bg_color = self._parse_color(style.bg_color)
-            self.widget.text_color = self._parse_color(style.text_color)
-
-   
-    def bind_hover(self, on_enter: callable, on_leave: callable):
-        pass
+    # --- MÓZG: Przeliczanie Enuma ---
+    def _update_logic_state(self):
+        """Jedna metoda, która decyduje o ostatecznym stanie przycisku"""
+        if self.disabled:
+            self.btn_state = ButtonState.DISABLED
+        elif self.state == 'down':
+            self.btn_state = ButtonState.PRESSED
+        elif self.hovered:
+            self.btn_state = ButtonState.HOVER
+        else:
+            self.btn_state = ButtonState.NORMAL

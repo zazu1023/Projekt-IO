@@ -59,10 +59,8 @@ class TestApp(App):
         return self.translations[self.language].get(text)
     
     def change_screen(self, target_screen , **kwargs):
-        # Twoja logika ładowania by oszczędzić czas i pamięć
         if not self.sm.has_screen(target_screen):
-            
-            # DODANE: Słownik trzyma też ścieżki do plików .kv!
+         
             screens = {
                 'mySubjects': {'class': MojePrzedmiotyScreen, 'kv': 'kv/mojePrzedmioty.kv'},
                 'subjectDetails': {'class': SzczegolyPrzedmiotuScreen, 'kv': 'kv/szczegolyPrzedmiotu.kv'},
@@ -72,32 +70,21 @@ class TestApp(App):
             config = screens.get(target_screen)
             
             if config:
-                # Najpierw ładujemy szablon wyglądu!
+              
                 Builder.load_file(config['kv'])
-                # Potem tworzymy ekran
                 new_screen = config['class'](name=target_screen)
                 self.sm.add_widget(new_screen)
             else:
                 print(f"Error invaild scren name {target_screen}")
                 return
             
-        docelowy_ekran = self.sm.get_screen(target_screen)
+        new_screen = self.sm.get_screen(target_screen)
     
         for klucz, wartosc in kwargs.items():
-            setattr(docelowy_ekran, klucz, wartosc)
+            setattr(new_screen, klucz, wartosc)
 
         self.sm.current = target_screen
 
-
-    def open_details(self, clicked_brick_logic):
-        if not self.sm.has_screen('subjectDetails'):
-            self.sm.add_widget(SzczegolyPrzedmiotuScreen(name='subjectDetails'))
-    
-        ekran_detali = self.sm.get_screen('subjectDetails')
-
-        ekran_detali.selectedSubject = clicked_brick_logic
-
-        self.sm.current = 'subjectDetails'
     def get_subjects_from_db(self):
     
         return [
