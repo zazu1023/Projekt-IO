@@ -11,7 +11,9 @@ from views.startKalendarz import StartKalendarz
 from components.topBar import TopBar
 from components.sideBar import SideBar
 from components.calendarWidget import CalendarWidget
-from components.rightPanel import RightPanel
+
+from kivy.core.window import Window
+Window.maximize()
 
 
 class StudentPlannerApp(App):
@@ -28,7 +30,6 @@ class StudentPlannerApp(App):
         Builder.load_file("kv/sidebar.kv")
         Builder.load_file("kv/calendar.kv")
         Builder.load_file("kv/home.kv")
-        Builder.load_file("kv/rightPanel.kv")
 
         screen_manager = ScreenManager()
         screen_manager.add_widget(StartKalendarz(name="start"))

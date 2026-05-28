@@ -1,11 +1,21 @@
 <CalendarWidget>:
     orientation: "vertical"
-    spacing: 14
+    padding: [30, 20, 30, 20] 
+    spacing: 15
+
+    Label:
+        text: app.translations[app.language]["start_calendar"]
+        font_size: '26sp'
+        bold: True
+        color: 1, 1, 1, 1
+        size_hint_y: None
+        height: 40
+        halign: "left"
+        valign: "middle"
+        text_size: self.size
 
     BoxLayout:
         orientation: "vertical"
-        size_hint_y: None
-        height: 430
         padding: 16
         spacing: 12
 
@@ -33,25 +43,25 @@
             spacing: 10
 
             Button:
-                text: "Poprzedni tydzień"
+                text: app.translations[app.language]["btn_prev"]
                 size_hint_x: None
                 width: 150
                 on_release: root.previous_week()
 
             Button:
-                text: "Następny tydzień"
+                text: app.translations[app.language]["btn_next"]
                 size_hint_x: None
                 width: 150
                 on_release: root.next_week()
 
             Button:
-                text: "Wracaj do bieżącego tygodnia"
+                text: app.translations[app.language]["btn_current"]
                 size_hint_x: None
                 width: 220
                 on_release: root.current_week()
 
             Button:
-                text: "Wybierz inny tydzień"
+                text: app.translations[app.language]["btn_choose"]
                 size_hint_x: None
                 width: 190
                 on_release: root.choose_week()
@@ -93,7 +103,7 @@
                 radius: [12]
 
         Label:
-            text: "Nadchodzące wydarzenia"
+            text: app.translations[app.language]["upcoming"]
             size_hint_y: None
             height: 26
             color: 1, 1, 1, 1
