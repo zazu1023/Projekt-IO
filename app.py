@@ -31,28 +31,14 @@ class StudentPlannerApp(App):
         self.translations = data
 
         Builder.load_file('Style/styles.kv')
+        Builder.load_file('kv/calendar.kv')
 
         root_widget = Builder.load_file('Style/main.kv')
 
         self.sm = root_widget.ids.sm
 
-        #  Builder.load_file('kv/mojePrzedmioty.kv')
-        #  Builder.load_file('kv/szczegolyPrzedmiotu.kv')
-
-
-        #  screen_mojePrzedmioty = MojePrzedmiotyScreen(name='moje_przedmioty_screen')
-
         self.change_screen(target_screen='mySubjects')
         return root_widget
-        # Builder.load_file("Style/styles.kv")
-        # Builder.load_file("kv/topbar.kv")
-        # Builder.load_file("kv/sidebar.kv")
-        # Builder.load_file("kv/calendar.kv")
-        # Builder.load_file("kv/home.kv")
-        # Builder.load_file("kv/rightPanel.kv")
-
-        # screen_manager = ScreenManager()
-        # screen_manager.add_widget(StartKalendarz(name="start"))
 
 
     def translate(self, text:str, langtrigger ):
