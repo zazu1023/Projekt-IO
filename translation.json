@@ -10,6 +10,12 @@
     "progress_tracker": "Tracker progresu",
     "countdown_text": "Do końca sesji zostało:",
 
+    "btn_prev": "Poprzedni tydzień",
+    "btn_next": "Następny tydzień",
+    "btn_current": "Wracaj do bieżącego tygodnia",
+    "btn_choose": "Wybierz inny tydzień",
+    "upcoming": "Nadchodzące wydarzenia",
+
     "my_subjects_text": "Moje Przedmioty",
     "my_subject_inprogress" : "W trakcie",
     "my_subject_completed" : "Zaliczony",
@@ -39,6 +45,12 @@
     "rules_repository": "Rules repository",
     "progress_tracker": "Progress tracker",
     "countdown_text": "Until the end of exam session:",
+
+    "btn_prev": "Previous Week",
+    "btn_next": "Next Week",
+    "btn_current": "Back to Current Week",
+    "btn_choose": "Choose Another Week",
+    "upcoming": "Upcoming Events",
 
     "my_subjects_text": "My Subjects",
     "my_subject_inprogress" : "In progress",

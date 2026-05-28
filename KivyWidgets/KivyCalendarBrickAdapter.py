@@ -1,17 +1,29 @@
-from KivyWidgets.KivyCalendarBrick import KivyBrickBackend
-
+from KivyWidgets.KivyBrickBackend import KivyBrickBackend
 
 class SafeKivyBrickBackend(KivyBrickBackend):
-    def create_button(self, text, on_click):
-        button = super().create_button(text, on_click)
+    def bind_hover(self, on_enter=None, on_leave=None):
+        pass
 
-        original_on_release = button.on_release
+    def apply_state(self, *args, **kwargs):
+        pass
 
-        def safe_release():
-            if button.disabled:
-                return
-            if original_on_release:
-                original_on_release()
+    def set_label(self, *args, **kwargs):
+        pass
 
-        button.on_release = safe_release
-        return button
+    def update_content(self, *args, **kwargs):
+        pass
+
+    def update_style(self, *args, **kwargs):
+        pass
+        
+    # NOWA METODA - Nadpisujemy tworzenie kafelka, żeby dodać nasze teksty
+    def create(self, data, style, on_click):
+        # 1. Pozwalamy oryginalnej, zablokowanej klasie zrobić swoją robotę
+        widget = super().create(data, style, on_click)
+        
+        # 2. Wstrzykujemy nasze customowe teksty z pliku .kv!
+        widget.title_text = data.title
+        # Łączymy czas rozpoczęcia i czas trwania, żeby uzyskać np. "10:30 | 1.5 h"
+        widget.info_text = f"{data.start_time} | {data.end_time}"
+        
+        return widget

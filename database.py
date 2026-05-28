@@ -136,6 +136,24 @@ def get_language():
     row = conn.execute("SELECT value FROM app_settings WHERE key = 'language'").fetchone()
     return row['value'] if row else 'pl'
 
+def save_daily_note(subject_id, note_date, content):
+    conn = get_connection()
+    conn.execute('''
+        INSERT INTO daily_notes (subject_id, note_date, content)
+        VALUES (?, ?, ?)
+        ON CONFLICT(subject_id, note_date) DO UPDATE SET content = excluded.content
+    ''', (subject_id, note_date, content))
+    conn.commit()
+
+def get_daily_note(subject_id, note_date):
+    conn = get_connection()
+    row = conn.execute('''
+        SELECT content FROM daily_notes 
+        WHERE subject_id = ? AND note_date = ?
+    ''', (subject_id, note_date)).fetchone()
+    
+    return row['content'] if row else ""
+
 if __name__ == "__main__":
     init_db()
     # close_connection() zawsze na koniec dzialania programu
