@@ -35,11 +35,19 @@
     canvas.before:
         Color:
             rgba: 
-                (root.style.bg_color[0]*0.5, root.style.bg_color[1]*0.5, root.style.bg_color[2]*0.5, 1) \
-                if (self.state == 'down' and root.style) else \
-                (root.style.bg_color[0]*0.8, root.style.bg_color[1]*0.8, root.style.bg_color[2]*0.8, 1) \
-                if (self.hovered and root.style) else \
-                root.style.bg_color if root.style else [0.2, 0.2, 0.2, 1]
+                (get_color_from_hex(root.style.bg_color)[0]*0.5, 
+                get_color_from_hex(root.style.bg_color)[1]*0.5, 
+                get_color_from_hex(root.style.bg_color)[2]*0.5, 1) \
+                if (self.state == 'down') else \
+                
+            
+                (get_color_from_hex(root.style.bg_color)[0]*0.8, 
+                get_color_from_hex(root.style.bg_color)[1]*0.8, 
+                get_color_from_hex(root.style.bg_color)[2]*0.8, 1) \
+                if (self.hovered ) else \
+                
+            
+                get_color_from_hex(root.style.bg_color) if root.style else [0.2, 0.2, 0.2, 1]
         RoundedRectangle:
             pos: self.pos
             size: self.size
@@ -51,20 +59,25 @@
 <BrickWidget>:
     background_normal: ''
     background_color: 0, 0, 0, 0
-    
-    
     orientation: 'vertical'
-    size_hint: 1, None
-    height: 65
-    padding: [12, 8, 12, 8]
+    size_hint: None, None
+    size: 180, 110
+    padding: [15, 10, 5, 10]
+    spacing: 2
 
     canvas.before:
         Color:
             rgba: 
-                (root.style.bg_color[0]*0.7, root.style.bg_color[1]*0.7, root.style.bg_color[2]*0.7, 1) \
-                if (self.state == 'down' and self.has_note and root.style) else \
+                (get_color_from_hex(root.style.bg_color)[0]*0.7, 
+                get_color_from_hex(root.style.bg_color)[1]*0.7, 
+                get_color_from_hex(root.style.bg_color)[2]*0.7, 1) \
+                if (self.state == 'down' and self.has_note) else \
+                
+            
                 root.style.hover_bg_color \
-                if (self.hovered and self.has_note and root.style) else \
+                if (self.hovered and self.has_note) else \
+                
+            
                 root.style.bg_color if root.style else [0.2, 0.2, 0.2, 1]
 
         RoundedRectangle:
@@ -72,23 +85,6 @@
             size: self.size
             radius: [root.style.border_radius,] if root.style else [20,]
 
-    # Przeniesione canvas.after zaraz pod canvas.before dla bezpieczeństwa parsera
-    canvas.after:
-        Color:
-            rgba: (1, 1, 1, 0.8) if (self.hovered and self.has_note) else (0, 0, 0, 0)
-        Ellipse:
-            pos: (self.right - 12, self.top - 12)
-            size: (6, 6)
-
-
-    Label:
-        text: root.info_text
-        font_size: '11sp'
-        color: [1, 1, 1, 0.7]
-        halign: 'left'
-        valign: 'bottom'
-        text_size: self.size
-        size_hint_y: 0.4
 
 <BlueBrick@BrickWidget>:
     style: ButtonStyle(bg_color=get_color_from_hex("2e588c"),hover_bg_color=get_color_from_hex("2e587c") , text_color=[1,1,1,1], border_radius=10, shape=Shapes.ROUNDED)
