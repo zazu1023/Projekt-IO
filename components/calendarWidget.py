@@ -11,6 +11,7 @@ from kivy.uix.scrollview import ScrollView
 from Widgets.Brick import CalendarBrickData, LessonNote
 from Widgets.notePopup import NotePopup
 from KivyWidgets.kivyNotePopupBackend import KivyNotePopupBackend
+from KivyWidgets.KivyBrickBackend import BrickWidget , BlueBrick
 
 # Przykładowe importy Twojego modułu (dostosuj ścieżki do swoich folderów)
 from Widgets.datePicker import DatePicker, DatePickerStyle
@@ -175,8 +176,9 @@ class CalendarWidget(BoxLayout):
         events_layout.bind(minimum_height=events_layout.setter('height'))
 
         events_for_day = self.get_events_for_day(day_date)
-
+        
         if not events_for_day:
+            
             empty = Label(
                 text="-",
                 size_hint_y=None,
@@ -186,6 +188,7 @@ class CalendarWidget(BoxLayout):
             events_layout.add_widget(empty)
         else:
             for event in events_for_day:
+                
                 brick = self.create_brick(event, day_date)
                 brick.size_hint_x = 1 
                 events_layout.add_widget(brick)
@@ -197,7 +200,7 @@ class CalendarWidget(BoxLayout):
         return column
     def get_events_for_day(self, day_date):
         result = []
-
+        
         for event in self.events:
             if event["date"] == day_date:
                 result.append(event["data"])
@@ -207,20 +210,21 @@ class CalendarWidget(BoxLayout):
     # 1. TUTAJ DODAJEMY day_date W NAWIASIE
     def create_brick(self, event_data, day_date): 
         style = ButtonStyle(
-            bg_color=(45 / 255, 88 / 255, 140 / 255, 1),
-            hover_bg_color=(35 / 255, 70 / 255, 120 / 255, 1),
-            text_color=(1, 1, 1, 1),
+            bg_color="e3e3e2",
+            hover_bg_color="e3e3e2",
+            text_color=(0, 0, 0, 1),
             border_radius=25
         )
 
-        backend = SafeKivyBrickBackend()
+        brick = BlueBrick()
+        brick.style = style
+        brick.data = event_data
 
-        return backend.create(
-            data=event_data,
-            style=style,
-            # 2. I TUTAJ PRZEKAZUJEMY day_date DALEJ DO KLIKNIĘCIA
-            on_click=lambda: self.on_event_click(event_data, day_date) 
-        )
+        brick.title_text = event_data.title
+        # Łączymy czas rozpoczęcia i czas trwania, żeby uzyskać np. "10:30 | 1.5 h"
+        brick.info_text = f"{event_data.start_time} | {event_data.end_time}"
+
+        return brick
 
     def on_event_click(self, event_data, day_date):  # <--- DODAJ ", day_date"
         # 1. Zmieniamy datę na tekst w formacie YYYY-MM-DD

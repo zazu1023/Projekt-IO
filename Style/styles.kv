@@ -74,16 +74,49 @@
                 if (self.state == 'down' and self.has_note) else \
                 
             
-                root.style.hover_bg_color \
+                (get_color_from_hex(root.style.bg_color)[0]*0.5, 
+                get_color_from_hex(root.style.bg_color)[1]*0.5, 
+                get_color_from_hex(root.style.bg_color)[2]*0.5, 1) \
                 if (self.hovered and self.has_note) else \
                 
             
-                root.style.bg_color if root.style else [0.2, 0.2, 0.2, 1]
+                (get_color_from_hex(root.style.bg_color)[0]*0.8, 
+                get_color_from_hex(root.style.bg_color)[1]*0.8, 
+                get_color_from_hex(root.style.bg_color)[2]*0.8, 1) if root.style else [0.2, 0.2, 0.2, 1]
 
         RoundedRectangle:
             pos: self.pos
             size: self.size
             radius: [root.style.border_radius,] if root.style else [20,]
+            
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: 0.6
+        Label:
+            text: root.title_text
+            bold: True
+            font_size: '18sp'
+            halign: 'left'
+            valign: 'middle'
+            text_size: self.size
+        Image:
+           
+            source: 'Images/notebook.png' 
+            opacity: 1 if root.has_note else 0
+            
+            size_hint_x: None
+            width: self.height # sprawia, że jest kwadratowy
+            
+            allow_stretch: True
+            keep_ratio: True
+    Label:
+        text: root.info_text
+        size_hint_y: 0.4
+        font_size: '14sp'
+        color: [1, 1, 1, 0.8]
+        halign: 'left'
+        valign: 'bottom'
+        text_size: self.size
 
 
 <BlueBrick@BrickWidget>:

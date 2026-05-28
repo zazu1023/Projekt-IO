@@ -10,5 +10,5 @@ from views.startKalendarz import StartKalendarz
 SCREENS = {
             'mySubjects': {'class': MojePrzedmiotyScreen, 'kv': 'kv/mojePrzedmioty.kv'},
             'subjectDetails': {'class': SzczegolyPrzedmiotuScreen, 'kv': 'kv/szczegolyPrzedmiotu.kv'},
-            'calendar' : {'class':StartKalendarz, 'kv': 'kv/calendar.kv'}
+            'calendar' : {'class': StartKalendarz, 'kv': 'kv/home.kv'}
         }

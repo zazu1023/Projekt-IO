@@ -21,3 +21,5 @@ class BrickWidget(CustomButtonWidget, BoxLayout):
     info_text = StringProperty()
     title_text = StringProperty()
     has_note = BooleanProperty(False)
+class BlueBrick(BrickWidget):
+    pass

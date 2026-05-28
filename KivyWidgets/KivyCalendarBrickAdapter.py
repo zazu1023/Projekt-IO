@@ -1,6 +1,5 @@
-from KivyWidgets.KivyBrickBackend import KivyBrickBackend
 
-class SafeKivyBrickBackend(KivyBrickBackend):
+class SafeKivyBrickBackend():
     def bind_hover(self, on_enter=None, on_leave=None):
         pass
 
@@ -19,7 +18,8 @@ class SafeKivyBrickBackend(KivyBrickBackend):
     # NOWA METODA - Nadpisujemy tworzenie kafelka, żeby dodać nasze teksty
     def create(self, data, style, on_click):
         # 1. Pozwalamy oryginalnej, zablokowanej klasie zrobić swoją robotę
-        widget = super().create(data, style, on_click)
+        # widget = super().create(data, style, on_click)
+        widget = BrickWidget()
         
         # 2. Wstrzykujemy nasze customowe teksty z pliku .kv!
         widget.title_text = data.title
