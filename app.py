@@ -13,6 +13,10 @@ from kivy.lang import Builder
 from kivy.properties import StringProperty
 from kivy.uix.screenmanager import ScreenManager
 
+from datetime import datetime
+from Widgets.countdown import CountdownWidget, CountdownStyle, KivyCountdownBackend
+
+
 import Style.stylesMain as styles
 
 from screenHandler import *
@@ -35,8 +39,13 @@ class StudentPlannerApp(App):
 
         root_widget = Builder.load_file('Style/main.kv')
 
-        self.sm = root_widget.ids.sm
+        self.sesja_countdown = CountdownWidget(
+            target_date=datetime(2026, 6, 22, 0, 0),
+            backend=KivyCountdownBackend(),
+            style=CountdownStyle(bg_color=(0, 0, 0, 0), text_color=(1, 1, 1, 1))
+        )
 
+        self.sm = root_widget.ids.sm
         self.change_screen(target_screen='mySubjects')
         return root_widget
 

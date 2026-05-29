@@ -46,10 +46,19 @@
         bold: True
 
     TopBarButton:
-        text: "● 2"
+        text: ""
         width: 42
         height: 24
         on_release: root.show_notifications()
+
+        canvas.after:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: "Images/ikona_dzwonek.png"
+                size: 18, 18
+                pos: self.center_x - 9, self.center_y - 9
+
 
     TopBarButton:
         text: app.translations[app.language]["language_button"]

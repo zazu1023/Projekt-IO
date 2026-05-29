@@ -1,3 +1,4 @@
+#:import SessionPanel components.sideBar.SessionPanel
 MainLayout:
 
 # 2. DEFINICJA WYGLĄDU:
@@ -45,10 +46,17 @@ MainLayout:
 
             CustomButtonWidget:
                 style: ButtonStyle(bg_color="9ea6b3" , text_color=[0,0,0,1], border_radius=6, shape=Shapes.ROUNDED)
-                text: "O" # Tu dasz ikonę księżyca
+                text: "" 
                 size_hint_x: None
                 width: dp(40)
                 height: dp(30)
+                canvas.after:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Rectangle:
+                        source: "Images/ikona_dzwonek.png"
+                        size: dp(18), dp(18)
+                        pos: self.center_x - dp(9), self.center_y - dp(9)
             CustomButtonWidget:
                 style: ButtonStyle(bg_color="9ea6b3" , text_color=[0,0,0,1], border_radius=6, shape=Shapes.ROUNDED)
                 text: "ANG" if app.language == "pl" else "PL"
@@ -100,7 +108,7 @@ MainLayout:
             Widget: # Wypychacz, spycha Sesję na dół
 
             # Panel Sesji
-            BoxLayout:
+            SessionPanel:
                 id: countdown_box
                 orientation: "vertical"
                 size_hint_y: None
