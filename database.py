@@ -121,7 +121,7 @@ def add_absence(subject_id, amount=1): #licznik, ktory dopisuje nieobecnosci do 
     conn = get_connection()
     conn.execute('''
         UPDATE subjects 
-        SET current_absences = current_absences + ? 
+        SET current_absences = MAX(0, current_absences + ?)
         WHERE id = ?
     ''', (amount, subject_id))
     conn.commit()

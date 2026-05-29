@@ -100,7 +100,7 @@ def test_add_and_subtract_absences():
 ])
 def test_date_regex_boundaries(test_date, is_valid):
 
-    date_pattern = r"^\d{4}-\d{2}-\d{2}$"
+    date_pattern = r"^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$"
     result = re.match(date_pattern, test_date)
     
     if is_valid:
@@ -133,7 +133,7 @@ def test_date_regex_boundaries(test_date, is_valid):
     ("01:01:01", False),
 ])
 def test_time_regex_boundaries(test_time, is_valid):
-    time_pattern = r"^\d{2}:\d{2}$"
+    time_pattern = r"^([01]\d|2[0-3]):([0-5]\d)$"
     result = re.match(time_pattern, test_time)
         
     if is_valid:
