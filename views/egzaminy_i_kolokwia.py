@@ -125,7 +125,7 @@ class ExamsAndColloquiumsScreen(BoxLayout):
 
     def submit_event(self):
 
-        # 1. Sprawdzenie, czy wybrano przedmiot
+        # 1. sprawdzenie, czy wybrano przedmiot
         if not self.selected_subject_id:
             self.show_error_popup("Najpierw wybierz przedmiot z listy powyżej!")
             return 
@@ -133,22 +133,21 @@ class ExamsAndColloquiumsScreen(BoxLayout):
         event_date = self.ids.input_event_date.text.strip()
         event_time = self.ids.input_event_time.text.strip()
         
-        # 2. Walidacja tytułu (nie może być pusty)
+        # 2. walidacja tytułu (nie może być pusty)
         if not event_title:
             self.show_error_popup("Tytuł wydarzenia nie może być pusty!")
             return
 
-        # 3. Walidacja daty (format YYYY-MM-DD)
-        if not re.match(r"^\d{4}-\d{2}-\d{2}$", event_date):
+        # 3. walidacja daty (format YYYY-MM-DD)
+        if not re.match(r"^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$", event_date):
             self.show_error_popup("Data musi być w formacie RRRR-MM-DD\n(np. 2026-05-28)")
             return
 
-        # 4. Walidacja godziny (format HH:MM)
+        # 4. walidacja godziny (format HH:MM)
         if not re.match(r"^([01]\d|2[0-3]):([0-5]\d)$", event_time):
             self.show_error_popup("Godzina musi być w formacie HH:MM\n(np. 14:30)")
             return
 
-        # Jeśli wszystko jest perfekcyjne, zapisujemy do bazy:
         full_event_start = f"{event_date} {event_time}"
         
         db_connection = db.get_connection()
@@ -223,18 +222,12 @@ class ExamsAndColloquiumsScreen(BoxLayout):
         self.load_events()
 
     def open_calendar(self):
-        # 1. Tworzymy okienko kalendarza
         date_dialog = MDDatePicker()
-        
-        # 2. "Kiedy użytkownik kliknie OK (on_save), odpala sie funkcja on_date_selected
         date_dialog.bind(on_save=self.on_date_selected)
-        
-        # 3. Wyświetlam kalendarz na ekranie
         date_dialog.open()
 
     def on_date_selected(self, instance, value, date_range):
-        # Zmienna 'value' przechowuje datę wybraną przez Ciebie w kalendarzu.
-        # Zamieniam ją na zwykły tekst i wrzucamy prosto do pola tekstowego
+        # zamieniam zmienna value na zwykły tekst i wrzucamy prosto do pola tekstowego
         self.ids.input_event_date.text = str(value)
 
 class ExamsAndColloquiumsApp(MDApp):

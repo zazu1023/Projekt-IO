@@ -70,7 +70,12 @@ def test_validation_fails_on_empty_title(exam_screen_instance, invalid_title):
     "",
     "2026/05/28",
     "28-05-2026",
-    "2026.05.28"
+    "2026.05.28",
+    "2026-05-311", 
+    "2026-5-5", 
+    "26-05-28", 
+    "YYYY-MM-DD", 
+    "!!-!!-!!"
 ])
 def test_validation_fails_on_invalid_dates(exam_screen_instance, invalid_date):
     """Faza Czerwona: System powinien zablokować każdą z tych złych dat."""
@@ -98,7 +103,13 @@ def test_validation_fails_on_invalid_dates(exam_screen_instance, invalid_date):
     "01:01:01",
     "abc",
     "",
-    "12-30"
+    "12-30",
+    "12;30",
+    "12/30", 
+    "12.30", 
+    "godz. 14:00", 
+    "14.30", 
+    "99:99"
 ])
 def test_validation_fails_on_invalid_times(exam_screen_instance, invalid_time):
     exam_screen_instance.ids['input_event_date'].text = "2026-05-28"
@@ -106,4 +117,5 @@ def test_validation_fails_on_invalid_times(exam_screen_instance, invalid_time):
     exam_screen_instance.ids['input_event_title'].text = "Physics Exam"
     
     exam_screen_instance.submit_event()
+
     exam_screen_instance.show_error_popup.assert_called_with("Godzina musi być w formacie HH:MM\n(np. 14:30)")
