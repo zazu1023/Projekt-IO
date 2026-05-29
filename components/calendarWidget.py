@@ -221,6 +221,7 @@ class CalendarWidget(BoxLayout):
         brick.data = event_data
 
         brick.title_text = event_data.title
+        brick.has_note = True
         # Łączymy czas rozpoczęcia i czas trwania, żeby uzyskać np. "10:30 | 1.5 h"
         brick.info_text = f"{event_data.start_time} | {event_data.end_time}"
 
