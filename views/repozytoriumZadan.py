@@ -682,7 +682,7 @@ if __name__ == "__main__":
 
             text_color=(1, 1, 1, 1),
 
-            note_bg_color=(0.45, 0.45, 0.45, 1),
+            note_bg_color=(0.196, 0.176, 0.176, 1),
 
             progress_color=(0, 0.7, 1, 1),
 
