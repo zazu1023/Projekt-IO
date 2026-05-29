@@ -1,12 +1,70 @@
 from abc import ABC, abstractmethod
 from typing import Dict
 
+import json
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.progressbar import ProgressBar
 from kivy.graphics import Color, Rectangle
 from kivy.uix.scrollview import ScrollView
+from kivy.graphics import RoundedRectangle
+from kivy.core.window import Window
 
+
+class TranslationManager:
+
+    def __init__(
+
+        self,
+
+        language="pl",
+
+        translation_file="translation.json"
+    ):
+
+        self.language = language
+
+        
+
+        with open(
+
+            translation_file,
+
+            "r",
+
+            encoding="utf-8"
+        ) as file:
+
+            self.translations = json.load(
+                file
+            )
+
+    
+
+    def get(
+
+        self,
+
+        key
+    ):
+
+        return self.translations[
+            self.language
+        ].get(
+            key,
+            key
+        )
+
+    
+
+    def set_language(
+
+        self,
+
+        language
+    ):
+
+        self.language = language
 
 class TileStyle:
 
@@ -15,41 +73,53 @@ class TileStyle:
         bg_color,
         text_color,
         note_bg_color,
-        progress_color
+        progress_color,
+
+        screen_bg_color,
+
+        header_text_color
     ):
 
         self.bg_color = bg_color
+
         self.text_color = text_color
 
         self.note_bg_color = note_bg_color
+
         self.progress_color = progress_color
 
+        self.screen_bg_color = screen_bg_color
+
+        self.header_text_color = header_text_color
 
 
 
 class StatusBadge:
 
     COLORS = {
-        "green": (0, 0.7, 0, 1),
-        "yellow": (0.9, 0.7, 0, 1),
-        "red": (0.8, 0, 0, 1),
+        "green": (0.179, 0.796, 0.441, 1),
+        "yellow": (0.941, 0.765, 0.058, 1),
+        "red": (0.902, 0.296, 0.234, 1),
         "white":(0.7,0.7,0.7,1)
     }
 
     def __init__(
+
         self,
-        text,
-        
-            
+
+        translation_key,
 
         color_name="green"
     ):
 
-        self.text = text
+        self.translation_key = translation_key
+    
         self.color = self.COLORS.get(
-            color_name,
-            (0.5, 0.5, 0.5, 1)
-        )
+
+        color_name,
+
+        (0.5, 0.5, 0.5, 1)
+    )
 
 
 
@@ -105,9 +175,10 @@ class KivyTileBackend(TileBackend):
     def create(
     self,
     tiles,
-    style
+    style,
+    language_manager
     ):
-
+        self.language_manager = language_manager
     
 
         root_scroll = ScrollView(
@@ -194,9 +265,13 @@ class KivyTileBackend(TileBackend):
 
             Color(*style.bg_color)
 
-            rect = Rectangle(
+            rect = RoundedRectangle(
+
                 pos=container.pos,
-                size=container.size
+
+                size=container.size,
+
+                radius=[15]
             )
 
         container.bind(
@@ -261,9 +336,13 @@ class KivyTileBackend(TileBackend):
 
             Color(*tile.status.color)
 
-            status_rect = Rectangle(
+            status_rect = RoundedRectangle(
+
                 pos=status_box.pos,
-                size=status_box.size
+
+                size=status_box.size,
+
+                radius=[10]
             )
 
         status_box.bind(
@@ -275,7 +354,9 @@ class KivyTileBackend(TileBackend):
         )
 
         status_label = Label(
-            text=tile.status.text,
+            text=self.language_manager.get(
+                tile.status.translation_key
+            ),
             color=(1, 1, 1, 1)
         )
 
@@ -291,7 +372,9 @@ class KivyTileBackend(TileBackend):
         
 
         progress_label = Label(
-            text=tile.progress_label,
+            text=self.language_manager.get(
+                "absences"
+            ),
             color=style.text_color,
             size_hint_y=None,
             height=25,
@@ -340,9 +423,13 @@ class KivyTileBackend(TileBackend):
 
             Color(*style.note_bg_color)
 
-            note_rect = Rectangle(
+            note_rect = RoundedRectangle(
+
                 pos=note_box.pos,
-                size=note_box.size
+
+                size=note_box.size,
+
+                radius=[12]
             )
 
         note_box.bind(
@@ -356,7 +443,9 @@ class KivyTileBackend(TileBackend):
         
 
         note_title = Label(
-            text=tile.note_title,
+            text=self.language_manager.get(
+                "passing_conditions"
+            ),
             bold=True,
             color=style.text_color,
             size_hint_y=None,
@@ -436,22 +525,143 @@ class KivyTileBackend(TileBackend):
 class TileWidget:
 
     def __init__(
+
+    self,
+
+    tiles,
+
+    backend,
+
+    style,
+
+    language_manager,
+
+    screen_title=None
+    ):
+        self.language_manager = language_manager
+        self.tiles = tiles
+
+        self.backend = backend
+
+        self.style = style
+
+        self.screen_title = screen_title
+
+        if screen_title is None:
+
+            self.screen_title = Label(
+                text=self.language_manager.get(
+                    "rules_repository"
+                ),
+            )
+        
+        else:
+
+            self.screen_title = screen_title
+
+    def _update_screen_bg(
         self,
-        tiles,
-        backend,
-        style
+        instance,
+        value
     ):
 
-        self.tiles = tiles
-        self.backend = backend
-        self.style = style
+        self.screen_rect.pos = instance.pos
+
+        self.screen_rect.size = instance.size
 
     def render(self):
 
-        return self.backend.create(
-            self.tiles,
-            self.style
+    
+
+        root = BoxLayout(
+
+            orientation="vertical"
         )
+        root.padding = 0
+        root.spacing = 0
+    
+
+        with root.canvas.before:
+
+            self.bg_color = Color(
+                *self.style.screen_bg_color
+            )
+
+            self.screen_rect = RoundedRectangle(
+
+                pos=root.pos,
+                
+                size=root.size,
+
+                radius=[0]
+            )
+
+    
+
+        root.bind(
+
+            pos=self._update_screen_bg,
+
+            size=self._update_screen_bg
+        )
+
+    
+
+        header = Label(
+
+        text=self.language_manager.get(
+            "rules_repository"
+        ),
+
+        size_hint_y=None,
+
+        height=70,
+
+        font_size=28,
+
+        bold=True,
+
+        color=self.style.header_text_color,
+
+        halign="left",
+
+        valign="middle",
+
+        padding=(20, 0)
+    )
+
+        header.bind(
+
+            size=lambda instance, value:
+            setattr(
+                instance,
+                "text_size",
+                value
+            )
+        )
+
+    
+
+        root.add_widget(header)
+
+    
+
+        content = self.backend.create(
+
+            self.tiles,
+
+            self.style,
+
+            self.language_manager
+        )
+
+    
+
+        root.add_widget(content)
+
+    
+
+        return root
 
 
 
@@ -465,17 +675,21 @@ if __name__ == "__main__":
     class Repozytorum_zasad(App):
 
         def build(self):
-
+            Window.clearcolor = (0.196, 0.176, 0.176, 1)
             style = TileStyle(
 
-                bg_color=(0.18, 0.34, 0.55, 1),
+            bg_color=(0.18, 0.34, 0.55, 1),
 
-                text_color=(1, 1, 1, 1),
+            text_color=(1, 1, 1, 1),
 
-                note_bg_color=(0.45, 0.45, 0.45, 1),
+            note_bg_color=(0.45, 0.45, 0.45, 1),
 
-                progress_color=(0, 0.7, 1, 1)
-            )
+            progress_color=(0, 0.7, 1, 1),
+
+            screen_bg_color=(0.196, 0.176, 0.176, 1),
+
+            header_text_color=(1, 1, 1, 1)
+        )
 
             
 
@@ -488,17 +702,19 @@ if __name__ == "__main__":
                     subtitle="jjhank",
 
                     status=StatusBadge(
-                        "Zaliczony",
-                        "green"
+
+                        translation_key="my_subject_completed",
+
+                        color_name="green"
                     ),
 
                     progress_value=8,
 
                     progress_max=15,
 
-                    progress_label="nieobecności",
+                    progress_label="",
 
-                    note_title="Warunki zaliczenia",
+                    note_title="",
 
                     note_text=(
                         "vgbhnjmcvbhnbhyjgjknbytvrcexcrvtbynubytvrcvtbynubynuybvtrtgbhnbhyjgjknbytvrcexcrvtbynubytvrcvtbynubynuybvtrtgbhudabbvbfgnhmjjjjjjjjjjjjjnbhyjgjknbytvrcexcrvtbynubytvrcvtbynubynuybvtrtgbhudabbvbfgnhmjjjjjjjjjjjjjnbhyjgjknbytvrcexcrvtbynubytvrcvtbynubynuybvtrtgbhudabbvbfgnhmjjjjjjjjjjjjjnbhyjgjknbytvrcexcrvtbynubytvrcvtbynubynuybvtrtgbhudabbvbfgnhmjjjjjjjjjjjjjnbhyjgjknbytvrcexcrvtbynubytvrcvtbynubynuybvtrtgbhudabbvbfgnhmjjjjjjjjjjjjjnbhyjgjknbytvrcexcrvtbynubytvrcvtbynubynuybvtrtgbhudabbvbfgnhmjjjjjjjjjjjjjudabbvbfgnhmjjjjjjjjjjjjjjjjdsadadsabbbhbhawbdvagvdahbhdvayv"
@@ -516,18 +732,20 @@ if __name__ == "__main__":
                     subtitle="Kawa",
 
                     status=StatusBadge(
-                       "W trakcie",
+                       translation_key="my_subject_inprogress",
+
+                        color_name="yellow"
                         
-                        "white"
+                        
                     ),
 
                     progress_value=1,
 
                     progress_max=10,
 
-                    progress_label="nieobecności",
+                    progress_label="",
 
-                    note_title="Warunki Zaliczenia",
+                    note_title="",
 
                     note_text=(
                         "Dostać wystarczająco punktów w maszynie losującej zwanej kawowym kolokwium"
@@ -544,17 +762,19 @@ if __name__ == "__main__":
                     subtitle="uubhubhubu",
 
                     status=StatusBadge(
-                        "Zagrożony",
-                        "red"
+                        translation_key="my_subject_atrisk",
+
+                        color_name="red"
+                        
                     ),
 
                     progress_value=2,
 
                     progress_max=10,
 
-                    progress_label="nieobecności",
+                    progress_label="",
 
-                    note_title="Warunki zaliczenia",
+                    note_title="",
 
                     note_text=(
                         "Należy poprawić "
@@ -567,7 +787,9 @@ if __name__ == "__main__":
 
             backend = KivyTileBackend()
 
-            
+            language = TranslationManager(
+            language="en"
+            )
 
             widget = TileWidget(
 
@@ -575,8 +797,12 @@ if __name__ == "__main__":
 
                 backend=backend,
 
-                style=style
-            )
+                style=style,
+
+                screen_title="",
+                language_manager=language
+                )
+                
 
             
 
@@ -585,3 +811,5 @@ if __name__ == "__main__":
 
 
     Repozytorum_zasad().run()
+
+
