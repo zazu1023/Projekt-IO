@@ -6,7 +6,8 @@ from kivy.config import Config
 
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
-
+Config.set('graphics', 'minimum_width', '600')
+Config.set('graphics', 'minimum_height', '600')
 
 from kivy.app import App
 from kivy.lang import Builder

@@ -11,11 +11,7 @@ from kivy.core.window import Window
 
      
 class DashboardBrick( CustomButtonWidget, BoxLayout ):
-    style = ObjectProperty()
     subject_obj = ObjectProperty(None)
-    def __init__(self, **kwargs):
-        
-        super().__init__(**kwargs)
 
 class BrickWidget(CustomButtonWidget, BoxLayout):
     info_text = StringProperty()
