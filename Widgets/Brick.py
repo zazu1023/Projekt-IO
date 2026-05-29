@@ -19,6 +19,7 @@ class CalendarBrickData:
     start_time: str    
     end_time: str
     category_id: str
+    event_type: str = "zajęcia"
     note: Optional[LessonNote] = None
 
     @property

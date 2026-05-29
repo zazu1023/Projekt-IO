@@ -48,13 +48,15 @@ class KivyCountdownBackend(CountdownBackend):
 
         self.layout = BoxLayout(
             orientation="vertical",
-            padding=10,
-            spacing=10
+            padding=0,
+            spacing=0
         )
 
         self.label = Label(
             text="",
-            color=style.text_color
+            color=style.text_color,
+            bold=True,
+            font_size='14sp'
         )
 
         self.layout.add_widget(self.label)
@@ -89,12 +91,8 @@ class CountdownWidget:
 
         # natychmiast pokazuje aktualny czas
         self._update_time()
-
-        # aktualizacja co 1 sekundę
-        self._event = Clock.schedule_interval(
-        lambda dt: self._update_time(),
-        1
-    )
+        
+        self._event = Clock.schedule_interval(self._tick, 1)
 
         return widget
 

@@ -74,13 +74,34 @@ class CalendarWidget(BoxLayout):
                     title="ASD",
                     start_time="18:30",
                     end_time="1.5 h",
-                    category_id="ASD"
+                    category_id="ASDyyy",
+                    event_type="egzamin"
+                )
+            },
+            {
+                "date": date(2026, 5, 12),
+                "data": CalendarBrickData(
+                    id="5",
+                    title="SK",
+                    start_time="08:00",
+                    end_time="1.5 h",
+                    category_id="IO"
+                )
+            },
+            {
+                "date": date(2026, 5, 12),
+                "data": CalendarBrickData(
+                    id="51",
+                    title="SK",
+                    start_time="08:00",
+                    end_time="1.5 h",
+                    category_id="IO"
                 )
             },
             {
                 "date": date(2026, 5, 13),
                 "data": CalendarBrickData(
-                    id="5",
+                    id="52",
                     title="SK",
                     start_time="08:00",
                     end_time="1.5 h",
@@ -135,7 +156,6 @@ class CalendarWidget(BoxLayout):
             self.ids.days_box.add_widget(day_column)
 
     def create_day_column(self, day_date):
-        # Główna kolumna dla całego dnia (Nagłówek + ScrollView)
         column = BoxLayout(
             orientation="vertical",
             padding=2,
@@ -144,7 +164,6 @@ class CalendarWidget(BoxLayout):
         lang = self.app.language if self.app else 'pl'
         day_str = DAY_NAMES[lang][day_date.weekday()]
 
-        # Nagłówek dnia (zostaje na samej górze, nie będzie się scrollował)
         header = Label(
             text=f"{day_str}\n{day_date.strftime('%m-%d')}",
             size_hint_y=None,
@@ -157,28 +176,28 @@ class CalendarWidget(BoxLayout):
         header.bind(size=lambda instance, value: setattr(instance, "text_size", instance.size))
         column.add_widget(header)
 
-        # Tworzymy widżet umożliwiający przewijanie
+        # WIDOCZNY SCROLLBAR
         scroll_view = ScrollView(
             size_hint=(1, 1),
-            do_scroll_x=False, # Blokujemy przewijanie na boki
-            do_scroll_y=True   # Pozwalamy na przewijanie góra/dół
+            do_scroll_x=False, 
+            do_scroll_y=True,
+            bar_width=8,                               
+            bar_color=[0.6, 0.6, 0.6, 0.9],            
+            bar_inactive_color=[0.6, 0.6, 0.6, 0.4],   
+            scroll_type=['content', 'bars']            
         )
 
-        # Kontener na KAFELKI wewnątrz ScrollView
-        # To tutaj ustawiamy "marginesy" (spacing i padding)
         events_layout = BoxLayout(
             orientation="vertical",
-            size_hint_y=None,  # Musi być None, żeby ScrollView wiedziało, że ma przewijać!
-            spacing=12,        # MARGINES MIĘDZY kafelkami (pionowy)
-            padding=[5, 10, 5, 10] # MARGINES ZEWNĘTRZNY (lewo, góra, prawo, dół)
+            size_hint_y=None,  
+            spacing=12,        
+            padding=[5, 10, 18, 10] # Odsunięcie od prawego paska (18)
         )
-        # Bardzo ważne: Kontener musi dynamicznie rosnąć w dół wraz z dodawaniem kafelków
         events_layout.bind(minimum_height=events_layout.setter('height'))
 
         events_for_day = self.get_events_for_day(day_date)
         
         if not events_for_day:
-            
             empty = Label(
                 text="-",
                 size_hint_y=None,
@@ -188,12 +207,10 @@ class CalendarWidget(BoxLayout):
             events_layout.add_widget(empty)
         else:
             for event in events_for_day:
-                
                 brick = self.create_brick(event, day_date)
                 brick.size_hint_x = 1 
                 events_layout.add_widget(brick)
 
-        # Pakujemy wszystko do siebie jak rosyjską matrioszkę
         scroll_view.add_widget(events_layout)
         column.add_widget(scroll_view)
 
@@ -209,9 +226,17 @@ class CalendarWidget(BoxLayout):
 
     # 1. TUTAJ DODAJEMY day_date W NAWIASIE
     def create_brick(self, event_data, day_date): 
+        # KOLORY
+        theme_colors = {
+            "zajęcia": ("86a6c1", "7092ad"),
+            "egzamin": ("e57373", "ef5350")
+        }
+
+        bg_c, hover_c = theme_colors.get(event_data.event_type.lower(), theme_colors["zajęcia"])
+
         style = ButtonStyle(
-            bg_color="e3e3e2",
-            hover_bg_color="e3e3e2",
+            bg_color=bg_c,
+            hover_bg_color=hover_c,
             text_color=(0, 0, 0, 1),
             border_radius=25
         )
@@ -221,12 +246,17 @@ class CalendarWidget(BoxLayout):
         brick.data = event_data
 
         brick.title_text = event_data.title
-        brick.has_note = True
-        # Łączymy czas rozpoczęcia i czas trwania, żeby uzyskać np. "10:30 | 1.5 h"
         brick.info_text = f"{event_data.start_time} | {event_data.end_time}"
 
-        return brick
+        # IKONA NOTATNIKA (sprawdzenie bazy)
+        existing_text = get_daily_note(event_data.id, str(day_date))
+        brick.has_note = bool(existing_text and existing_text.strip())
 
+        # KLIKANIE W KAFELEK
+        brick.bind(on_release=lambda instance: self.on_event_click(event_data, day_date))
+
+        return brick
+    
     def on_event_click(self, event_data, day_date):  # <--- DODAJ ", day_date"
         # 1. Zmieniamy datę na tekst w formacie YYYY-MM-DD
         date_str = str(day_date)
