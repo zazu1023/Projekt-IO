@@ -8,7 +8,8 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty , StringProperty , BooleanProperty
 from kivy.core.window import Window
 
-
+class DashboardBrick2( CustomButtonWidget, BoxLayout ):
+    subject_obj = ObjectProperty(None)
      
 class DashboardBrick( CustomButtonWidget, BoxLayout ):
     subject_obj = ObjectProperty(None)
