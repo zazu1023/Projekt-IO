@@ -194,12 +194,13 @@ class AddSubjectScreen(Screen):
         btn_ok.bind(on_release=popup.dismiss)
         popup.open()
 
-
+'''
 class AddSubjectTestApp(App):
     def build(self):
         Factory.register('CustomButtonWidget', cls=CustomButtonWidget)
         Builder.load_file(kv_path)
         return AddSubjectScreen()
+
 
 if __name__ == "__main__":
     from kivy.core.window import Window
@@ -209,3 +210,4 @@ if __name__ == "__main__":
     
     db.init_db()
     AddSubjectTestApp().run()
+'''

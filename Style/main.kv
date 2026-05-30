@@ -93,8 +93,11 @@ MainLayout:
                 text: app.translate("my_subjects_text", app.language)
                 
                 on_release: app.change_screen('mySubjects')
+
             BlueButton:
                 text: app.translate("add_subject", app.language)
+                on_release: app.change_screen('add_subject')
+
             BlueButton:
                 text: app.translate("exams_tests", app.language)
                 on_release: app.change_screen('exams_tests')

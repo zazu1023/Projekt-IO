@@ -28,7 +28,6 @@ import database as db
 # ==============================================================
 db.init_db()
 
-# --- TEN BLOK BĘDZIESZ MÓGŁ USUNĄĆ, GDY POWSTANIE ZAKŁADKA PRZEDMIOTÓW ---
 db_test = db.get_connection()
 if db_test.execute("SELECT COUNT(*) FROM subjects").fetchone()[0] == 0:
     print("Baza pusta! Wstrzykuję testowe kafelki i wydarzenia...")
@@ -44,7 +43,6 @@ if db_test.execute("SELECT COUNT(*) FROM subjects").fetchone()[0] == 0:
     db_test.execute("INSERT INTO subjects (name, teacher) VALUES (?, ?)", ("Sieci", "Dr Edward Szczypka"))
 
     db_test.commit()
-# -------------------------------------------------------------------------
 
 Factory.register('CustomButtonWidget', cls=CustomButtonWidget)
 
@@ -222,7 +220,6 @@ class ExamsAndColloquiumsScreen(Screen):
 
     def open_calendar(self):
         """Otwiera własny DatePicker."""
-        # Stylizacja zgodna z resztą aplikacji
         dp_style = DatePickerStyle(
             bg_color=(0.15, 0.15, 0.15, 1), 
             selected_color=(0.2, 0.5, 0.8, 1), 
@@ -246,12 +243,10 @@ class ExamsAndColloquiumsScreen(Screen):
         )
 
         def on_confirm(instance):
-            # Tutaj pobieramy wybraną datę i wstawiamy do pola
             chosen_date = backend.selected_date 
             self.ids.input_event_date.text = str(chosen_date)
             popup.dismiss()
 
-        # Podpinamy akcję pod przycisk potwierdzenia
         backend.confirm_button.bind(on_release=on_confirm)
         
         popup.open()
