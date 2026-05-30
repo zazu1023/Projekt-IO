@@ -18,8 +18,9 @@ from kivy.metrics import dp
 from kivy.uix.popup import Popup 
 from kivy.uix.label import Label
 from kivy.core.window import Window
-from kivymd.uix.pickers import MDDatePicker
-from kivymd.app import MDApp
+from Widgets.datePicker import DatePicker, DatePickerStyle
+from KivyWidgets.kivyDatePickerBackend import KivyDatePickerBackend
+from datetime import date
 from KivyWidgets.KivyButtonBackend import CustomButtonWidget 
 import database as db 
 
@@ -221,23 +222,50 @@ class ExamsAndColloquiumsScreen(Screen):
         self.load_events()
 
     def open_calendar(self):
-        date_dialog = MDDatePicker()
-        date_dialog.bind(on_save=self.on_date_selected)
-        date_dialog.open()
+        """Otwiera własny DatePicker."""
+        # Stylizacja zgodna z resztą aplikacji
+        dp_style = DatePickerStyle(
+            bg_color=(0.15, 0.15, 0.15, 1), 
+            selected_color=(0.2, 0.5, 0.8, 1), 
+            today_color=(0.8, 0.8, 0.8, 1),
+            text_color=(1, 1, 1, 1)
+        )
+        backend = KivyDatePickerBackend()
+        picker = DatePicker(
+            selected_date=date.today(),
+            backend=backend,
+            style=dp_style
+        )
+        
+        picker_ui = picker.render()
+        
+        popup = Popup(
+            title="Wybierz datę egzaminu",
+            content=picker_ui,
+            size_hint=(None, None),
+            size=(400, 450)
+        )
 
-    def on_date_selected(self, instance, value, date_range):
-        self.ids.input_event_date.text = str(value)
+        def on_confirm(instance):
+            # Tutaj pobieramy wybraną datę i wstawiamy do pola
+            chosen_date = backend.selected_date 
+            self.ids.input_event_date.text = str(chosen_date)
+            popup.dismiss()
 
-class ExamsAndColloquiumsApp(MDApp):
+        # Podpinamy akcję pod przycisk potwierdzenia
+        backend.confirm_button.bind(on_release=on_confirm)
+        
+        popup.open()
+
+class ExamsAndColloquiumsApp(App):
     def build(self):
-        self.theme_cls.theme_style = "Dark"
-        self.theme_cls.primary_palette = "Blue"
+
         return ExamsAndColloquiumsScreen()
 
-"""
+'''
 if __name__ == "__main__":
     Window.clearcolor = (0.08, 0.12, 0.18, 1)
     Window.minimum_width = 1000
     Window.minimum_height = 700
     ExamsAndColloquiumsApp().run()
-"""
+'''
