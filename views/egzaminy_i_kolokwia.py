@@ -9,7 +9,7 @@ if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
 from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import Screen
 from kivy.lang import Builder
 from kivy.core.window import Window
 from kivy.factory import Factory 
@@ -52,7 +52,7 @@ kv_path = os.path.join(parent_dir, 'kv', 'egzaminy_i_kolokwia.kv')
 Builder.load_file(kv_path)
 
 
-class ExamsAndColloquiumsScreen(BoxLayout):
+class ExamsAndColloquiumsScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.selected_subject_btn = None 
@@ -234,9 +234,10 @@ class ExamsAndColloquiumsApp(MDApp):
         self.theme_cls.primary_palette = "Blue"
         return ExamsAndColloquiumsScreen()
 
-
+"""
 if __name__ == "__main__":
     Window.clearcolor = (0.08, 0.12, 0.18, 1)
     Window.minimum_width = 1000
     Window.minimum_height = 700
     ExamsAndColloquiumsApp().run()
+"""
