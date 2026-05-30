@@ -1,0 +1,484 @@
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import ButtonStyle Widgets.Button.ButtonStyle
+#:import ButtonState Widgets.Button.ButtonState
+
+<CustomBaseButton@CustomButtonWidget>:
+    is_selected: False 
+    background_color: 0, 0, 0, 0
+    background_normal: ''
+    size_hint: 1, 1 
+    canvas.before:
+        Color:
+            rgba: get_color_from_hex("#082440") if (self.hovered or self.is_selected) else get_color_from_hex("#114c85")
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(15)]
+
+<PrimaryButton@CustomBaseButton>:
+    style: ButtonStyle(bg_color="#114c85", text_color="#ffffff", border_radius=15)
+
+<DangerButton@CustomBaseButton>:
+    style: ButtonStyle(bg_color="#e74c3c", text_color="#ffffff", border_radius=15)
+
+<IconButton@ButtonBehavior+Image>:
+    color: (0.7, 0.7, 0.7, 1) if self.state == 'down' else (1, 1, 1, 1)
+
+<DarkRoundedInput@TextInput>:
+    background_normal: ''
+    background_color: get_color_from_hex("#322d2d")
+    foreground_color: 1, 1, 1, 1
+    cursor_color: 1, 1, 1, 1
+    hint_text_color: 0.6, 0.6, 0.6, 1  # Kolor tekstu zachęty (jasnoszary)
+    size_hint_y: None
+    height: dp(35)
+    multiline: False
+    padding_x: [dp(10), dp(10)]
+    padding_y: [self.height / 2.0 - (self.line_height / 2.0), 0]
+
+<LightTextArea@TextInput>:
+    background_normal: ''
+    background_color: get_color_from_hex("#b3b3b3")
+    foreground_color: get_color_from_hex("#000000") 
+    cursor_color: get_color_from_hex("#000000")
+    hint_text_color: 0.3, 0.3, 0.3, 1  # Kolor tekstu zachęty (ciemnoszary)
+    size_hint_y: None
+    height: max(dp(80), self.minimum_height)
+    multiline: True
+    padding: [dp(10), dp(10)]
+    canvas.before:
+        Color:
+            rgba: get_color_from_hex("#888888")
+        Line:
+            width: 1.2
+            rectangle: self.x, self.y, self.width, self.height
+
+<WhiteCheckBox@CheckBox>:
+    size_hint: None, None
+    size: dp(40), dp(40) 
+    canvas:
+        Color:
+            rgba: 1, 1, 1, 1
+        Line:
+            width: dp(1) 
+            rectangle: (self.center_x - dp(9), self.center_y - dp(9), dp(18), dp(18)) 
+        Color:
+            rgba: (1, 1, 1, 1) if self.active else (0, 0, 0, 0)
+        Rectangle:
+            pos: self.center_x - dp(5), self.center_y - dp(5)
+            size: dp(10), dp(10) 
+
+<AddSubjectScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(20)
+        canvas.before:
+            Color:
+                rgba: get_color_from_hex("#3b3232")
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            text: "Dodaj przedmiot"
+            font_size: '28sp'
+            bold: True
+            size_hint_y: None
+            height: dp(50)
+            halign: 'left'
+            valign: 'middle'
+            text_size: self.size
+
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                padding: dp(20)
+                spacing: dp(20)
+                canvas.before:
+                    Color:
+                        rgba: get_color_from_hex("#063e6e")
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(12)]
+
+                # ==========================================
+                # RZĄD 1: Przedmiot | Prowadzący | Pusta Kolumna
+                # ==========================================
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: dp(70) 
+                    spacing: dp(20)
+                    
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_x: 1
+                        spacing: dp(5)
+                        Label:
+                            text: "Przedmiot"
+                            size_hint_y: None
+                            height: dp(30)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'bottom'
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            spacing: dp(10)
+                            DarkRoundedInput:
+                                id: input_name
+                                hint_text: "np. Matematyka"
+                                size_hint_x: 1
+                            Widget:
+                                size_hint_x: None
+                                width: dp(40)
+                            
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_x: 1
+                        spacing: dp(5)
+                        Label:
+                            text: "Prowadzący"
+                            size_hint_y: None
+                            height: dp(30)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'bottom'
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            spacing: dp(10)
+                            DarkRoundedInput:
+                                id: input_teacher
+                                hint_text: "np. Jan Kowalski"
+                                size_hint_x: 1
+                            Widget:
+                                size_hint_x: None
+                                width: dp(40)
+
+                    Widget:
+                        size_hint_x: 1
+
+                # ==========================================
+                # RZĄD 2: Warunki zaliczenia
+                # ==========================================
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: input_conditions.height + dp(35)
+                    spacing: dp(5)
+                    Label:
+                        text: "Warunki zaliczenia"
+                        size_hint_y: None
+                        height: dp(30)
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'bottom'
+                    LightTextArea:
+                        id: input_conditions
+                        hint_text: "np. Zaliczenie na podstawie 2 kolokwiów i projektu..."
+
+                # ==========================================
+                # RZĄD 3: Nieobecności | Plusy | Kolokwia
+                # ==========================================
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: dp(70)
+                    spacing: dp(20)
+                    
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_x: 1
+                        spacing: dp(5)
+                        Label:
+                            text: "Dopuszczalna liczba nieobecności"
+                            size_hint_y: None
+                            height: dp(30)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'bottom'
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            spacing: dp(10)
+                            DarkRoundedInput:
+                                id: input_absences
+                                hint_text: "np. 2"
+                                size_hint_x: 1
+                            Widget:
+                                size_hint_x: None
+                                width: dp(40)
+
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_x: 1
+                        spacing: dp(5)
+                        Label:
+                            text: "Maksymalna liczba plusów"
+                            size_hint_y: None
+                            height: dp(30)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'bottom'
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            spacing: dp(10)
+                            DarkRoundedInput:
+                                id: input_pluses
+                                hint_text: "np. 5"
+                                size_hint_x: 1
+                            Widget:
+                                size_hint_x: None
+                                width: dp(40)
+
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_x: 1
+                        spacing: dp(5)
+                        Label:
+                            text: "Maksymalna liczba punktów za kolokwia"
+                            size_hint_y: None
+                            height: dp(30)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'bottom'
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            spacing: dp(10)
+                            DarkRoundedInput:
+                                id: input_points
+                                hint_text: "np. 100"
+                                size_hint_x: 1
+                            Widget:
+                                size_hint_x: None
+                                width: dp(40)
+
+                # ==========================================
+                # RZĄD 4: Godzina startu | Czas trwania
+                # ==========================================
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: dp(70)
+                    spacing: dp(20)
+                    
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_x: 1
+                        spacing: dp(5)
+                        Label:
+                            text: "Godzina startu (HH:MM)"
+                            size_hint_y: None
+                            height: dp(30)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'bottom'
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            spacing: dp(10)
+                            DarkRoundedInput:
+                                id: input_time
+                                hint_text: "np. 08:00"
+                                size_hint_x: 1
+                            Widget:
+                                size_hint_x: None
+                                width: dp(40)
+
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_x: 1
+                        spacing: dp(5)
+                        Label:
+                            text: "Czas trwania (godziny)"
+                            size_hint_y: None
+                            height: dp(30)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'bottom'
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            spacing: dp(10)
+                            DarkRoundedInput:
+                                id: input_duration
+                                hint_text: "np. 1.5"
+                                size_hint_x: 1
+                            Widget:
+                                size_hint_x: None
+                                width: dp(40)
+
+                    Widget:
+                        size_hint_x: 1
+
+                # ==========================================
+                # RZĄD 5: Początek zajęć | Koniec zajęć
+                # ==========================================
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: dp(70)
+                    spacing: dp(20)
+                    
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_x: 1
+                        spacing: dp(5)
+                        Label:
+                            text: "Początek zajęć (YYYY-MM-DD)"
+                            size_hint_y: None
+                            height: dp(30)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'bottom'
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            spacing: dp(10)
+                            DarkRoundedInput:
+                                id: input_start_date
+                                hint_text: "np. 2026-10-01"
+                                size_hint_x: 1
+                            IconButton:
+                                source: 'images/ikona_kalendarz.png'
+                                size_hint_x: None
+                                width: dp(40)
+                                on_release: root.open_calendar('start')
+
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_x: 1
+                        spacing: dp(5)
+                        Label:
+                            text: "Koniec zajęć (YYYY-MM-DD)"
+                            size_hint_y: None
+                            height: dp(30)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'bottom'
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            spacing: dp(10)
+                            DarkRoundedInput:
+                                id: input_end_date
+                                hint_text: "np. 2027-02-15"
+                                size_hint_x: 1
+                            IconButton:
+                                source: 'images/ikona_kalendarz.png'
+                                size_hint_x: None
+                                width: dp(40)
+                                on_release: root.open_calendar('end')
+
+                    Widget:
+                        size_hint_x: 1
+
+                # ==========================================
+                # RZĄD 6: Dni zajęć
+                # ==========================================
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: dp(75)
+                    spacing: dp(5)
+                    
+                    Label:
+                        text: "Dni zajęć (możesz zaznaczyć wiele)"
+                        size_hint_y: None
+                        height: dp(30)
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'bottom'
+                        
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        size_hint_y: None
+                        height: dp(40)
+                        spacing: dp(5)
+                        
+                        WhiteCheckBox:
+                            id: chk_mon
+                        Label:
+                            text: "Pon"
+                            size_hint_x: None
+                            width: dp(40)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'middle'
+
+                        WhiteCheckBox:
+                            id: chk_tue
+                        Label:
+                            text: "Wt"
+                            size_hint_x: None
+                            width: dp(40)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'middle'
+
+                        WhiteCheckBox:
+                            id: chk_wed
+                        Label:
+                            text: "Śr"
+                            size_hint_x: None
+                            width: dp(40)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'middle'
+
+                        WhiteCheckBox:
+                            id: chk_thu
+                        Label:
+                            text: "Czw"
+                            size_hint_x: None
+                            width: dp(40)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'middle'
+
+                        WhiteCheckBox:
+                            id: chk_fri
+                        Label:
+                            text: "Pt"
+                            size_hint_x: None
+                            width: dp(40)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'middle'
+
+                        WhiteCheckBox:
+                            id: chk_sat
+                        Label:
+                            text: "Sob"
+                            size_hint_x: None
+                            width: dp(40)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'middle'
+
+                        WhiteCheckBox:
+                            id: chk_sun
+                        Label:
+                            text: "Ndz"
+                            size_hint_x: None
+                            width: dp(40)
+                            text_size: self.size
+                            halign: 'left'
+                            valign: 'middle'
+                            
+                        Widget: 
+
+                Widget:
+                    size_hint_y: None
+                    height: dp(10)
+
+                # ==========================================
+                # RZĄD 7: Przycisk Zapisu
+                # ==========================================
+                PrimaryButton:
+                    text: "Zapisz przedmiot"
+                    size_hint: None, None
+                    size: dp(160), dp(40)
+                    pos_hint: {'x': 0}
+                    on_release: root.save_subject()
