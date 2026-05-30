@@ -19,8 +19,6 @@ from KivyWidgets.kivyDatePickerBackend import KivyDatePickerBackend
 
 from Widgets.Brick import CalendarBrickData
 from Widgets.Button import ButtonStyle
-from KivyWidgets.KivyCalendarBrickAdapter import SafeKivyBrickBackend
-
 from database import save_daily_note, get_daily_note
 
 DAY_NAMES = {

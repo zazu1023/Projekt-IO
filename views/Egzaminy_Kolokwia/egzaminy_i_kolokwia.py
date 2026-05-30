@@ -45,10 +45,6 @@ if db_test.execute("SELECT COUNT(*) FROM subjects").fetchone()[0] == 0:
 
     db_test.commit()
 
-Factory.register('CustomButtonWidget', cls=CustomButtonWidget)
-
-kv_path = os.path.join(parent_dir, 'kv', 'egzaminy_i_kolokwia.kv')
-Builder.load_file(kv_path)
 
 
 class ExamsAndColloquiumsScreen(Screen):

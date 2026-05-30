@@ -16,7 +16,6 @@ from datetime import datetime
 from Widgets.countdown import CountdownWidget, CountdownStyle, KivyCountdownBackend
 
 
-import Style.stylesMain as styles
 
 from screenHandler import *
 
@@ -34,9 +33,9 @@ class StudentPlannerApp(App):
         self.translations = data
 
         Builder.load_file('Style/styles.kv')
-        Builder.load_file('kv/calendar.kv')
+        Builder.load_file('views/Kalendarz/calendar.kv')
 
-        root_widget = Builder.load_file('Style/main.kv')
+        root_widget = Builder.load_file('views/main.kv')
 
         self.sesja_countdown = CountdownWidget(
             target_date=datetime(2026, 6, 22, 0, 0),
