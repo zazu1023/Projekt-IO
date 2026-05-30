@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, patch
 def exam_screen_instance():
     with patch('kivy.lang.Builder.load_file'):
         with patch('database.get_connection') as mock_db:
-            from views.egzaminy_i_kolokwia import ExamsAndColloquiumsScreen 
+            from views.Egzaminy_Kolokwia.egzaminy_i_kolokwia import ExamsAndColloquiumsScreen 
             
             screen = ExamsAndColloquiumsScreen()
             
