@@ -86,6 +86,7 @@ class ExamsAndColloquiumsScreen(Screen):
             grid.add_widget(btn)
 
     def select_subject(self, instance, subject_id, subject_name):
+        app = App.get_running_app()
         if self.selected_subject_btn:
             self.selected_subject_btn.is_selected = False
             
@@ -93,7 +94,8 @@ class ExamsAndColloquiumsScreen(Screen):
         self.selected_subject_btn.is_selected = True
         self.selected_subject_id = subject_id
         
-        self.ids.label_selected_subject.text = f"Wybrany przedmiot: {subject_name}"
+        lbl_text = app.translate("lbl_selected_subject", app.language)
+        self.ids.label_selected_subject.text = f"{lbl_text}{subject_name}"
         self.load_events()
 
     def load_events(self, dt=None):
@@ -131,10 +133,11 @@ class ExamsAndColloquiumsScreen(Screen):
             print(f"CRITICAL ERROR (load_events): {e}")
 
     def submit_event(self):
+        app = App.get_running_app()
 
         # 1. sprawdzenie, czy wybrano przedmiot
         if not self.selected_subject_id:
-            self.show_error_popup("Najpierw wybierz przedmiot z listy powyżej!")
+            self.show_error_popup(app.translate("err_select_subject", app.language))
             return 
         event_title = self.ids.input_event_title.text.strip()
         event_date = self.ids.input_event_date.text.strip()
@@ -142,17 +145,17 @@ class ExamsAndColloquiumsScreen(Screen):
         
         # 2. walidacja tytułu (nie może być pusty)
         if not event_title:
-            self.show_error_popup("Tytuł wydarzenia nie może być pusty!")
+            self.show_error_popup(app.translate("err_empty_event_title", app.language))
             return
 
         # 3. walidacja daty (format YYYY-MM-DD)
         if not re.match(r"^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$", event_date):
-            self.show_error_popup("Data musi być w formacie RRRR-MM-DD\n(np. 2026-05-28)")
+            self.show_error_popup(app.translate("err_invalid_date_format", app.language))
             return
 
         # 4. walidacja godziny (format HH:MM)
         if not re.match(r"^([01]\d|2[0-3]):([0-5]\d)$", event_time):
-            self.show_error_popup("Godzina musi być w formacie HH:MM\n(np. 14:30)")
+            self.show_error_popup(app.translate("err_invalid_time_format", app.language))
             return
 
         full_event_start = f"{event_date} {event_time}"
@@ -171,19 +174,20 @@ class ExamsAndColloquiumsScreen(Screen):
         self.ids.input_event_time.text = ""
 
     def show_error_popup(self, error_message):
+        app = App.get_running_app()
         content = BoxLayout(orientation='vertical', padding=dp(20), spacing=dp(20))
         label = Label(text=error_message, halign='center', valign='middle')
         label.bind(size=label.setter('text_size'))
         content.add_widget(label)
 
         btn_ok = Factory.DangerButton()
-        btn_ok.text = "Poprawię"
+        btn_ok.text = app.translate("btn_will_fix", app.language)
         btn_ok.size_hint_y = None
         btn_ok.height = dp(40)
         content.add_widget(btn_ok)
 
         popup = Popup(
-            title="Błąd wprowadzania danych", 
+            title=app.translate("popup_error_input_title", app.language), 
             content=content, 
             size_hint=(None, None), size=(dp(400), dp(200)), 
             auto_dismiss=True
@@ -193,29 +197,31 @@ class ExamsAndColloquiumsScreen(Screen):
 
     def show_delete_popup(self, event_id, event_title):
         try:
+            app = App.get_running_app()
             content = BoxLayout(orientation='vertical', padding=dp(20), spacing=dp(20))
             
             # Bezpieczny tekst: usuwamy znaki '[', ']', które mogłyby zepsuć Kivy Markup i wywalić aplikację
             safe_title = event_title.replace('[', '').replace(']', '')
             
+            base_msg = app.translate("popup_delete_msg", app.language)
             message = Label(
-                text=f"Czy na pewno chcesz usunąć to wydarzenie:\n[b]{safe_title}[/b]?", 
+                text=base_msg.format(safe_title), 
                 markup=True, halign='center'
             )
             content.add_widget(message)
 
             buttons = BoxLayout(orientation='horizontal', spacing=dp(10), size_hint_y=None, height=dp(40))
             btn_cancel = Factory.PrimaryButton()
-            btn_cancel.text = "Anuluj"
+            btn_cancel.text = app.translate("btn_cancel", app.language)
             btn_confirm = Factory.DangerButton()
-            btn_confirm.text = "Usuń"
+            btn_confirm.text = app.translate("btn_delete", app.language)
             
             buttons.add_widget(btn_cancel)
             buttons.add_widget(btn_confirm)
             content.add_widget(buttons)
 
             popup = Popup(
-                title="Potwierdzenie usunięcia", 
+                title=app.translate("popup_delete_title", app.language), 
                 content=content, 
                 size_hint=(None, None), size=(dp(400), dp(200)), 
                 auto_dismiss=False
@@ -245,12 +251,15 @@ class ExamsAndColloquiumsScreen(Screen):
             self.load_events()
             
         except Exception as e:
+            app = App.get_running_app()
             db_connection.rollback()  # Wycofujemy zmiany, jeśli coś poszło nie tak
             popup.dismiss()
-            self.show_error_popup(f"Błąd przy usuwaniu z bazy:\n{str(e)}")
+            error_prefix = app.translate("err_db_delete", app.language)
+            self.show_error_popup(f"{error_prefix}{str(e)}")
 
     def open_calendar(self):
         """Otwiera własny DatePicker."""
+        app = App.get_running_app()
         dp_style = DatePickerStyle(
             bg_color=(0.15, 0.15, 0.15, 1), 
             selected_color=(0.2, 0.5, 0.8, 1), 
@@ -267,7 +276,7 @@ class ExamsAndColloquiumsScreen(Screen):
         picker_ui = picker.render()
         
         popup = Popup(
-            title="Wybierz datę egzaminu",
+            title=app.translate("popup_choose_exam_date", app.language),
             content=picker_ui,
             size_hint=(None, None),
             size=(400, 450)
