@@ -45,14 +45,20 @@ class AddSubjectScreen(Screen):
         
         # 2. POBIERANIE I KONWERSJA LICZB (puste pole = 0)
         try:
-            absences = int(self.ids.input_absences.text.strip() or 0)
-            pluses = float(self.ids.input_pluses.text.strip() or 0.0)
-            max_points = float(self.ids.input_points.text.strip() or 0.0)
+            # funkcja pomocnicza do poprawy formatu
+            def parse_float(value):
+                # zamiana przecinka na kropkę i usuniecie bialych znakow
+                return float(value.strip().replace(',', '.'))
             
-            duration_hours = float(self.ids.input_duration.text.strip() or 1.5)
-            duration_minutes = int(duration_hours * 60) # baza oczekuje minut
+            # pobieranie danych z obsługą przecinków
+            absences = int(parse_float(self.ids.input_absences.text.strip() or "0"))
+            pluses = parse_float(self.ids.input_pluses.text.strip() or "0.0")
+            max_points = parse_float(self.ids.input_points.text.strip() or "0.0")
+            
+            duration_hours = parse_float(self.ids.input_duration.text.strip() or "1.5")
+            duration_minutes = int(duration_hours * 60)
         except ValueError:
-            self.show_error_popup("Pola liczbowe mogą zawierać tylko cyfry\n(np. 1.5 dla półtorej godziny).")
+            self.show_error_popup("Pola liczbowe mogą zawierać tylko cyfry\n(np. 1.5 lub 1,5).")
             return
         
         # 3. POBIERANIE DAT I CZASU
