@@ -113,14 +113,14 @@
         height: dp(5) 
         
     PointControlRow:
-        label_text: "Plusy"
-        # Automatycznie aktualizuje tekst na ekranie!
+        # Dynamiczne tłumaczenie (app.language sprawia, że zmienia się na żywo)
+        label_text: app.translate("pluses_label", app.language) if hasattr(app, 'translate') else "Plusy"
         value_text: str(root.pluses_val) 
         action_minus: lambda: root.change_pluses(-1)
         action_plus: lambda: root.change_pluses(1)
         
     PointControlRow:
-        label_text: "Punkty za kolokwium"
+        label_text: app.translate("exam_points_label", app.language) if hasattr(app, 'translate') else "Punkty za kolokwium"
         value_text: str(root.exam_val)
         action_minus: lambda: root.change_exam(-1)
         action_plus: lambda: root.change_exam(1)

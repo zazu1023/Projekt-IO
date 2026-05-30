@@ -8,7 +8,7 @@ from views.mojePrzedmioty import MojePrzedmiotyScreen , SzczegolyPrzedmiotuScree
 from views.startKalendarz import StartKalendarz
 from views.egzaminy_i_kolokwia import ExamsAndColloquiumsScreen
 from views.dodaj_przedmiot import AddSubjectScreen
-from views.trackerProgressu import TrackerProgresuScreen
+from views.trackerProgressu import TrackerProgresuScreen, ProgressCard, PointControlRow
 from views.repozytoriumZadan import repoScreen
 
 SCREENS = {

@@ -32,7 +32,10 @@
     "max_absences": "Dopuszczalne nieobecności",
     "max_pluses": "Max liczba plusów",
     "general_note": "Notatka ogólna",
-    "save_note": "Zapisz notatkę"
+    "save_note": "Zapisz notatkę",
+    "pluses_label": "Plusy",
+    "exam_points_label": "Punkty za kolokwium",
+    "scored_points": "Zdobyto {total} z {max} punktów ({percent}%)"
 },
 
 "en" :{
@@ -68,6 +71,9 @@
     "max_absences": "Allowed absences",
     "max_pluses": "Max pluses",
     "general_note": "General note",
-    "save_note": "Save note"
+    "save_note": "Save note",
+    "pluses_label": "Activity points",
+    "exam_points_label": "Exam points",
+    "scored_points": "Scored {total} of {max} points ({percent}%)"
 }
 }
