@@ -1,1 +1,200 @@
+#:import ButtonStyle Widgets.Button.ButtonStyle
+#:import Shapes Widgets.Button.Shapes
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+<DashboardBrick2>:
+    size_hint: 1, None
+    height: dp(300)
+    
+    
+    padding: 0
+    spacing: 0
 
+    RelativeLayout:
+        size_hint: 1, 1
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 1, 1
+            padding: dp(5)
+            spacing: dp(0)
+
+
+
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: 1, 1
+                padding: dp(10)
+                spacing: dp(0)
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint: 1, 1
+                    padding: dp(5)
+                    spacing: dp(20)
+
+                    Label:
+                        text: root.subject_obj.title if root.subject_obj else ""
+                        bold: True
+                        color: [0, 0, 0, 1]
+                
+                        text_size: self.width, None
+                        shorten: True
+                        shorten_from: 'right'
+                    
+                        halign: 'left'
+                        valign: 'top'
+                        font_size: max(sp(16), min(root.width * 0.07, sp(26)))
+
+                    Label:
+                        text: root.subject_obj.teacher if root.subject_obj else ""
+                        color: [0.1, 0.1, 0.1, 1]
+                
+                        # ZMIANA: To samo dla nazwiska prowadzącego
+                        text_size: self.width, None
+                        shorten: True
+                        shorten_from: 'right'
+                
+                        halign: 'left'
+                        valign: 'bottom'
+                        font_size: max(sp(12), min(root.width * 0.045, sp(18)))
+                    
+                    
+
+                Label:
+                    text: app.translate(f"my_subject_{root.subject_obj.status}", app.language) if root.subject_obj else ""
+                    bold: True
+         
+                    color: [0, 0, 0, 1]
+                    text_size: self.size # Status zwykle jest krótki, tu wystarczy self.size
+                    halign: 'right'
+                    valign: 'top'
+                    font_size: max(sp(10), min(root.width * 0.04, sp(14)))  
+            
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: 1, 1
+                padding: dp(5)
+                spacing: dp(0)
+
+                Label:
+                    text: app.translate("absences", app.language) if root.subject_obj else ""
+                    bold: True
+
+                    color: [0, 0, 0, 1]
+                    text_size: self.size 
+                    halign: 'left'
+                    valign: 'bottom'
+
+                Label:
+                    text: str(root.subject_obj.absences) + "/" + str(root.subject_obj.max_absences) if root.subject_obj else ""if root.subject_obj else ""
+                    bold: True
+
+                    color: [0, 0, 0, 1]
+                    text_size: self.size 
+                    halign: 'right'
+                    valign: 'bottom'
+            ProgressBar:
+                max: root.subject_obj.max_absences
+                value: root.subject_obj.absences
+
+                size_hint_y: None
+                height: dp(16)
+            Label:
+                text: app.translate("passing_conditions", app.language) if root.subject_obj else ""
+                bold: True
+                size_hint_y: 0.4
+                color: [0, 0, 0, 1]
+                text_size: self.size 
+                halign: 'left'
+                valign: 'top'
+           
+            Widget:
+
+            Label:
+                text: root.subject_obj.conditions if root.subject_obj else ""
+
+                size_hint_y: 3
+                
+
+                color: 0,0,0,1
+
+                halign: "left"
+                valign: "top"
+
+                text_size: self.size
+
+                canvas.before:
+                    Color:
+                        rgba: 1,1,1,.7
+
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10]
+               
+            
+            
+            
+
+<SubjectGreenrep@DashboardBrick2>:
+    status_text: app.translate('my_subject_completed' , app.language)
+    style: ButtonStyle(bg_color="#62c57b", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
+
+<SubjectRedrep@DashboardBrick2>:
+    status_text: app.translate('my_subject_atrisk' , app.language)
+    style: ButtonStyle(bg_color="#f28b82", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
+
+<SubjectWhiterep@DashboardBrick2>:
+    status_text: app.translate('my_subject_inprogress' , app.language)
+    style: ButtonStyle(bg_color="#d9d9d7", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
+    
+<repoScreen@Screen>
+    BoxLayout:
+        
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(15)
+        
+        # Ciemnoszare tło całej aplikacji (jak na screenie poza niebieskim obszarem)
+        canvas.before:
+            Color:
+                rgba: get_color_from_hex("#332b2b")
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # Nagłówek
+        Label:
+            text: app.translate("my_subjects_text", app.language)
+            font_size: '24sp'
+            bold: True
+            size_hint_y: None
+            height: dp(40)
+            text_size: self.size
+            halign: 'left'
+            valign: 'middle'
+
+        # Niebieski kontener na kafelki
+        BoxLayout:
+            padding: dp(15)
+            canvas.before:
+                Color:
+                    rgba: get_color_from_hex("#1c4271") # Niebieskie tło
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10,]
+
+            # Siatka, która automatycznie układa kafelki od lewej do prawej
+            ScrollView:
+                do_scroll_x: False
+
+                GridLayout:
+                    id: grid_przedmiotow
+                    cols: 2 # Ilość kolumn (dostosuj do szerokości okna)
+                    spacing: dp(15)
+                    
+                    # Ważne: to pozwala siatce rosnąć w dół, jeśli dodasz więcej kafelków
+                    size_hint_y: None
+                    height: self.minimum_height
