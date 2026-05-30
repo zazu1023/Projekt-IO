@@ -38,7 +38,7 @@ class CalendarWidget(BoxLayout):
 
         self.events = [
             {
-                "date": date(2026, 5, 12),
+                "date": date(2026, 5, 30),
                 "data": CalendarBrickData(
                     id="1",
                     title="IO",
@@ -48,7 +48,7 @@ class CalendarWidget(BoxLayout):
                 )
             },
             {
-                "date": date(2026, 5, 12),
+                "date": date(2026, 5, 31),
                 "data": CalendarBrickData(
                     id="2",
                     title="ASD",
@@ -58,7 +58,7 @@ class CalendarWidget(BoxLayout):
                 )
             },
             {
-                "date": date(2026, 5, 12),
+                "date": date(2026, 5, 29),
                 "data": CalendarBrickData(
                     id="3",
                     title="ASD",

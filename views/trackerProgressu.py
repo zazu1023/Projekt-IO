@@ -114,7 +114,7 @@ class ProgressCard(BoxLayout):
         self.points_text = template.format(total=total, max=self.max_points, percent=percentage)
 
 class TrackerProgresuScreen(Screen):
-    def on_enter(self, *args):
+    def on_pre_enter(self, *args):
         self.load_cards()
 
     def load_cards(self):
