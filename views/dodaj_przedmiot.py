@@ -37,95 +37,97 @@ class AddSubjectScreen(Screen):
             self.ids.input_end_date.text = str(value)
 
     def save_subject(self):
-        """Zbiera dane, waliduje, formatuje i zapisuje do relacyjnej bazy danych."""
-        # 1. POBIERANIE TEKSTÓW Z UI
+        from datetime import datetime
+
+        # 1. POBIERANIE DANYCH
         subject_name = self.ids.input_name.text.strip()
         teacher_name = self.ids.input_teacher.text.strip()
         pass_conditions = self.ids.input_conditions.text.strip()
-        
-        # 2. POBIERANIE I KONWERSJA LICZB (puste pole = 0)
-        try:
-            # funkcja pomocnicza do poprawy formatu
-            def parse_float(value):
-                # zamiana przecinka na kropkę i usuniecie bialych znakow
-                return float(value.strip().replace(',', '.'))
-            
-            # pobieranie danych z obsługą przecinków
-            absences = int(parse_float(self.ids.input_absences.text.strip() or "0"))
-            pluses = parse_float(self.ids.input_pluses.text.strip() or "0.0")
-            max_points = parse_float(self.ids.input_points.text.strip() or "0.0")
-            
-            duration_hours = parse_float(self.ids.input_duration.text.strip() or "1.5")
-            duration_minutes = int(duration_hours * 60)
-        except ValueError:
-            self.show_error_popup("Pola liczbowe mogą zawierać tylko cyfry\n(np. 1.5 lub 1,5).")
-            return
-        
-        # 3. POBIERANIE DAT I CZASU
         start_time = self.ids.input_time.text.strip()
-        term_start = self.ids.input_start_date.text.strip()
-        term_end = self.ids.input_end_date.text.strip()
+        start_date = self.ids.input_start_date.text.strip()
+        end_date = self.ids.input_end_date.text.strip()
 
-        # 4. WALIDACJA FORMULARZA
+        # 2. WALIDACJA TEKSTÓW
         if not subject_name:
             self.show_error_popup("Nazwa przedmiotu jest wymagana!")
             return
+        if not teacher_name:
+            self.show_error_popup("Nazwa prowadzącego jest wymagana!")
+            return
 
+        # 3. WALIDACJA DAT (format i logika)
+        try:
+            d_start = datetime.strptime(start_date, '%Y-%m-%d')
+            d_end = datetime.strptime(end_date, '%Y-%m-%d')
+            if d_end < d_start:
+                self.show_error_popup("Data końca nie może być wcześniejsza niż startu!")
+                return
+        except ValueError:
+            self.show_error_popup("Daty muszą być w formacie YYYY-MM-DD!")
+            return
+
+        # 4. KONWERSJA I WALIDACJA LICZB
+        try:
+            def parse_float(val):
+                return float(val.strip().replace(',', '.'))
+
+            absences_text = self.ids.input_absences.text.strip() or "0"
+
+            try:
+                absences = int(absences_text)
+            except ValueError:
+                self.show_error_popup(
+                    "Liczba nieobecności musi być liczbą całkowitą.")
+                return
+
+            pluses = parse_float(self.ids.input_pluses.text.strip() or "0.0")
+            max_points = parse_float(self.ids.input_points.text.strip() or "0.0")
+            duration_hours = parse_float(self.ids.input_duration.text.strip() or "0.0")
+
+            if absences < 0 or pluses < 0 or max_points < 0 or duration_hours <= 0:
+                self.show_error_popup(
+                    "Wartości liczbowe muszą być dodatnie (czas > 0)!"
+                )
+                return
+
+            duration_minutes = int(duration_hours * 60)
+
+        except ValueError:
+            self.show_error_popup(
+                "Pola liczbowe mogą zawierać tylko cyfry\n(np. 1.5 lub 1,5)."
+            )
+            return
+
+        # 5. WALIDACJA GODZINY
         if not re.match(r"^([01]\d|2[0-3]):([0-5]\d)$", start_time):
             self.show_error_popup("Godzina startu musi być w formacie HH:MM\n(np. 08:00)")
             return
 
-        # 5. MAPOWANIE DNI TYGODNIA NA LICZBY (Zgodnie z bazą: 0=Pon, 6=Niedz)
-        day_mapping = {
-            self.ids.chk_mon: 0,
-            self.ids.chk_tue: 1,
-            self.ids.chk_wed: 2,
-            self.ids.chk_thu: 3,
-            self.ids.chk_fri: 4,
-            self.ids.chk_sat: 5,
-            self.ids.chk_sun: 6
-        }
+        # 6. DNI TYGODNIA
+        day_mapping = {self.ids.chk_mon: 0, self.ids.chk_tue: 1, self.ids.chk_wed: 2, 
+                       self.ids.chk_thu: 3, self.ids.chk_fri: 4, self.ids.chk_sat: 5, self.ids.chk_sun: 6}
+        selected_days = [val for chk, val in day_mapping.items() if chk.active]
         
-        selected_days = []
-        for checkbox, day_int in day_mapping.items():
-            if checkbox.active:
-                selected_days.append(day_int)
-                
         if not selected_days:
             self.show_error_popup("Zaznacz co najmniej jeden dzień zajęć!")
             return
 
-        # ==============================================================
-        # 6. ZAPIS DO RELACYJNEJ BAZY DANYCH
-        # ==============================================================
+        # 7. ZAPIS DO BAZY
         db_connection = db.get_connection()
         cursor = db_connection.cursor()
-        
         try:
-            query_subject = """
-                INSERT INTO subjects 
-                (name, teacher, grading_rules, max_absences, max_activity_points, max_colloquium_points, term_start, term_end) 
+            cursor.execute("""
+                INSERT INTO subjects (name, teacher, grading_rules, max_absences, max_activity_points, max_colloquium_points, term_start, term_end) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """
-            cursor.execute(query_subject, (
-                subject_name, teacher_name, pass_conditions, 
-                absences, pluses, max_points, term_start, term_end
-            ))
+            """, (subject_name, teacher_name, pass_conditions, absences, pluses, max_points, start_date, end_date))
             
             new_subject_id = cursor.lastrowid 
-            query_schedule = """
-                INSERT INTO schedule 
-                (subject_id, day_of_week, start_time, duration_minutes)
-                VALUES (?, ?, ?, ?)
-            """
             for day_int in selected_days:
-                cursor.execute(query_schedule, (new_subject_id, day_int, start_time, duration_minutes))
-
+                cursor.execute("INSERT INTO schedule (subject_id, day_of_week, start_time, duration_minutes) VALUES (?, ?, ?, ?)", 
+                               (new_subject_id, day_int, start_time, duration_minutes))
             db_connection.commit()
-            
             self.clear_form()
             print(f"SUKCES! Zapisano przedmiot '{subject_name}' oraz jego harmonogram do bazy danych.")
-
         except Exception as e:
             db_connection.rollback()
             self.show_error_popup(f"Wystąpił błąd podczas zapisu do bazy:\n{str(e)}")

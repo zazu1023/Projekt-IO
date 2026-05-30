@@ -220,6 +220,12 @@ def test_zero_values(mock_screen, mock_db):
     mock_screen.show_error_popup.assert_not_called()
     mock_db.commit.assert_called()
 
+def test_fractional_absences_not_allowed(mock_screen, mock_db):
+    mock_screen.ids.input_absences.text = "1.5"
+    mock_screen.save_subject()
+    mock_screen.show_error_popup.assert_called()
+    mock_db.commit.assert_not_called()
+
 def test_extreme_large_values(mock_screen, mock_db):
     mock_screen.ids.input_points.text = "2147483647" # Max int32
     mock_screen.save_subject()
