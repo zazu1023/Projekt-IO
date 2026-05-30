@@ -32,6 +32,7 @@ class AddSubjectScreen(Screen):
 
     def open_calendar(self, field_id):
         """Otwiera własny DatePicker zamiast MDDatePicker."""
+        app = App.get_running_app()
         self.active_date_field = field_id
 
         dp_style = DatePickerStyle(
@@ -50,7 +51,7 @@ class AddSubjectScreen(Screen):
         picker_ui = picker.render()
         
         popup = Popup(
-            title="Wybierz datę",
+            title=app.translate("popup_choose_date", app.language),
             content=picker_ui,
             size_hint=(None, None),
             size=(400, 450)
@@ -71,6 +72,7 @@ class AddSubjectScreen(Screen):
         popup.open()
 
     def save_subject(self):
+        app = App.get_running_app()
         # 1. POBIERANIE DANYCH
         subject_name = self.ids.input_name.text.strip()
         teacher_name = self.ids.input_teacher.text.strip()
@@ -81,10 +83,10 @@ class AddSubjectScreen(Screen):
 
         # 2. WALIDACJA TEKSTÓW
         if not subject_name:
-            self.show_error_popup("Nazwa przedmiotu jest wymagana!")
+            self.show_error_popup(app.translate("err_subject_req", app.language))
             return
         if not teacher_name:
-            self.show_error_popup("Nazwa prowadzącego jest wymagana!")
+            self.show_error_popup(app.translate("err_teacher_req", app.language))
             return
 
         # 3. WALIDACJA DAT
@@ -92,10 +94,10 @@ class AddSubjectScreen(Screen):
             d_start = datetime.strptime(start_date, '%Y-%m-%d')
             d_end = datetime.strptime(end_date, '%Y-%m-%d')
             if d_end < d_start:
-                self.show_error_popup("Data końca nie może być wcześniejsza niż startu!")
+                self.show_error_popup(app.translate("err_end_before_start", app.language))
                 return
         except ValueError:
-            self.show_error_popup("Daty muszą być w formacie YYYY-MM-DD!")
+            self.show_error_popup(app.translate("err_invalid_dates", app.language))
             return
 
         # 4. KONWERSJA I WALIDACJA LICZB
@@ -107,7 +109,7 @@ class AddSubjectScreen(Screen):
             try:
                 absences = int(absences_text)
             except ValueError:
-                self.show_error_popup("Liczba nieobecności musi być liczbą całkowitą.")
+                self.show_error_popup(app.translate("err_absences_int", app.language))
                 return
 
             pluses = parse_float(self.ids.input_pluses.text.strip() or "0.0")
@@ -115,17 +117,17 @@ class AddSubjectScreen(Screen):
             duration_hours = parse_float(self.ids.input_duration.text.strip() or "0.0")
 
             if absences < 0 or pluses < 0 or max_points < 0 or duration_hours <= 0:
-                self.show_error_popup("Wartości liczbowe muszą być dodatnie (czas > 0)!")
+                self.show_error_popup(app.translate("err_num_positive", app.language))
                 return
 
             duration_minutes = int(duration_hours * 60)
         except ValueError:
-            self.show_error_popup("Pola liczbowe mogą zawierać tylko cyfry\n(np. 1.5 lub 1,5).")
+            self.show_error_popup(app.translate("err_num_only", app.language))
             return
 
         # 5. WALIDACJA GODZINY
         if not re.match(r"^([01]\d|2[0-3]):([0-5]\d)$", start_time):
-            self.show_error_popup("Godzina startu musi być w formacie HH:MM\n(np. 08:00)")
+            self.show_error_popup(app.translate("err_start_time", app.language))
             return
 
         # 6. DNI TYGODNIA
@@ -134,7 +136,7 @@ class AddSubjectScreen(Screen):
         selected_days = [val for chk, val in day_mapping.items() if chk.active]
         
         if not selected_days:
-            self.show_error_popup("Zaznacz co najmniej jeden dzień zajęć!")
+            self.show_error_popup(app.translate("err_select_day", app.language))
             return
 
         # 7. ZAPIS DO BAZY
@@ -155,7 +157,8 @@ class AddSubjectScreen(Screen):
             print(f"SUKCES! Zapisano przedmiot '{subject_name}' oraz jego harmonogram do bazy danych.")
         except Exception as e:
             db_connection.rollback()
-            self.show_error_popup(f"Wystąpił błąd podczas zapisu do bazy:\n{str(e)}")
+            error_prefix = app.translate("err_db_save", app.language)
+            self.show_error_popup(f"{error_prefix}{str(e)}")
     
     def clear_form(self):
         self.ids.input_name.text = ""
@@ -174,19 +177,20 @@ class AddSubjectScreen(Screen):
             checkbox.active = False
 
     def show_error_popup(self, error_message):
+        app = App.get_running_app()
         content = BoxLayout(orientation='vertical', padding=dp(20), spacing=dp(20))
         label = Label(text=error_message, halign='center', valign='middle')
         label.bind(size=label.setter('text_size'))
         content.add_widget(label)
 
         btn_ok = Factory.DangerButton()
-        btn_ok.text = "Poprawię"
+        btn_ok.text = app.translate("btn_will_fix", app.language)
         btn_ok.size_hint_y = None
         btn_ok.height = dp(40)
         content.add_widget(btn_ok)
 
         popup = Popup(
-            title="Błąd formularza", 
+            title=app.translate("popup_error_form_title", app.language), 
             content=content, 
             size_hint=(None, None), size=(dp(400), dp(200)), 
             auto_dismiss=True

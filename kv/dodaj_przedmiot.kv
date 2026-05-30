@@ -81,7 +81,7 @@
                 size: self.size
 
         Label:
-            text: "Dodaj przedmiot"
+            text: app.translate("add_subject", app.language)
             font_size: '28sp'
             bold: True
             size_hint_y: None
@@ -122,7 +122,7 @@
                         size_hint_x: 1
                         spacing: dp(5)
                         Label:
-                            text: "Przedmiot"
+                            text: app.translate("subject_name", app.language)
                             size_hint_y: None
                             height: dp(30)
                             text_size: self.size
@@ -133,7 +133,7 @@
                             spacing: dp(10)
                             DarkRoundedInput:
                                 id: input_name
-                                hint_text: "np. Matematyka"
+                                hint_text: app.translate("hint_math", app.language)
                                 size_hint_x: 1
                             Widget:
                                 size_hint_x: None
@@ -144,7 +144,7 @@
                         size_hint_x: 1
                         spacing: dp(5)
                         Label:
-                            text: "Prowadzący"
+                            text: app.translate("teacher", app.language)
                             size_hint_y: None
                             height: dp(30)
                             text_size: self.size
@@ -155,7 +155,7 @@
                             spacing: dp(10)
                             DarkRoundedInput:
                                 id: input_teacher
-                                hint_text: "np. Jan Kowalski"
+                                hint_text: app.translate("hint_teacher", app.language)
                                 size_hint_x: 1
                             Widget:
                                 size_hint_x: None
@@ -173,7 +173,7 @@
                     height: input_conditions.height + dp(35)
                     spacing: dp(5)
                     Label:
-                        text: "Warunki zaliczenia"
+                        text: app.translate("passing_conditions", app.language)
                         size_hint_y: None
                         height: dp(30)
                         text_size: self.size
@@ -181,7 +181,7 @@
                         valign: 'bottom'
                     LightTextArea:
                         id: input_conditions
-                        hint_text: "np. Zaliczenie na podstawie 2 kolokwiów i projektu..."
+                        hint_text: app.translate("hint_conditions", app.language)
 
                 # ==========================================
                 # RZĄD 3: Nieobecności | Plusy | Kolokwia
@@ -197,7 +197,7 @@
                         size_hint_x: 1
                         spacing: dp(5)
                         Label:
-                            text: "Dopuszczalna liczba nieobecności"
+                            text: app.translate("max_absences", app.language)
                             size_hint_y: None
                             height: dp(30)
                             text_size: self.size
@@ -208,7 +208,7 @@
                             spacing: dp(10)
                             DarkRoundedInput:
                                 id: input_absences
-                                hint_text: "np. 2"
+                                hint_text: app.translate("hint_2", app.language)
                                 size_hint_x: 1
                             Widget:
                                 size_hint_x: None
@@ -219,7 +219,7 @@
                         size_hint_x: 1
                         spacing: dp(5)
                         Label:
-                            text: "Maksymalna liczba plusów"
+                            text: app.translate("max_pluses", app.language)
                             size_hint_y: None
                             height: dp(30)
                             text_size: self.size
@@ -230,7 +230,7 @@
                             spacing: dp(10)
                             DarkRoundedInput:
                                 id: input_pluses
-                                hint_text: "np. 5"
+                                hint_text: app.translate("hint_5", app.language)
                                 size_hint_x: 1
                             Widget:
                                 size_hint_x: None
@@ -241,7 +241,7 @@
                         size_hint_x: 1
                         spacing: dp(5)
                         Label:
-                            text: "Maksymalna liczba punktów za kolokwia"
+                            text: app.translate("exam_points_label", app.language)
                             size_hint_y: None
                             height: dp(30)
                             text_size: self.size
@@ -252,7 +252,7 @@
                             spacing: dp(10)
                             DarkRoundedInput:
                                 id: input_points
-                                hint_text: "np. 100"
+                                hint_text: app.translate("hint_100", app.language)
                                 size_hint_x: 1
                             Widget:
                                 size_hint_x: None
@@ -272,7 +272,7 @@
                         size_hint_x: 1
                         spacing: dp(5)
                         Label:
-                            text: "Godzina startu (HH:MM)"
+                            text: app.translate("lbl_start_time", app.language)
                             size_hint_y: None
                             height: dp(30)
                             text_size: self.size
@@ -283,7 +283,7 @@
                             spacing: dp(10)
                             DarkRoundedInput:
                                 id: input_time
-                                hint_text: "np. 08:00"
+                                hint_text: app.translate("hint_time_0800", app.language)
                                 size_hint_x: 1
                             Widget:
                                 size_hint_x: None
@@ -294,7 +294,7 @@
                         size_hint_x: 1
                         spacing: dp(5)
                         Label:
-                            text: "Czas trwania (godziny)"
+                            text: app.translate("lbl_duration", app.language)
                             size_hint_y: None
                             height: dp(30)
                             text_size: self.size
@@ -305,7 +305,7 @@
                             spacing: dp(10)
                             DarkRoundedInput:
                                 id: input_duration
-                                hint_text: "np. 1.5"
+                                hint_text: app.translate("hint_duration_15", app.language)
                                 size_hint_x: 1
                             Widget:
                                 size_hint_x: None
@@ -328,7 +328,7 @@
                         size_hint_x: 1
                         spacing: dp(5)
                         Label:
-                            text: "Początek zajęć (YYYY-MM-DD)"
+                            text: app.translate("lbl_term_start", app.language)
                             size_hint_y: None
                             height: dp(30)
                             text_size: self.size
@@ -339,7 +339,7 @@
                             spacing: dp(10)
                             DarkRoundedInput:
                                 id: input_start_date
-                                hint_text: "np. 2026-10-01"
+                                hint_text: app.translate("hint_date_2026", app.language)
                                 size_hint_x: 1
                             IconButton:
                                 source: 'Images/ikona_kalendarz.png'
@@ -352,7 +352,7 @@
                         size_hint_x: 1
                         spacing: dp(5)
                         Label:
-                            text: "Koniec zajęć (YYYY-MM-DD)"
+                            text: app.translate("lbl_term_end", app.language)
                             size_hint_y: None
                             height: dp(30)
                             text_size: self.size
@@ -363,7 +363,7 @@
                             spacing: dp(10)
                             DarkRoundedInput:
                                 id: input_end_date
-                                hint_text: "np. 2027-02-15"
+                                hint_text: app.translate("hint_date_2027", app.language)
                                 size_hint_x: 1
                             IconButton:
                                 source: 'Images/ikona_kalendarz.png'
@@ -384,7 +384,7 @@
                     spacing: dp(5)
                     
                     Label:
-                        text: "Dni zajęć (możesz zaznaczyć wiele)"
+                        text: app.translate("lbl_class_days", app.language)
                         size_hint_y: None
                         height: dp(30)
                         text_size: self.size
@@ -400,7 +400,7 @@
                         WhiteCheckBox:
                             id: chk_mon
                         Label:
-                            text: "Pon"
+                            text: app.translate("day_mon", app.language)
                             size_hint_x: None
                             width: dp(40)
                             text_size: self.size
@@ -410,7 +410,7 @@
                         WhiteCheckBox:
                             id: chk_tue
                         Label:
-                            text: "Wt"
+                            text: app.translate("day_tue", app.language)
                             size_hint_x: None
                             width: dp(40)
                             text_size: self.size
@@ -420,7 +420,7 @@
                         WhiteCheckBox:
                             id: chk_wed
                         Label:
-                            text: "Śr"
+                            text: app.translate("day_wed", app.language)
                             size_hint_x: None
                             width: dp(40)
                             text_size: self.size
@@ -430,7 +430,7 @@
                         WhiteCheckBox:
                             id: chk_thu
                         Label:
-                            text: "Czw"
+                            text: app.translate("day_thu", app.language)
                             size_hint_x: None
                             width: dp(40)
                             text_size: self.size
@@ -440,7 +440,7 @@
                         WhiteCheckBox:
                             id: chk_fri
                         Label:
-                            text: "Pt"
+                            text: app.translate("day_fri", app.language)
                             size_hint_x: None
                             width: dp(40)
                             text_size: self.size
@@ -450,7 +450,7 @@
                         WhiteCheckBox:
                             id: chk_sat
                         Label:
-                            text: "Sob"
+                            text: app.translate("day_sat", app.language)
                             size_hint_x: None
                             width: dp(40)
                             text_size: self.size
@@ -460,7 +460,7 @@
                         WhiteCheckBox:
                             id: chk_sun
                         Label:
-                            text: "Ndz"
+                            text: app.translate("day_sun", app.language)
                             size_hint_x: None
                             width: dp(40)
                             text_size: self.size
@@ -477,7 +477,7 @@
                 # RZĄD 7: Przycisk Zapisu
                 # ==========================================
                 PrimaryButton:
-                    text: "Zapisz przedmiot"
+                    text: app.translate("btn_save_subject", app.language)
                     size_hint: None, None
                     size: dp(160), dp(40)
                     pos_hint: {'x': 0}

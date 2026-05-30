@@ -3,7 +3,7 @@
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 <DashboardBrick2>:
     size_hint: 1, None
-    height: dp(300)
+    height: dp(400)
     
     
     padding: 0
@@ -15,7 +15,7 @@
         BoxLayout:
             orientation: 'vertical'
             size_hint: 1, 1
-            padding: dp(5)
+            padding: dp(10)
             spacing: dp(0)
 
 
@@ -24,7 +24,7 @@
             BoxLayout:
                 orientation: 'horizontal'
                 size_hint: 1, 1
-                padding: dp(10)
+                padding: dp(5)
                 spacing: dp(0)
 
                 BoxLayout:
@@ -36,7 +36,7 @@
                     Label:
                         text: root.subject_obj.title if root.subject_obj else ""
                         bold: True
-                        color: [0, 0, 0, 1]
+                        color: [1, 1, 1, 1]
                 
                         text_size: self.width, None
                         shorten: True
@@ -47,16 +47,18 @@
                         font_size: max(sp(16), min(root.width * 0.07, sp(26)))
 
                     Label:
+
+                    Label:
                         text: root.subject_obj.teacher if root.subject_obj else ""
-                        color: [0.1, 0.1, 0.1, 1]
-                
+                        color: [1, 1, 1, 1]
+                        bold: True
                         # ZMIANA: To samo dla nazwiska prowadzącego
                         text_size: self.width, None
                         shorten: True
                         shorten_from: 'right'
-                
                         halign: 'left'
-                        valign: 'bottom'
+                        valign: 'middle'
+                        
                         font_size: max(sp(12), min(root.width * 0.045, sp(18)))
                     
                     
@@ -64,16 +66,27 @@
                 Label:
                     text: app.translate(f"my_subject_{root.subject_obj.status}", app.language) if root.subject_obj else ""
                     bold: True
-         
-                    color: [0, 0, 0, 1]
+                    size_hint: 0.5 , 0.5
+                    color: [1, 1, 1, 1]
                     text_size: self.size # Status zwykle jest krótki, tu wystarczy self.size
-                    halign: 'right'
-                    valign: 'top'
-                    font_size: max(sp(10), min(root.width * 0.04, sp(14)))  
+                    
+                    halign: 'center'
+                    valign: 'middle'
+                    font_size: max(sp(10), min(root.width * 0.04, sp(14)))
+                    canvas.before:
+                        Color:
+                            rgba:get_color_from_hex("#62c57b") if root.subject_obj.status == "completed" else get_color_from_hex("#f28b82") if root.subject_obj.status == "atrisk" else get_color_from_hex("#a19b2a")
+                        
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [10]
+                            
+                    
             
             BoxLayout:
                 orientation: 'horizontal'
-                size_hint: 1, 1
+                size_hint: 1, 0.5
                 padding: dp(5)
                 spacing: dp(0)
 
@@ -81,52 +94,76 @@
                     text: app.translate("absences", app.language) if root.subject_obj else ""
                     bold: True
 
-                    color: [0, 0, 0, 1]
+                    color: [1, 1, 1, 1]
                     text_size: self.size 
                     halign: 'left'
                     valign: 'bottom'
+                    font_size: max(sp(15), min(root.width * 0.05, sp(24)))
 
                 Label:
                     text: str(root.subject_obj.absences) + "/" + str(root.subject_obj.max_absences) if root.subject_obj else ""if root.subject_obj else ""
                     bold: True
-
-                    color: [0, 0, 0, 1]
+                    shorten: True
+                    shorten_from: 'right'
+                    color: [1, 1, 1, 1]
                     text_size: self.size 
                     halign: 'right'
                     valign: 'bottom'
+                    font_size: max(sp(15), min(root.width * 0.05, sp(24)))
+            
+            
+            
             ProgressBar:
                 max: root.subject_obj.max_absences
                 value: root.subject_obj.absences
 
                 size_hint_y: None
                 height: dp(16)
+                canvas.before:
+                    Color:
+                        rgba: 1,1,1,.7
+
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        
+                        radius: [10]
+                     
             Label:
                 text: app.translate("passing_conditions", app.language) if root.subject_obj else ""
                 bold: True
-                size_hint_y: 0.4
-                color: [0, 0, 0, 1]
+                size_hint_y: 0.5
+                color: [1, 1, 1, 1]
                 text_size: self.size 
                 halign: 'left'
-                valign: 'top'
-           
-            Widget:
+                valign: 'bottom'
+                font_size: max(sp(15), min(root.width * 0.05, sp(24)))
+                
+
+                
+                
+            
+            
+            
+
+            
 
             Label:
                 text: root.subject_obj.conditions if root.subject_obj else ""
 
-                size_hint_y: 3
+                size_hint_y: 2.5
                 
 
-                color: 0,0,0,1
+                color: 1,1,1,1
 
                 halign: "left"
                 valign: "top"
 
                 text_size: self.size
-
+                font_size:max(sp(14), min(root.width * 0.04, sp(18)))
                 canvas.before:
                     Color:
-                        rgba: 1,1,1,.7
+                        rgba: get_color_from_hex("#2e2828")
 
                     RoundedRectangle:
                         pos: self.pos
@@ -139,15 +176,15 @@
 
 <SubjectGreenrep@DashboardBrick2>:
     status_text: app.translate('my_subject_completed' , app.language)
-    style: ButtonStyle(bg_color="#62c57b", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color="#1c4271", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
 
 <SubjectRedrep@DashboardBrick2>:
     status_text: app.translate('my_subject_atrisk' , app.language)
-    style: ButtonStyle(bg_color="#f28b82", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color="#1c4271", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
 
 <SubjectWhiterep@DashboardBrick2>:
     status_text: app.translate('my_subject_inprogress' , app.language)
-    style: ButtonStyle(bg_color="#d9d9d7", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color="#1c4271", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
     
 <repoScreen@Screen>
     BoxLayout:
@@ -166,7 +203,7 @@
 
         # Nagłówek
         Label:
-            text: app.translate("my_subjects_text", app.language)
+            text: app.translate("rules_repository", app.language)
             font_size: '24sp'
             bold: True
             size_hint_y: None
@@ -180,7 +217,7 @@
             padding: dp(15)
             canvas.before:
                 Color:
-                    rgba: get_color_from_hex("#1c4271") # Niebieskie tło
+                    rgba: get_color_from_hex("#332b2b") # Niebieskie tło
                 RoundedRectangle:
                     pos: self.pos
                     size: self.size
