@@ -1,5 +1,14 @@
 import os
+import sys
 import re
+from datetime import datetime, date
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+
+from kivy.app import App
 from kivy.uix.screenmanager import Screen
 from kivy.lang import Builder
 from kivy.metrics import dp
@@ -7,38 +16,61 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.factory import Factory
-from kivymd.uix.pickers import MDDatePicker
-from kivymd.app import MDApp
 from KivyWidgets.KivyButtonBackend import CustomButtonWidget
+
+from Widgets.datePicker import DatePicker, DatePickerStyle
+from KivyWidgets.kivyDatePickerBackend import KivyDatePickerBackend
+
 import database as db
 
-# Ścieżka do pliku .kv
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
 kv_path = os.path.join(parent_dir, 'kv', 'dodaj_przedmiot.kv')
 
 class AddSubjectScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.active_date_field = None  # przechowuje informację, które pole daty aktualizujemy
+        self.active_date_field = None  # przechowuje informacje, które pole daty aktualizujemy
 
     def open_calendar(self, field_id):
-        """Otwiera kalendarz i zapamiętuje, do którego pola wpisać wynik."""
+        """Otwiera własny DatePicker zamiast MDDatePicker."""
         self.active_date_field = field_id
-        date_dialog = MDDatePicker()
-        date_dialog.bind(on_save=self.on_date_selected)
-        date_dialog.open()
 
-    def on_date_selected(self, instance, value, date_range):
-        """Wstawia wybraną datę do odpowiedniego pola."""
-        if self.active_date_field == 'start':
-            self.ids.input_start_date.text = str(value)
-        elif self.active_date_field == 'end':
-            self.ids.input_end_date.text = str(value)
+        dp_style = DatePickerStyle(
+            bg_color=(0.15, 0.15, 0.15, 1),
+            selected_color=(0.2, 0.5, 0.8, 1),
+            today_color=(0.8, 0.8, 0.8, 1),
+            text_color=(1, 1, 1, 1)
+        )
+        backend = KivyDatePickerBackend()
+        picker = DatePicker(
+            selected_date=date.today(),
+            backend=backend,
+            style=dp_style
+        )
+        
+        picker_ui = picker.render()
+        
+        popup = Popup(
+            title="Wybierz datę",
+            content=picker_ui,
+            size_hint=(None, None),
+            size=(400, 450)
+        )
+
+        def on_confirm(instance):
+            chosen_date = backend.selected_date
+            date_str = str(chosen_date)
+            
+            if self.active_date_field == 'start':
+                self.ids.input_start_date.text = date_str
+            elif self.active_date_field == 'end':
+                self.ids.input_end_date.text = date_str
+            
+            popup.dismiss()
+
+        backend.confirm_button.bind(on_release=on_confirm)
+        popup.open()
 
     def save_subject(self):
-        from datetime import datetime
-
         # 1. POBIERANIE DANYCH
         subject_name = self.ids.input_name.text.strip()
         teacher_name = self.ids.input_teacher.text.strip()
@@ -55,7 +87,7 @@ class AddSubjectScreen(Screen):
             self.show_error_popup("Nazwa prowadzącego jest wymagana!")
             return
 
-        # 3. WALIDACJA DAT (format i logika)
+        # 3. WALIDACJA DAT
         try:
             d_start = datetime.strptime(start_date, '%Y-%m-%d')
             d_end = datetime.strptime(end_date, '%Y-%m-%d')
@@ -72,12 +104,10 @@ class AddSubjectScreen(Screen):
                 return float(val.strip().replace(',', '.'))
 
             absences_text = self.ids.input_absences.text.strip() or "0"
-
             try:
                 absences = int(absences_text)
             except ValueError:
-                self.show_error_popup(
-                    "Liczba nieobecności musi być liczbą całkowitą.")
+                self.show_error_popup("Liczba nieobecności musi być liczbą całkowitą.")
                 return
 
             pluses = parse_float(self.ids.input_pluses.text.strip() or "0.0")
@@ -85,17 +115,12 @@ class AddSubjectScreen(Screen):
             duration_hours = parse_float(self.ids.input_duration.text.strip() or "0.0")
 
             if absences < 0 or pluses < 0 or max_points < 0 or duration_hours <= 0:
-                self.show_error_popup(
-                    "Wartości liczbowe muszą być dodatnie (czas > 0)!"
-                )
+                self.show_error_popup("Wartości liczbowe muszą być dodatnie (czas > 0)!")
                 return
 
             duration_minutes = int(duration_hours * 60)
-
         except ValueError:
-            self.show_error_popup(
-                "Pola liczbowe mogą zawierać tylko cyfry\n(np. 1.5 lub 1,5)."
-            )
+            self.show_error_popup("Pola liczbowe mogą zawierać tylko cyfry\n(np. 1.5 lub 1,5).")
             return
 
         # 5. WALIDACJA GODZINY
@@ -133,7 +158,6 @@ class AddSubjectScreen(Screen):
             self.show_error_popup(f"Wystąpił błąd podczas zapisu do bazy:\n{str(e)}")
     
     def clear_form(self):
-        """Czyści formularz po pomyślnym dodaniu przedmiotu."""
         self.ids.input_name.text = ""
         self.ids.input_teacher.text = ""
         self.ids.input_conditions.text = ""
@@ -170,15 +194,9 @@ class AddSubjectScreen(Screen):
         btn_ok.bind(on_release=popup.dismiss)
         popup.open()
 
-# ==============================================================
-# BLOK TESTOWY - DO URUCHAMIANIA WIDOKU SAMODZIELNIE
-# (Usuń lub zakomentuj ten blok przed integracją z main.py)
-# ==============================================================
-class AddSubjectTestApp(MDApp):
+
+class AddSubjectTestApp(App):
     def build(self):
-        self.theme_cls.theme_style = "Dark"
-        self.theme_cls.primary_palette = "Blue"
-        # Rejestrujemy CustomButtonWidget (wymagane dla przycisków)
         Factory.register('CustomButtonWidget', cls=CustomButtonWidget)
         Builder.load_file(kv_path)
         return AddSubjectScreen()
