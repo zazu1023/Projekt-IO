@@ -17,6 +17,6 @@ SCREENS = {
             'calendar' : {'class': StartKalendarz, 'kv': 'kv/home.kv'},
             'add_subject': {'class': AddSubjectScreen, 'kv': 'kv/dodaj_przedmiot.kv'},
             'exams_tests': {'class': ExamsAndColloquiumsScreen, 'kv': 'kv/egzaminy_i_kolokwia.kv'},
-            'rules_repository': {'class': StartKalendarz, 'kv': 'kv/home.kv'},
+            'rules_repository': {'class': repoScreen, 'kv': 'kv/rules_repository.kv'},
             'progress_tracker': {'class': TrackerProgresuScreen, 'kv': 'kv/tracker_progresu.kv'},
         }
