@@ -197,7 +197,6 @@ class ExamsAndColloquiumsScreen(BoxLayout):
         btn_cancel.text = "Anuluj"
         btn_confirm = Factory.DangerButton()
         btn_confirm.text = "Usuń"
-
         buttons.add_widget(btn_cancel)
         buttons.add_widget(btn_confirm)
         content.add_widget(buttons)
@@ -227,7 +226,6 @@ class ExamsAndColloquiumsScreen(BoxLayout):
         date_dialog.open()
 
     def on_date_selected(self, instance, value, date_range):
-        # zamieniam zmienna value na zwykły tekst i wrzucamy prosto do pola tekstowego
         self.ids.input_event_date.text = str(value)
 
 class ExamsAndColloquiumsApp(MDApp):
