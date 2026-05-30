@@ -16,6 +16,7 @@ from kivy.clock import Clock
 from kivy.metrics import dp 
 from kivy.uix.popup import Popup 
 from kivy.uix.label import Label
+from kivy.uix.boxlayout import BoxLayout
 from kivy.core.window import Window
 from Widgets.datePicker import DatePicker, DatePickerStyle
 from KivyWidgets.kivyDatePickerBackend import KivyDatePickerBackend
@@ -99,27 +100,35 @@ class ExamsAndColloquiumsScreen(Screen):
         container = self.ids.events_container
         container.clear_widgets() 
         
-        db_connection = db.get_connection()
-        
-        query = """
-            SELECT events.id, events.title, events.date_time, subjects.name AS subject_name 
-            FROM events 
-            JOIN subjects ON events.subject_id = subjects.id 
-            ORDER BY events.date_time ASC
-        """
-        fetched_events = db_connection.execute(query).fetchall()
+        try:
+            db_connection = db.get_connection()
+            cursor = db_connection.cursor()
+            query = """
+                SELECT events.id, events.title, events.date_time, subjects.name AS subject_name 
+                FROM events 
+                JOIN subjects ON events.subject_id = subjects.id 
+                ORDER BY events.date_time ASC
+            """
+            fetched_events = cursor.execute(query).fetchall()
 
-        for event_record in fetched_events:
-            card = Factory.EventCard()
-            card.date_text = event_record['date_time']
-            card.title_text = event_record['title']
-            
-            card.subject_text = event_record['subject_name'] 
-            
-            event_id = event_record['id']
-            card.ids.btn_delete.bind(on_release=lambda instance, e_id=event_id, e_title=event_record['title']: self.show_delete_popup(e_id, e_title))
-            
-            container.add_widget(card)
+            for event_record in fetched_events:
+                card = Factory.EventCard()
+                card.date_text = str(event_record['date_time'])
+                card.title_text = str(event_record['title'])
+                card.subject_text = str(event_record['subject_name']) 
+                
+                # Przypisujemy do lokalnych zmiennych, aby uchronić się przed błędem "late binding" w lambdzie
+                event_id = event_record['id']
+                event_title = str(event_record['title'])
+                
+                # Bezpieczny bind
+                card.ids.btn_delete.bind(
+                    on_release=lambda instance, e_id=event_id, e_title=event_title: self.show_delete_popup(e_id, e_title)
+                )
+                
+                container.add_widget(card)
+        except Exception as e:
+            print(f"CRITICAL ERROR (load_events): {e}")
 
     def submit_event(self):
 
@@ -183,40 +192,62 @@ class ExamsAndColloquiumsScreen(Screen):
         popup.open()
 
     def show_delete_popup(self, event_id, event_title):
-        content = BoxLayout(orientation='vertical', padding=dp(20), spacing=dp(20))
-        message = Label(
-            text=f"Czy na pewno chcesz usunąć to wydarzenie:\n[b]{event_title}[/b]?", 
-            markup=True, halign='center'
-        )
-        content.add_widget(message)
+        try:
+            content = BoxLayout(orientation='vertical', padding=dp(20), spacing=dp(20))
+            
+            # Bezpieczny tekst: usuwamy znaki '[', ']', które mogłyby zepsuć Kivy Markup i wywalić aplikację
+            safe_title = event_title.replace('[', '').replace(']', '')
+            
+            message = Label(
+                text=f"Czy na pewno chcesz usunąć to wydarzenie:\n[b]{safe_title}[/b]?", 
+                markup=True, halign='center'
+            )
+            content.add_widget(message)
 
-        buttons = BoxLayout(orientation='horizontal', spacing=dp(10), size_hint_y=None, height=dp(40))
-        btn_cancel = Factory.PrimaryButton()
-        btn_cancel.text = "Anuluj"
-        btn_confirm = Factory.DangerButton()
-        btn_confirm.text = "Usuń"
-        buttons.add_widget(btn_cancel)
-        buttons.add_widget(btn_confirm)
-        content.add_widget(buttons)
+            buttons = BoxLayout(orientation='horizontal', spacing=dp(10), size_hint_y=None, height=dp(40))
+            btn_cancel = Factory.PrimaryButton()
+            btn_cancel.text = "Anuluj"
+            btn_confirm = Factory.DangerButton()
+            btn_confirm.text = "Usuń"
+            
+            buttons.add_widget(btn_cancel)
+            buttons.add_widget(btn_confirm)
+            content.add_widget(buttons)
 
-        popup = Popup(
-            title="Potwierdzenie usunięcia", 
-            content=content, 
-            size_hint=(None, None), size=(dp(400), dp(200)), 
-            auto_dismiss=False
-        )
+            popup = Popup(
+                title="Potwierdzenie usunięcia", 
+                content=content, 
+                size_hint=(None, None), size=(dp(400), dp(200)), 
+                auto_dismiss=False
+            )
 
-        btn_cancel.bind(on_release=popup.dismiss)
-        btn_confirm.bind(on_release=lambda instance: self.delete_event(event_id, popup))
-        popup.open()
+            btn_cancel.bind(on_release=popup.dismiss)
+            # Przekazujemy id i okienko popup do funkcji usuwającej
+            btn_confirm.bind(on_release=lambda instance: self.delete_event(event_id, popup))
+            
+            popup.open()
+        except Exception as e:
+            print(f"CRITICAL ERROR (show_delete_popup): {e}")
 
     def delete_event(self, event_id, popup):
-        db_connection = db.get_connection()
-        db_connection.execute("DELETE FROM events WHERE id = ?", (event_id,))
-        db_connection.commit()
-        
-        popup.dismiss()
-        self.load_events()
+        try:
+            db_connection = db.get_connection()
+            cursor = db_connection.cursor()
+            
+            # Krok 1: Usuwamy fizycznie z bazy danych
+            cursor.execute("DELETE FROM events WHERE id = ?", (event_id,))
+            db_connection.commit()
+            
+            # Krok 2: Zamykamy okienko z zapytaniem
+            popup.dismiss()
+            
+            # Krok 3: Odświeżamy listę na ekranie (skasowane wydarzenie natychmiast zniknie)
+            self.load_events()
+            
+        except Exception as e:
+            db_connection.rollback()  # Wycofujemy zmiany, jeśli coś poszło nie tak
+            popup.dismiss()
+            self.show_error_popup(f"Błąd przy usuwaniu z bazy:\n{str(e)}")
 
     def open_calendar(self):
         """Otwiera własny DatePicker."""
