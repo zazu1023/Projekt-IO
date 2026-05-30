@@ -1,10 +1,34 @@
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+
+<CalendarNavButton@Button>:
+    background_normal: ""
+    background_down: ""
+    background_color: 0, 0, 0, 0
+    color: 1, 1, 1, 1
+    font_size: 14
+    bold: True
+    
+    # Zabezpieczenie przed wylewaniem się tekstu przy mocnym ściśnięciu okna
+    text_size: self.width - 15, None
+    halign: 'center'
+    shorten: True
+    shorten_from: 'right'
+
+    canvas.before:
+        Color:
+            rgba: get_color_from_hex("#707070") if self.state == "down" else get_color_from_hex("#5e5e5e")
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [self.height / 2]
+
 <CalendarWidget>:
     orientation: "vertical"
     padding: [30, 20, 30, 20] 
     spacing: 15
 
     Label:
-        text: app.translations[app.language]["start_calendar"]
+        text: app.translate("start_calendar", app.language)
         font_size: '26sp'
         bold: True
         color: 1, 1, 1, 1
@@ -30,43 +54,41 @@
         Label:
             text: root.week_label
             size_hint_y: None
-            height: 24
+            height: 30
             color: 1, 1, 1, 1
             font_size: 14
             halign: "left"
             valign: "middle"
             text_size: self.size
 
+        # === ZMIANA: Max szerokość 740px, trzyma się lewej, kurczy przy zmniejszaniu ===
         BoxLayout:
+            size_hint_x: None
+            width: min(self.parent.width - 32, 740)
             size_hint_y: None
             height: 36
             spacing: 10
 
-            Button:
-                text: app.translations[app.language]["btn_prev"]
-                size_hint_x: None
-                width: 150
+            CalendarNavButton:
+                text: app.translate("btn_prev", app.language)
+                size_hint_x: 1.5
                 on_release: root.previous_week()
 
-            Button:
-                text: app.translations[app.language]["btn_next"]
-                size_hint_x: None
-                width: 150
+            CalendarNavButton:
+                text: app.translate("btn_next", app.language)
+                size_hint_x: 1.5
                 on_release: root.next_week()
 
-            Button:
-                text: app.translations[app.language]["btn_current"]
-                size_hint_x: None
-                width: 220
+            CalendarNavButton:
+                text: app.translate("btn_current", app.language)
+                size_hint_x: 2.2
                 on_release: root.current_week()
 
-            Button:
-                text: app.translations[app.language]["btn_choose"]
-                size_hint_x: None
-                width: 190
+            CalendarNavButton:
+                text: app.translate("btn_choose", app.language)
+                size_hint_x: 1.9
                 on_release: root.choose_week()
-
-            Widget:
+        # =========================================================================
 
         BoxLayout:
             orientation: "horizontal"
@@ -103,7 +125,7 @@
                 radius: [12]
 
         Label:
-            text: app.translations[app.language]["upcoming"]
+            text: app.translate("upcoming", app.language)
             size_hint_y: None
             height: 26
             color: 1, 1, 1, 1

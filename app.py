@@ -46,7 +46,7 @@ class StudentPlannerApp(App):
         )
 
         self.sm = root_widget.ids.sm
-        self.change_screen(target_screen='mySubjects')
+        self.change_screen(target_screen='calendar')
         return root_widget
 
 
