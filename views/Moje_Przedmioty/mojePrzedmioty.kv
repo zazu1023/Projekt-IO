@@ -39,7 +39,7 @@
             Label:
                 text: root.subject_obj.title if root.subject_obj else ""
                 bold: True
-                color: [0, 0, 0, 1]
+                color: get_color_from_hex(root.style.text_color) if root.style else [0,0,0,1]
                 
                 text_size: self.width, None
                 shorten: True
@@ -51,7 +51,7 @@
 
             Label:
                 text: root.subject_obj.teacher if root.subject_obj else ""
-                color: [0.1, 0.1, 0.1, 1]
+                color: get_color_from_hex(root.style.text_color) if root.style else [0,0,0,1]
                 
                 # ZMIANA: To samo dla nazwiska prowadzącego
                 text_size: self.width, None
@@ -66,7 +66,7 @@
                 text: app.translate(f"my_subject_{root.subject_obj.status}", app.language) if root.subject_obj else ""
                 bold: True
          
-                color: [0, 0, 0, 1]
+                color: get_color_from_hex(root.style.text_color) if root.style else [0,0,0,1]
                 text_size: self.size # Status zwykle jest krótki, tu wystarczy self.size
                 halign: 'left'
                 valign: 'bottom'
@@ -83,6 +83,10 @@
 <SubjectWhite@DashboardBrick>:
     status_text: app.translate('my_subject_inprogress' , app.language)
     style: ButtonStyle(bg_color="#d9d9d7", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
+
+<SubjectBlack@DashboardBrick>:
+    status_text: app.translate('my_subject_failed' , app.language)
+    style: ButtonStyle(bg_color="#272724", text_color="ffffff", border_radius=10, shape=Shapes.ROUNDED)
     
 <MojePrzedmiotyScreen@Screen>
     BoxLayout:

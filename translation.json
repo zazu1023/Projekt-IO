@@ -20,6 +20,7 @@
     "my_subject_inprogress" : "W trakcie",
     "my_subject_completed" : "Zaliczony",
     "my_subject_atrisk" : "Zagrożony",
+    "my_subject_failed" : "Oblany",
 
     "subject_details_title": "Szczegóły przedmiotu: ",
     "back_button": "<- Wróć",
@@ -120,6 +121,7 @@
     "my_subject_inprogress" : "In progress",
     "my_subject_completed" : "Completed",
     "my_subject_atrisk" : "At risk",
+    "my_subject_failed" : "Failed",
 
     "subject_details_title": "Subject details: ",
     "back_button": "<- Back",

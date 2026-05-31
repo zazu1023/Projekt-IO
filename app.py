@@ -1,5 +1,6 @@
 import json
 
+
 from Database.database_sqllite import SqliteAppRepository
 
 from kivy.config import Config
@@ -15,7 +16,7 @@ from kivy.properties import StringProperty
 from datetime import datetime
 from Widgets.countdown import CountdownWidget, CountdownStyle, KivyCountdownBackend
 
-
+from tests.create_default_values import DatabaseStarter
 
 from screenHandler import *
 
@@ -92,7 +93,7 @@ if __name__ == "__main__":
     # inicjalizacja bazy
     repo = SqliteAppRepository(db_connection=None)
     repo.init_db()
-    print("Chuj dupa cyce")
+    
     # init_db()
 
     # 2. TYMCZASOWE WYPEŁNIENIE BAZY DO TESTÓW KALENDARZA
@@ -102,6 +103,14 @@ if __name__ == "__main__":
     # conn.execute("INSERT OR IGNORE INTO subjects (id, name) VALUES (2, 'SK')")
     # conn.execute("INSERT OR IGNORE INTO subjects (id, name) VALUES (3, 'RPiS')")
     # conn.commit()
-  
-    print(repo.get_db_connection().execute("Select * from subjects").fetchall())
+    # repo.get_db_connection().execute("Delete from subjects")
+
+    # repo.add_subject(data={'title':'WDI' , 'teacher': "Rafal Kawa" , 'status': "atrisk"})
+
+    DS = DatabaseStarter(repo)
+
+    DS.remove_all_subjects()
+    DS.add_test_subjects()
+
+
     StudentPlannerApp(repository=repo).run()

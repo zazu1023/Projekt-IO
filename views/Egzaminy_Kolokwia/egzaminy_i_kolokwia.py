@@ -27,23 +27,7 @@ import database as db
 # ==============================================================
 # INICJALIZACJA I DANE TESTOWE
 # ==============================================================
-db.init_db()
 
-db_test = db.get_connection()
-if db_test.execute("SELECT COUNT(*) FROM subjects").fetchone()[0] == 0:
-    print("Baza pusta! Wstrzykuję testowe kafelki i wydarzenia...")
-    db_test.execute("INSERT INTO subjects (name, teacher) VALUES (?, ?)", ("Matematyka", "Dr Jan Kowalski"))
-    db_test.execute("INSERT INTO subjects (name, teacher) VALUES (?, ?)", ("Fizyka", "Prof. Anna Nowak"))
-    db_test.execute("INSERT INTO subjects (name, teacher) VALUES (?, ?)", ("IO", "Prof. Adam Roman"))
-    db_test.execute("INSERT INTO subjects (name, teacher) VALUES (?, ?)", ("Sieci", "Dr Edward Szczypka"))
-    db_test.execute("INSERT INTO subjects (name, teacher) VALUES (?, ?)", ("Sieci", "Dr Edward Szczypka"))
-    db_test.execute("INSERT INTO subjects (name, teacher) VALUES (?, ?)", ("Sieci", "Dr Edward Szczypka"))
-    db_test.execute("INSERT INTO subjects (name, teacher) VALUES (?, ?)", ("Sieci", "Dr Edward Szczypka"))
-    db_test.execute("INSERT INTO subjects (name, teacher) VALUES (?, ?)", ("Sieci", "Dr Edward Szczypka"))
-    db_test.execute("INSERT INTO subjects (name, teacher) VALUES (?, ?)", ("Sieci", "Dr Edward Szczypka"))
-    db_test.execute("INSERT INTO subjects (name, teacher) VALUES (?, ?)", ("Sieci", "Dr Edward Szczypka"))
-
-    db_test.commit()
 
 
 

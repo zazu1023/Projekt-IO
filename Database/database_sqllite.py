@@ -28,7 +28,7 @@ def db_transaction(func):
            
             conn.rollback()
             print(f"Błąd SQL w metodzie {func.__name__}: {e}")
-            raise e #
+            # raise e #
 
     return wrapper
 
@@ -47,7 +47,7 @@ class SqliteAppRepository(IAppRepository):
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 teacher TEXT,
-                status TEXT DEFAULT 'inprogress', 
+                status TEXT DEFAULT 'inprogress' CHECK(status IN ('inprogress', 'completed', 'atrisk', 'failed')),
                 grading_rules TEXT,              
                 max_absences INTEGER DEFAULT 0,
                 current_absences INTEGER DEFAULT 0,  -- sledzenie biezacych nieobecnosci
@@ -156,7 +156,21 @@ class SqliteAppRepository(IAppRepository):
 
     @db_transaction
     def add_subject(self, data:dict) -> None:
-        pass
+        name = data.get('title')
+        teacher = data.get('teacher', '')
+        status = data.get('status', 'inprogress')
+        grading_rules = data.get('conditions', '')
+        max_absences = data.get('max_absences', 0)
+        max_activity_points = data.get('max_pluses', 0.0)
+
+        self.get_db_connection().execute(
+            '''
+            INSERT INTO subjects (
+                name, teacher, status, grading_rules, max_absences, max_activity_points
+            ) VALUES (?, ?, ?, ?, ?, ?)
+            ''',
+            (name, teacher, status, grading_rules, max_absences, max_activity_points)
+        )
 
     @db_transaction
     def remove_subject(self, subject_id:int) -> None:
@@ -164,6 +178,14 @@ class SqliteAppRepository(IAppRepository):
             "DELETE FROM subjects WHERE id = ?", 
             (subject_id,)
         )
+
+    @db_transaction
+    def remove_all_subjects(self) -> None:
+        self.get_db_connection().execute(
+            "DELETE FROM subjects"
+            )
+        
+        
         
 
     """

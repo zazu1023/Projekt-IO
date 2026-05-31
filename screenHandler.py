@@ -7,7 +7,8 @@ tu dodawajcie ekrany do importowania
 KV_FILE_PATH = "views"
 
 
-from views.Moje_Przedmioty.mojePrzedmioty import MojePrzedmiotyScreen , SzczegolyPrzedmiotuScreen , SubjectData
+from views.Moje_Przedmioty.mojePrzedmioty import MojePrzedmiotyScreen
+from views.Szczegoly_Przedmiotu.szczegolyPrzedmiotu import SzczegolyPrzedmiotuScreen
 from views.Kalendarz.startKalendarz import StartKalendarz
 from views.Egzaminy_Kolokwia.egzaminy_i_kolokwia import ExamsAndColloquiumsScreen
 from views.Dodaj_Przedmioty.dodaj_przedmiot import AddSubjectScreen
