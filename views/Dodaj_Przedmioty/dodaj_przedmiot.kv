@@ -29,7 +29,7 @@
     background_color: get_color_from_hex("#322d2d")
     foreground_color: 1, 1, 1, 1
     cursor_color: 1, 1, 1, 1
-    hint_text_color: 0.6, 0.6, 0.6, 1  # Kolor tekstu zachęty (jasnoszary)
+    hint_text_color: 0.6, 0.6, 0.6, 1
     size_hint_y: None
     height: dp(35)
     multiline: False
@@ -39,9 +39,9 @@
 <LightTextArea@TextInput>:
     background_normal: ''
     background_color: get_color_from_hex("#b3b3b3")
-    foreground_color: get_color_from_hex("#000000") 
-    cursor_color: get_color_from_hex("#000000")
-    hint_text_color: 0.3, 0.3, 0.3, 1  # Kolor tekstu zachęty (ciemnoszary)
+    foreground_color: 0, 0, 0, 1
+    cursor_color: 0, 0, 0, 1
+    hint_text_color: 0, 0, 0, 1
     size_hint_y: None
     height: max(dp(80), self.minimum_height)
     multiline: True
@@ -179,9 +179,16 @@
                         text_size: self.size
                         halign: 'left'
                         valign: 'bottom'
-                    LightTextArea:
-                        id: input_conditions
-                        hint_text: app.translate("hint_conditions", app.language)
+                    # Zmienione wyrównanie: dodany poziomy BoxLayout i Widget pełniący rolę odstępu z prawej
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        spacing: dp(10)
+                        LightTextArea:
+                            id: input_conditions
+                            hint_text: app.translate("hint_conditions", app.language)
+                        Widget:
+                            size_hint_x: None
+                            width: dp(40)
 
                 # ==========================================
                 # RZĄD 3: Nieobecności | Plusy | Kolokwia
