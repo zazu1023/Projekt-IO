@@ -3,7 +3,6 @@ from kivy.clock import Clock
 from kivy.uix.boxlayout import BoxLayout
 from Widgets.countdown import CountdownWidget, CountdownStyle, KivyCountdownBackend
 
-# --- ZMIANA NAZWY KLASY NA SessionPanel ---
 class SessionPanel(BoxLayout):
 
     def __init__(self, **kwargs):

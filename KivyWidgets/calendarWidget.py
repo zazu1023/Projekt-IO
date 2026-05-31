@@ -19,8 +19,6 @@ from KivyWidgets.kivyDatePickerBackend import KivyDatePickerBackend
 
 from Widgets.Brick import CalendarBrickData
 from Widgets.Button import ButtonStyle
-from KivyWidgets.KivyCalendarBrickAdapter import SafeKivyBrickBackend
-
 from database import save_daily_note, get_daily_note
 
 DAY_NAMES = {
@@ -38,7 +36,7 @@ class CalendarWidget(BoxLayout):
 
         self.events = [
             {
-                "date": date(2026, 5, 12),
+                "date": date(2026, 5, 30),
                 "data": CalendarBrickData(
                     id="1",
                     title="IO",
@@ -48,7 +46,7 @@ class CalendarWidget(BoxLayout):
                 )
             },
             {
-                "date": date(2026, 5, 12),
+                "date": date(2026, 5, 31),
                 "data": CalendarBrickData(
                     id="2",
                     title="ASD",
@@ -58,7 +56,7 @@ class CalendarWidget(BoxLayout):
                 )
             },
             {
-                "date": date(2026, 5, 12),
+                "date": date(2026, 5, 29),
                 "data": CalendarBrickData(
                     id="3",
                     title="ASD",

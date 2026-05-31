@@ -1,6 +1,5 @@
 from KivyWidgets.KivyButtonBackend import CustomButtonWidget
 from Widgets.Button import ButtonStyle 
-from KivyWidgets.KivyHelper import KivyHelper
 
 from Widgets.Brick import CalendarBrickData
 from kivy.uix.boxlayout import BoxLayout

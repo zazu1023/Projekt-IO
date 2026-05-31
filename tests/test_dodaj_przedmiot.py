@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from views.dodaj_przedmiot import AddSubjectScreen
+from views.Dodaj_Przedmioty.dodaj_przedmiot import AddSubjectScreen
 
 # =====================================================================
 # KONFIGURACJA ŚRODOWISKA TESTOWEGO
