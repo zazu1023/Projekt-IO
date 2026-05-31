@@ -32,7 +32,7 @@ class IAppRepository(ABC):
         pass
 
     @abstractmethod
-    def remove_subject(self, id:int) -> None:
+    def remove_subject(self, subject_id:int) -> None:
         pass
 
     """
@@ -40,9 +40,9 @@ class IAppRepository(ABC):
     """
 
     @abstractmethod
-    def get_daily_note(self, id:int , date:str) -> dict:
+    def get_daily_note(self, subject_id:int , date:str) -> dict:
         pass
 
     @abstractmethod
-    def set_daily_note(self, id:int , date:str) -> None:
+    def set_daily_note(self, subject_id:int , date:str, content:str) -> None:
         pass

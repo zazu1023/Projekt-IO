@@ -1,6 +1,6 @@
 import json
-from database import init_db, get_connection
 
+from Database.database_sqllite import SqliteAppRepository
 
 from kivy.config import Config
 
@@ -23,6 +23,10 @@ class StudentPlannerApp(App):
 
     language = StringProperty("pl")
 
+    def __init__(self, repository, **kwargs):
+        super().__init__(**kwargs)
+        self.repo = repository
+
     def build(self):
 
         self.screens = SCREENS # wczytanie screenow z screenHandler
@@ -44,7 +48,7 @@ class StudentPlannerApp(App):
         )
 
         self.sm = root_widget.ids.sm
-        self.change_screen(target_screen='calendar')
+        self.change_screen(target_screen='mySubjects')
         return root_widget
 
 
@@ -81,36 +85,23 @@ class StudentPlannerApp(App):
             self.language = "pl"
 
         print("Zmieniono język na:", self.language)
-    
-    def get_subjects_from_db(self):
-    
-        return [
-            SubjectData(title="Algebra", teacher="Jan Kowalski", status="completed" , note=""),
-            SubjectData(title="ASD", teacher="JŚW", status="completed", note=""),
-            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="completed", note=""),
-            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="atrisk", note=""),
-            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="atrisk", note=""),
-            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="completed", note=""),
-            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="inprogress", note=""),
-            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="atrisk", note=""),
-            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="atrisk", note=""),
-            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="completed", note=""),
-            SubjectData(title="Bazy Danych", teacher="Anna Nowak", status="inprogress", note="")
-        ]
-    
 
 
 if __name__ == "__main__":
-    from database import init_db, get_connection # Importujemy narzędzia z bazy
 
-    init_db()
+    # inicjalizacja bazy
+    repo = SqliteAppRepository(db_connection=None)
+    repo.init_db()
+    print("Chuj dupa cyce")
+    # init_db()
 
     # 2. TYMCZASOWE WYPEŁNIENIE BAZY DO TESTÓW KALENDARZA
     # To rozwiązuje błąd FOREIGN KEY. Dodajemy przedmioty z ID 1, 2, 3
-    conn = get_connection()
-    conn.execute("INSERT OR IGNORE INTO subjects (id, name) VALUES (1, 'IO')")
-    conn.execute("INSERT OR IGNORE INTO subjects (id, name) VALUES (2, 'SK')")
-    conn.execute("INSERT OR IGNORE INTO subjects (id, name) VALUES (3, 'RPiS')")
-    conn.commit()
-
-    StudentPlannerApp().run()
+    # conn = get_connection()
+    # conn.execute("INSERT OR IGNORE INTO subjects (id, name) VALUES (1, 'IO')")
+    # conn.execute("INSERT OR IGNORE INTO subjects (id, name) VALUES (2, 'SK')")
+    # conn.execute("INSERT OR IGNORE INTO subjects (id, name) VALUES (3, 'RPiS')")
+    # conn.commit()
+  
+    print(repo.get_db_connection().execute("Select * from subjects").fetchall())
+    StudentPlannerApp(repository=repo).run()
