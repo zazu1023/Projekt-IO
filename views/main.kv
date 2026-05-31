@@ -19,17 +19,18 @@ MainLayout:
                 pos: self.pos
                 size: self.size
 
-        # Obszar Logo (szerokość równa lewemu menu)
+        # Obszar Logo
         BoxLayout:
             size_hint_x: None
             width: dp(220)
             padding: dp(5)
-            # Tu wstawisz docelowo obrazek Image:
-            Label:
-                text: "[b]STUDENT[/b]\nPLANNER"
-                markup: True
-                color: get_color_from_hex("#1565c0")
-                halign: 'left'
+            
+            # Podmieniamy Label na Image:
+            Image:
+                source: 'Images/logo_bez_tla1.png'
+                allow_stretch: True      # Pozwala obrazkowi się skalować
+                keep_ratio: True         # Zachowuje proporcje logo
+                size_hint: (1, 1)        # Wypełnia cały dostępny obszar BoxLayouta
 
         # Środkowy tekst (Najbliższe...)
         Label:
@@ -121,6 +122,8 @@ MainLayout:
                 height: 105
                 padding: 10
                 spacing: 4
+                background_normal: ""
+                background_color: 0,0,0,0
 
                 canvas.before:
                     Color:
