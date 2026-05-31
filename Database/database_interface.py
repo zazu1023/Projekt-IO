@@ -24,7 +24,11 @@ class IAppRepository(ABC):
         pass
 
     @abstractmethod
-    def add_absence(self, subject_id: int, amount: int = 1):
+    def set_status(self, subject_id:int , new_status:str) -> None:
+        pass
+
+    @abstractmethod
+    def add_absence(self, subject_id: int, amount: int = 1) -> int:
         pass
 
     @abstractmethod

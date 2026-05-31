@@ -135,7 +135,7 @@
                             
                         Label:
                             text: app.translate('my_subject_' + root.selectedSubject.status , app.language) if root.selectedSubject else app.translate('my_subject_completed', app.language)
-                            color: get_color_from_hex("#f1c40f") if root.selectedSubject and root.selectedSubject.status == 'inprogress' else (get_color_from_hex("#e74c3c") if root.selectedSubject and root.selectedSubject.status == 'atrisk' else get_color_from_hex("#2ecc71"))
+                            color: root.get_status_color(root.selectedSubject.status if root.selectedSubject else 'unknown')
                             bold: True
                             size_hint_y: None
                             height: dp(20)
@@ -206,12 +206,12 @@
                                 text: "-"
                                 size_hint: None, 1
                                 width: dp(40) # Kwadratowy mały przycisk
-                                on_release: root.decrement_absences()
+                                on_release: root.change_absences(-1)
                             PlusButton:
                                 text: "+"
                                 size_hint: None, 1
                                 width: dp(40) # Kwadratowy mały przycisk
-                                on_release: root.increment_absences()
+                                on_release: root.change_absences(1)
                             Widget: # Pychacz, żeby przyciski były do lewej krawędzi!
 
                     # 3. PANEL EDYCJI

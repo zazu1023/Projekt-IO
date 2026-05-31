@@ -2,6 +2,7 @@ from kivy.event import EventDispatcher
 from kivy.properties import StringProperty , NumericProperty
 
 class SubjectData(EventDispatcher):
+    id = NumericProperty(allownone=False)
     title = StringProperty("")
     teacher = StringProperty(None, allownone=True)
     note = StringProperty(None , allownone=True)
@@ -22,7 +23,7 @@ class SubjectData(EventDispatcher):
         """
         
         instance = cls()
-        
+        instance.id = db_dict.get("id")
         instance.title = db_dict.get("name", "Brak nazwy")
         instance.teacher=db_dict.get("teacher", "Nieznany")
         instance.note=db_dict.get("note", "")

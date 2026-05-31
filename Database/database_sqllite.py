@@ -144,15 +144,30 @@ class SqliteAppRepository(IAppRepository):
 
 
     @db_transaction
-    def add_absence(self, subject_id: int, amount: int = 1):
-        self.get_db_connection().execute(
+    def add_absence(self, subject_id: int, amount: int = 1) -> int:
+        row = self.get_db_connection().execute(
             '''
             UPDATE subjects 
             SET current_absences = MAX(0, current_absences + ?)
             WHERE id = ?
+            RETURNING current_absences
             ''', 
             (amount, subject_id)
+        ).fetchone()
+  
+        return row['current_absences'] if row else 0
+
+    @db_transaction
+    def set_status(self, subject_id:int , new_status:str):
+        self.get_db_connection().execute(
+            '''
+            UPDATE subjects 
+            SET status = ?
+            WHERE id = ?
+            ''', 
+            (new_status, subject_id)
         )
+    
 
     @db_transaction
     def add_subject(self, data:dict) -> None:
