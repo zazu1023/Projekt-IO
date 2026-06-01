@@ -3,6 +3,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import StringProperty, NumericProperty, ObjectProperty
 from kivy.app import App
 from kivy.factory import Factory
+from kivy.utils import get_color_from_hex
 
 from Widgets.progressBar import ProgressBar, ProgressBarStyle
 from KivyWidgets.kivyProgressBarBackend import KivyProgressBarBackend
@@ -49,8 +50,11 @@ class ProgressCard(BoxLayout):
         if self.max_points <= 0:
             self.max_points = 100
             
-        style = ProgressBarStyle(bg_color=(1,1,1,1), fill_color=(0,0,0,1), text_color=(0,0,0,1))
-        
+        style = ProgressBarStyle(
+            bg_color=get_color_from_hex("#c4c4c4"),    # Oryginalne szare tło paska
+            fill_color=get_color_from_hex("#1c4271"),  # Oryginalny niebieski pasek
+            text_color=(1, 1, 1, 1)                    # Kolor tekstu (jeśli używasz)
+        )
         self.pb = ProgressBar(
             value=self.get_total(), 
             max_value=self.max_points, 

@@ -3,6 +3,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.app import App
 from kivy.properties import StringProperty
 from kivy.clock import Clock  # <--- To jest kluczowe
+from kivy.utils import get_color_from_hex
 from Widgets.progressBar import ProgressBar, ProgressBarStyle
 from KivyWidgets.kivyProgressBarBackend import KivyProgressBarBackend
 
@@ -23,8 +24,8 @@ class RepozytoriumZasadScreen(Screen):
         app = App.get_running_app()
         
         style = ProgressBarStyle(
-            bg_color=(0.1, 0.1, 0.1, 1), 
-            fill_color=(0.5, 0.5, 0.5, 1), 
+            bg_color=get_color_from_hex("#3b3232"),
+            fill_color=(1, 1, 1, 1), 
             text_color=(1, 1, 1, 1)
         )
 

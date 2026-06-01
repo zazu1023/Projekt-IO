@@ -3,13 +3,14 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.widget import Widget
 from kivy.metrics import dp
 from kivy.graphics import Color, RoundedRectangle
-from kivy.utils import get_color_from_hex
 
 class ThickProgressBar(Widget):
-    def __init__(self, max_value, value, **kwargs):
+    def __init__(self, max_value, value, bg_color, fill_color, **kwargs): # Dodajemy kolory tutaj
         super().__init__(**kwargs)
         self.max_value = max_value
         self.value = value
+        self.bg_color = bg_color   # Zapisujemy kolor tła
+        self.fill_color = fill_color # Zapisujemy kolor paska
         self.size_hint_y = None
         self.height = dp(14) 
         
@@ -18,16 +19,19 @@ class ThickProgressBar(Widget):
     def update_canvas(self, *args):
         self.canvas.clear()
         with self.canvas:
-            Color(rgba=get_color_from_hex("#c4c4c4"))
+            # Używamy przekazanych kolorów zamiast get_color_from_hex
+            Color(rgba=self.bg_color) 
             RoundedRectangle(pos=self.pos, size=self.size, radius=[self.height / 2])
             
-            Color(rgba=get_color_from_hex("#1c4271"))
+            Color(rgba=self.fill_color)
             fill_width = self.width * (self.value / self.max_value) if self.max_value > 0 else 0
             RoundedRectangle(pos=self.pos, size=(fill_width, self.height), radius=[self.height / 2])
 
-    def update_values(self, value, max_value):
+    def update_values(self, value, max_value, fill_color=None):
         self.value = value
         self.max_value = max_value
+        if fill_color:
+            self.fill_color = fill_color
         self.update_canvas()
 
 class KivyProgressBarBackend:
@@ -36,14 +40,18 @@ class KivyProgressBarBackend:
         self.progress_bar = None
 
     def create(self, value: int, max_value: int, style: ProgressBarStyle):
-        # Wysokość zmniejszona, bo nie ma już tekstu pod spodem
         self.layout = BoxLayout(orientation="vertical", size_hint_y=None, height=dp(15))
         
-        self.progress_bar = ThickProgressBar(max_value=max_value, value=value)
+        # Przekazujemy kolory ze stylu do ThickProgressBar
+        self.progress_bar = ThickProgressBar(
+            max_value=max_value, 
+            value=value, 
+            bg_color=style.bg_color, 
+            fill_color=style.fill_color
+        )
         self.layout.add_widget(self.progress_bar)
         
         return self.layout
     
     def setValue(self, value: int, max_value: int):
-        # Aktualizujemy już tylko sam pasek, bez tekstu
         self.progress_bar.update_values(value, max_value)
