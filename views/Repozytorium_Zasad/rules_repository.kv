@@ -1,237 +1,164 @@
-#:import ButtonStyle Widgets.Button.ButtonStyle
-#:import Shapes Widgets.Button.Shapes
 #:import get_color_from_hex kivy.utils.get_color_from_hex
-<DashboardBrick2>:
-    size_hint: 1, None
-    height: dp(400)
-    
-    
-    padding: 0
-    spacing: 0
 
-    RelativeLayout:
-        size_hint: 1, 1
+<SubjectCard>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: dp(250) # Nieco wyższa, by pomieścić wszystkie sekcje
+    padding: [dp(15), dp(8), dp(15), dp(15)]
+    spacing: dp(10)
+    canvas.before:
+        Color:
+            rgba: get_color_from_hex("#063e6e") # Główne tło karty
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(12)]
 
-        BoxLayout:
-            orientation: 'vertical'
-            size_hint: 1, 1
-            padding: dp(10)
-            spacing: dp(0)
+    # --- NAGŁÓWEK (Tytuł + Badge Statusu) ---
+    FloatLayout:
+        size_hint_y: None
+        height: dp(32)
 
+        Label:
+            text: root.title
+            bold: True
+            font_size: '18sp'
+            halign: 'left'
+            valign: 'middle'
+            text_size: self.size
+            size_hint: 1, None
+            height: dp(32)
+            x: self.parent.x
+            y: self.parent.y
 
+        Label:
+            text: app.translate("my_subject_" + root.status, app.language)
+            size_hint: None, None
+            width: dp(95)
+            height: dp(24)
+            x: self.parent.right - self.width
+            center_y: self.parent.center_y
 
+            font_size: '12sp'
+            halign: 'center'
+            valign: 'middle'
+            text_size: self.size
+            color: (0, 0, 0, 1)
 
-            BoxLayout:
-                orientation: 'horizontal'
-                size_hint: 1, 1
-                padding: dp(5)
-                spacing: dp(0)
+            canvas.before:
+                Color:
+                    rgba:
+                        get_color_from_hex("#2ecc71") if root.status == "completed" else \
+                        get_color_from_hex("#f1c40f") if root.status == "atrisk" else \
+                        get_color_from_hex("#e74c3c")
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [dp(6)]
 
-                BoxLayout:
-                    orientation: 'vertical'
-                    size_hint: 1, 1
-                    padding: dp(5)
-                    spacing: dp(20)
+    # --- SUBTYTUŁ ---
+    Label:
+        text: root.teacher
+        font_size: '13sp'
+        color: (0.8, 0.8, 0.8, 1)
+        halign: 'left'
+        text_size: self.size
+        size_hint_y: None
+        height: dp(20)
 
-                    Label:
-                        text: root.subject_obj.title if root.subject_obj else ""
-                        bold: True
-                        color: [1, 1, 1, 1]
-                
-                        text_size: self.width, None
-                        shorten: True
-                        shorten_from: 'right'
-                    
-                        halign: 'left'
-                        valign: 'top'
-                        font_size: max(sp(16), min(root.width * 0.07, sp(26)))
-
-                    Label:
-
-                    Label:
-                        text: root.subject_obj.teacher if root.subject_obj else ""
-                        color: [1, 1, 1, 1]
-                        bold: True
-                        # ZMIANA: To samo dla nazwiska prowadzącego
-                        text_size: self.width, None
-                        shorten: True
-                        shorten_from: 'right'
-                        halign: 'left'
-                        valign: 'middle'
-                        
-                        font_size: max(sp(12), min(root.width * 0.045, sp(18)))
-                    
-                    
-
-                Label:
-                    text: app.translate(f"my_subject_{root.subject_obj.status}", app.language) if root.subject_obj else ""
-                    bold: True
-                    size_hint: 0.5 , 0.5
-                    color: [1, 1, 1, 1]
-                    text_size: self.size # Status zwykle jest krótki, tu wystarczy self.size
-                    
-                    halign: 'center'
-                    valign: 'middle'
-                    font_size: max(sp(10), min(root.width * 0.04, sp(14)))
-                    canvas.before:
-                        Color:
-                            rgba:get_color_from_hex("#62c57b") if root.subject_obj.status == "completed" else get_color_from_hex("#f28b82") if root.subject_obj.status == "atrisk" else get_color_from_hex("#a19b2a")
-                        
-                        RoundedRectangle:
-                            pos: self.pos
-                            size: self.size
-                            radius: [10]
-                            
-                    
-            
-            BoxLayout:
-                orientation: 'horizontal'
-                size_hint: 1, 0.5
-                padding: dp(5)
-                spacing: dp(0)
-
-                Label:
-                    text: app.translate("absences", app.language) if root.subject_obj else ""
-                    bold: True
-
-                    color: [1, 1, 1, 1]
-                    text_size: self.size 
-                    halign: 'left'
-                    valign: 'bottom'
-                    font_size: max(sp(15), min(root.width * 0.05, sp(24)))
-
-                Label:
-                    text: str(root.subject_obj.absences) + "/" + str(root.subject_obj.max_absences) if root.subject_obj else ""if root.subject_obj else ""
-                    bold: True
-                    shorten: True
-                    shorten_from: 'right'
-                    color: [1, 1, 1, 1]
-                    text_size: self.size 
-                    halign: 'right'
-                    valign: 'bottom'
-                    font_size: max(sp(15), min(root.width * 0.05, sp(24)))
-            
-            
-            
-            ProgressBar:
-                max: root.subject_obj.max_absences
-                value: root.subject_obj.absences
-
-                size_hint_y: None
-                height: dp(16)
-                canvas.before:
-                    Color:
-                        rgba: 1,1,1,.7
-
-                    RoundedRectangle:
-                        pos: self.pos
-                        size: self.size
-                        
-                        radius: [10]
-                     
-            Label:
-                text: app.translate("passing_conditions", app.language) if root.subject_obj else ""
-                bold: True
-                size_hint_y: 0.5
-                color: [1, 1, 1, 1]
-                text_size: self.size 
-                halign: 'left'
-                valign: 'bottom'
-                font_size: max(sp(15), min(root.width * 0.05, sp(24)))
-                
-
-                
-                
-            
-            
-            
-
-            
-
-            Label:
-                text: root.subject_obj.conditions if root.subject_obj else ""
-
-                size_hint_y: 2.5
-                
-
-                color: 1,1,1,1
-
-                halign: "left"
-                valign: "top"
-
-                text_size: self.size
-                font_size:max(sp(14), min(root.width * 0.04, sp(18)))
-                canvas.before:
-                    Color:
-                        rgba: get_color_from_hex("#2e2828")
-
-                    RoundedRectangle:
-                        pos: self.pos
-                        size: self.size
-                        radius: [10]
-               
-            
-            
-            
-
-<SubjectGreenrep@DashboardBrick2>:
-    status_text: app.translate('my_subject_completed' , app.language)
-    style: ButtonStyle(bg_color="#1c4271", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
-
-<SubjectRedrep@DashboardBrick2>:
-    status_text: app.translate('my_subject_atrisk' , app.language)
-    style: ButtonStyle(bg_color="#1c4271", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
-
-<SubjectWhiterep@DashboardBrick2>:
-    status_text: app.translate('my_subject_inprogress' , app.language)
-    style: ButtonStyle(bg_color="#1c4271", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
-    
-<repoScreen@Screen>
+    # --- KONTEJNER: NIEOBECNOŚCI ---
     BoxLayout:
-        
+        id: progress_container_wrapper
         orientation: 'vertical'
-        padding: dp(20)
-        spacing: dp(15)
-        
-        # Ciemnoszare tło całej aplikacji (jak na screenie poza niebieskim obszarem)
+        padding: dp(10)
+        spacing: dp(5)
+        size_hint_y: None
+        height: dp(60)
         canvas.before:
             Color:
-                rgba: get_color_from_hex("#332b2b")
+                rgba: get_color_from_hex("#1c4271")
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [dp(8)]
+
+        Label:
+            text: app.translate("absences", app.language) + ": " + root.absences
+            font_size: '12sp'
+            bold: True
+            halign: 'left'
+            text_size: self.size
+
+        BoxLayout:
+            id: progress_container
+            size_hint_y: None
+            height: dp(15)
+
+    # --- KONTEJNER: WARUNKI ZALICZENIA ---
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [dp(12), dp(10)]
+        spacing: dp(4)
+        size_hint_y: None
+        height: dp(80)
+        canvas.before:
+            Color:
+                rgba: get_color_from_hex("#2d2d2d")
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [dp(5)]
+        
+        Label:
+            text: app.translate("passing_conditions", app.language)
+            font_size: '10sp'
+            color: (0.7, 0.7, 0.7, 1)
+            halign: 'left'
+            text_size: self.size
+            size_hint_y: None
+            height: dp(15)
+            
+        ScrollView:
+            size_hint_y: 1
+            do_scroll_x: False
+            do_scroll_y: True
+            bar_width: dp(4)
+
+            Label:
+                text: root.rules if root.rules else app.translate("no_defined_conditions", app.language)
+                font_size: '12sp'
+                halign: 'left'
+                valign: 'top'
+                size_hint_y: None
+                text_size: self.width, None
+                height: max(self.texture_size[1], self.parent.height)
+
+<RepozytoriumZasadScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(20)
+        canvas.before:
+            Color:
+                rgba: get_color_from_hex("#3b3232")
             Rectangle:
                 pos: self.pos
                 size: self.size
 
-        # Nagłówek
         Label:
             text: app.translate("rules_repository", app.language)
-            font_size: '24sp'
+            font_size: '28sp'
             bold: True
             size_hint_y: None
-            height: dp(40)
+            height: dp(50)
             text_size: self.size
             halign: 'left'
-            valign: 'middle'
 
-        # Niebieski kontener na kafelki
-        BoxLayout:
-            padding: dp(15)
-            canvas.before:
-                Color:
-                    rgba: get_color_from_hex("#332b2b") # Niebieskie tło
-                RoundedRectangle:
-                    pos: self.pos
-                    size: self.size
-                    radius: [10,]
-
-            # Siatka, która automatycznie układa kafelki od lewej do prawej
-            ScrollView:
-                do_scroll_x: False
-
-                GridLayout:
-                    id: grid_przedmiotow
-                    cols: 2 # Ilość kolumn (dostosuj do szerokości okna)
-                    spacing: dp(15)
-                    
-                    # Ważne: to pozwala siatce rosnąć w dół, jeśli dodasz więcej kafelków
-                    size_hint_y: None
-                    height: self.minimum_height
+        ScrollView:
+            GridLayout:
+                id: rules_container
+                cols: 2
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(20)
+                padding: dp(10)
