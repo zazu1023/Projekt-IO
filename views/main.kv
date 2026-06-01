@@ -46,7 +46,7 @@ MainLayout:
             padding: dp(10) , dp(10) , dp(10) , dp(20)
 
             CustomButtonWidget:
-                style: ButtonStyle(bg_color="9ea6b3" , text_color=[0,0,0,1], border_radius=6, shape=Shapes.ROUNDED)
+                style: ButtonStyle(bg_color="9ea6b3" , text_color="#000000", border_radius=6, shape=Shapes.ROUNDED)
                 text: "" 
                 size_hint_x: None
                 width: dp(40)
@@ -59,7 +59,7 @@ MainLayout:
                         size: dp(18), dp(18)
                         pos: self.center_x - dp(9), self.center_y - dp(9)
             CustomButtonWidget:
-                style: ButtonStyle(bg_color="9ea6b3" , text_color=[0,0,0,1], border_radius=6, shape=Shapes.ROUNDED)
+                style: ButtonStyle(bg_color="9ea6b3" , text_color="#000000", border_radius=6, shape=Shapes.ROUNDED)
                 text: "ENG" if app.language == "pl" else "PL"
                 size_hint_x: None
                 width: dp(120)

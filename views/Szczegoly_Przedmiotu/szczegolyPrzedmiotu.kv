@@ -1,7 +1,7 @@
 
 #:import get_color_from_hex kivy.utils.get_color_from_hex
-#:import ButtonStyle Widgets.Button.ButtonStyle
-#:import ButtonState Widgets.Button.ButtonState
+#:import ButtonStyle Style.ButtonStyle.ButtonStyle
+#:import ButtonState Style.ButtonState.ButtonState
 
 
 <BackButton@CustomButtonWidget>:
@@ -9,7 +9,7 @@
     size_hint: 1, 1
 
 <SuccessButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#2ecc71", text_color="#000000", border_radius=6)
+    style: ButtonStyle(bg_color="#2ecc71", text_color="#000000", border_radius=6, border_color="#ffffff", border_width=2)
     size_hint: 1, 1
 
 

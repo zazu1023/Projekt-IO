@@ -1,5 +1,5 @@
 #:import get_color_from_hex kivy.utils.get_color_from_hex
-#:import ButtonStyle Widgets.Button.ButtonStyle
+#:import ButtonStyle Style.ButtonStyle.ButtonStyle
 #:import Shapes Widgets.Button.Shapes
 <SidebarButton@Button>:
     size_hint_y: None
@@ -23,31 +23,47 @@
             radius: [25]
     on_state:
         self.canvas.ask_update()
-<CustomButtonWidget>:
+
+<CustomButtonBase>:
     background_color: (0, 0, 0, 0) 
+    size_hint: None, None
+    size: dp(150), dp(75)
     
-    # Wyśrodkowanie tekstu
-    halign: 'center'
-    valign: 'middle'
-    text_size: self.size
-    shorten: True
-    shorten_from: 'right'
-    size_hint: None , None
-    size: dp(150) , dp(75)
     canvas.before:
+        # Tło przycisku
         Color:
-            rgba: 
-                root.get_current_bg_color(root.btn_state ,root.style)
+            rgba: root.style.get_bg_color(root.btn_state) if root.style else [0.2, 0.2, 0.2, 1]
         RoundedRectangle:
             pos: self.pos
             size: self.size
-            radius: [root.style.border_radius] if root.style else [8,]
+            radius: [root.style.border_radius] if root.style else [8]
 
-    color: root.style.text_color if root.style else [1, 1, 1, 1]
+        # Obramówka (Bezpieczna, z zabezpieczeniem przed awarią 0px)
+        Color:
+            rgba: root.style.get_border_color(root.btn_state) if root.style else [0, 0, 0, 0]
+        Line:
+            width: (dp(root.style.border_width) if (root.style and root.style.border_width > 0) else dp(1))
+            rounded_rectangle: (self.x, self.y, self.width, self.height, (root.style.border_radius if root.style else 8))
+            
+    color: root.style.get_text_color(root.btn_state) if root.style else [1, 1, 1, 1]
 
+<CustomButtonWidget>:
+    Label:
+        text: root.text if hasattr(root, 'text') else ''
+        halign: 'center'
+        valign: 'middle'
+        text_size: self.size
+        shorten: True
+        shorten_from: 'right'
+        color: root.style.get_text_color(root.btn_state) if root.style else [1, 1, 1, 1]
+
+
+# =========================================================================
+# 2. SEKCJA BRICK (Kafelki kalendarza / przedmiotów)
+# =========================================================================
 <BrickWidget>:
     background_normal: ''
-    background_color: 0, 0, 0, 0
+    background_color: (0, 0, 0, 0)
     orientation: 'vertical'
     size_hint: None, None
     size: 180, 110
@@ -56,27 +72,18 @@
 
     canvas.before:
         Color:
-            rgba: 
-                (get_color_from_hex(root.style.bg_color)[0]*0.7, 
-                get_color_from_hex(root.style.bg_color)[1]*0.7, 
-                get_color_from_hex(root.style.bg_color)[2]*0.7, 1) \
-                if (self.state == 'down' and self.has_note) else \
-                
-            
-                (get_color_from_hex(root.style.bg_color)[0]*0.5, 
-                get_color_from_hex(root.style.bg_color)[1]*0.5, 
-                get_color_from_hex(root.style.bg_color)[2]*0.5, 1) \
-                if (self.hovered and self.has_note) else \
-                
-            
-                (get_color_from_hex(root.style.bg_color)[0]*0.8, 
-                get_color_from_hex(root.style.bg_color)[1]*0.8, 
-                get_color_from_hex(root.style.bg_color)[2]*0.8, 1) if root.style else [0.2, 0.2, 0.2, 1]
-
+            rgba: root.get_brick_bg_color()
         RoundedRectangle:
             pos: self.pos
             size: self.size
-            radius: [root.style.border_radius,] if root.style else [20,]
+            radius: [root.style.border_radius] if root.style else [20]
+            
+        # Opcjonalna ramka wokół kafelka
+        Color:
+            rgba: root.style.get_border_color(root.btn_state) if root.style else [0, 0, 0, 0]
+        Line:
+            width: (dp(root.style.border_width) if (root.style and root.style.border_width > 0) else dp(1))
+            rounded_rectangle: (self.x, self.y, self.width, self.height, (root.style.border_radius if root.style else 20))
             
     BoxLayout:
         orientation: 'horizontal'
@@ -85,35 +92,34 @@
             text: root.title_text
             bold: True
             font_size: '18sp'
-            color: root.style.text_color if root.style else [1, 1, 1, 1]
+            color: root.style.get_text_color(root.btn_state) if root.style else [1, 1, 1, 1]
             halign: 'left'
             valign: 'middle'
             text_size: self.size
         Image:
-           
             source: 'Images/notebook.png' 
             opacity: 1 if root.has_note else 0
-            
             size_hint_x: None
-            width: self.height # sprawia, że jest kwadratowy
-            
+            width: self.height
             allow_stretch: True
             keep_ratio: True
     Label:
         text: root.info_text
         size_hint_y: 0.4
         font_size: '14sp'
-        color: root.style.text_color if root.style else [1, 1, 1, 0.8]
+        color: root.style.get_text_color(root.btn_state) if root.style else [1, 1, 1, 0.8]
         halign: 'left'
         valign: 'bottom'
         text_size: self.size
 
-
+# =========================================================================
+# 3. KONKRETNE IMPLEMENTACJE STYLÓW
+# =========================================================================
 <BlueBrick@BrickWidget>:
-    style: ButtonStyle(bg_color="2e588c",hover_bg_color="2e587c" , text_color=[1,1,1,1], border_radius=10, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color="2e588c", hover_bg_color="2e587c", text_color="#ffffff", border_radius=10, shape=Shapes.ROUNDED)
 
 <BlueButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="2e588c",hover_bg_color="2e587c" , text_color=[1,1,1,1], border_radius=9, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color="2e588c", hover_bg_color="2e587c", text_color="#ffffff", border_radius=9, shape=Shapes.ROUNDED)
     size_hint_y: None
     height: dp(40)
     text_size: root.width, None
