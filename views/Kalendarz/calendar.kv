@@ -108,34 +108,3 @@
                 orientation: "horizontal"
                 spacing: 8
                 padding: 8
-
-    BoxLayout:
-        orientation: "vertical"
-        size_hint_y: None
-        height: 135
-        padding: 16
-        spacing: 8
-
-        canvas.before:
-            Color:
-                rgba: (0.10, 0.25, 0.45, 1)
-            RoundedRectangle:
-                pos: self.pos
-                size: self.size
-                radius: [12]
-
-        Label:
-            text: app.translate("upcoming", app.language)
-            size_hint_y: None
-            height: 26
-            color: 1, 1, 1, 1
-            font_size: 16
-            bold: True
-            halign: "left"
-            valign: "middle"
-            text_size: self.size
-
-        BoxLayout:
-            id: upcoming_box
-            orientation: "vertical"
-            spacing: 2

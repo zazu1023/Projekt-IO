@@ -8,6 +8,7 @@ from kivy.uix.label import Label
 from kivy.lang import Builder
 from kivy.properties import ColorProperty
 from kivy.utils import get_color_from_hex
+from kivy.app import App
 
 from Widgets.datePicker import DatePickerBackend, DatePickerStyle
 
@@ -129,27 +130,37 @@ class KivyDatePickerBackend(DatePickerBackend):
     def openCalendar(self, instance=None):
         return self.root
     
+
     def refreshCalendar(self):
+        # Pobieramy instancję głównej aplikacji, aby mieć dostęp do tłumaczeń
+        app = App.get_running_app()
+        lang = app.language
+        if hasattr(self, 'title_label'):
+            self.title_label.text = app.translations[lang].get("calendar_title", "Wybierz datę sesji")
+        
+        # Pobieramy odpowiednie teksty z JSONa (upewnij się, że masz te klucze w swoim pliku)
+        months_names = app.translations[lang].get("calendar_months", [])
+        days_names = app.translations[lang].get("calendar_days", [])
+        confirm_text = app.translations[lang].get("confirm_button", "Confirm")
+        
+        # Aktualizacja tekstu przycisku zatwierdzenia
+        if self.confirm_button:
+            self.confirm_button.text = confirm_text
+
         self.calendar_layout.clear_widgets()
         
-        self.month_label.text = date(
-            self.current_year,
-            self.current_month,
-            1
-        ).strftime("%B %Y")
+        # Ustawienie nagłówka miesiąca/roku
+        if months_names:
+            self.month_label.text = f"{months_names[self.current_month - 1]} {self.current_year}"
         
-        days_names = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Ndz"]
+        # Dodanie nagłówków dni tygodnia
         for name in days_names:
             self.calendar_layout.add_widget(Label(text=name, bold=True, color=get_color_from_hex("#aaaaaa")))
             
-        month_days = calendar.monthcalendar(
-            self.current_year,
-            self.current_month
-        )
-        
+        # Logika generowania dni kalendarza
+        month_days = calendar.monthcalendar(self.current_year, self.current_month)
         today = date.today()
         
-        # WYMUSZONE KOLORY NIEBIESKIE NA SZTYWNO
         c_base = get_color_from_hex("#2e588c")       
         c_selected = get_color_from_hex("#0b3d91")   
         c_today = get_color_from_hex("#4a76a8")      
@@ -160,11 +171,7 @@ class KivyDatePickerBackend(DatePickerBackend):
                 if day == 0:
                     self.calendar_layout.add_widget(Label(text=""))
                 else:
-                    current_date = date(
-                        self.current_year,
-                        self.current_month,
-                        day
-                    )
+                    current_date = date(self.current_year, self.current_month, day)
                     
                     day_button = RoundedDateButton(text=str(day))
                     day_button.color = c_text
@@ -178,7 +185,7 @@ class KivyDatePickerBackend(DatePickerBackend):
                         
                     day_button.bind(on_press=self.selectDay)
                     self.calendar_layout.add_widget(day_button)
-
+                    
     def selectDay(self, instance):
         day = int(instance.text)
         self.selected_date = date(

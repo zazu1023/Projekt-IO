@@ -99,7 +99,12 @@
     "err_num_only": "Pola liczbowe mogą zawierać tylko cyfry\n(np. 1.5 lub 1,5).",
     "err_start_time": "Godzina startu musi być w formacie HH:MM\n(np. 08:00)",
     "err_select_day": "Zaznacz co najmniej jeden dzień zajęć!",
-    "err_db_save": "Wystąpił błąd podczas zapisu do bazy:\n"
+    "err_db_save": "Wystąpił błąd podczas zapisu do bazy:\n",
+
+    "calendar_months": ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"],
+    "calendar_days": ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Ndz"],
+    "confirm_button": "Zatwierdź",
+    "calendar_title": "Wybierz datę sesji"
 },
 
 "en" :{
@@ -202,6 +207,11 @@
     "err_num_only": "Numeric fields can only contain digits\n(e.g. 1.5).",
     "err_start_time": "Start time must be in HH:MM format\n(e.g. 08:00)",
     "err_select_day": "Select at least one class day!",
-    "err_db_save": "An error occurred while saving to the database:\n"
+    "err_db_save": "An error occurred while saving to the database:\n",
+
+    "calendar_months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "calendar_days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    "confirm_button": "Confirm",
+    "calendar_title": "Select session date"
 }
 }

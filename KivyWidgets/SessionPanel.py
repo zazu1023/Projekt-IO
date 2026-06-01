@@ -3,6 +3,7 @@ from kivy.clock import Clock
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.popup import Popup
+from kivy.app import App
 from Widgets.countdown import CountdownWidget, CountdownStyle, KivyCountdownBackend
 from Widgets.datePicker import DatePicker, DatePickerStyle
 from KivyWidgets.kivyDatePickerBackend import KivyDatePickerBackend
@@ -30,6 +31,8 @@ class SessionPanel(ButtonBehavior, BoxLayout):
         self.open_date_picker()
 
     def open_date_picker(self):
+        app = App.get_running_app()
+        lang = app.language
         backend = KivyDatePickerBackend()
         dp_style = DatePickerStyle(
             bg_color=(1, 1, 1, 1),
@@ -46,7 +49,7 @@ class SessionPanel(ButtonBehavior, BoxLayout):
         picker_ui = picker.render()
         
         popup = Popup(
-            title="Wybierz datę sesji",
+            title=app.translations[lang].get("calendar_title", "Wybierz datę sesji"),
             content=picker_ui,
             size_hint=(None, None),
             size=(400, 450)
