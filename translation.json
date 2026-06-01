@@ -8,7 +8,7 @@
     "exams_tests": "Egzaminy i kolokwia",
     "rules_repository": "Repozytorium zasad",
     "progress_tracker": "Tracker progresu",
-    "countdown_text": "Do końca sesji zostało:",
+    "countdown_text": "Do początka sesji zostało:",
 
     "btn_prev": "Poprzedni tydzień",
     "btn_next": "Następny tydzień",
@@ -111,7 +111,7 @@
     "exams_tests": "Exams and tests",
     "rules_repository": "Rules repository",
     "progress_tracker": "Progress tracker",
-    "countdown_text": "Until the end of exam session:",
+    "countdown_text": "Until the start of exam session:",
 
     "btn_prev": "Previous Week",
     "btn_next": "Next Week",
