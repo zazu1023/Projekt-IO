@@ -1,19 +1,17 @@
-from KivyWidgets.KivyButtonBackend import CustomButtonWidget
-from Widgets.Button import ButtonStyle 
-
-from Widgets.Brick import CalendarBrickData
+from KivyWidgets.KivyButtonBackend import CustomButtonWidget , CustomButtonBase
+from kivy.uix.button import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 
 from kivy.properties import ObjectProperty , StringProperty , BooleanProperty
-from kivy.core.window import Window
+
 
 class DashboardBrick2( CustomButtonWidget, BoxLayout ):
     subject_obj = ObjectProperty(None)
      
-class DashboardBrick( CustomButtonWidget, BoxLayout ):
+class DashboardBrick(ButtonBehavior,CustomButtonBase ):
     subject_obj = ObjectProperty(None)
 
-class BrickWidget(CustomButtonWidget, BoxLayout):
+class BrickWidget(ButtonBehavior,CustomButtonBase):
     info_text = StringProperty()
     title_text = StringProperty()
     has_note = BooleanProperty(False)
