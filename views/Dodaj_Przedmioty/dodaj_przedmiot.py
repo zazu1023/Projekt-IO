@@ -21,8 +21,6 @@ from KivyWidgets.KivyButtonBackend import CustomButtonWidget
 from Widgets.datePicker import DatePicker, DatePickerStyle
 from KivyWidgets.kivyDatePickerBackend import KivyDatePickerBackend
 
-import database as db
-
 kv_path = os.path.join(parent_dir, 'kv', 'dodaj_przedmiot.kv')
 
 class AddSubjectScreen(Screen):
