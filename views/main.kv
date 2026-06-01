@@ -11,7 +11,7 @@ MainLayout:
     BoxLayout:
         size_hint_y: None
         height: dp(80)
-        padding: dp(5)
+        padding: dp(0)
         canvas.before:
             Color:
                 rgba: get_color_from_hex("#f8f9fa") # Jasnoszare/białe tło
@@ -22,14 +22,14 @@ MainLayout:
         # Obszar Logo
         BoxLayout:
             size_hint_x: None
-            width: dp(220)
+            width: dp(185)
             padding: dp(5)
             
             # Podmieniamy Label na Image:
             Image:
                 source: 'Images/logo_bez_tla1.png'
                 allow_stretch: True      # Pozwala obrazkowi się skalować
-                keep_ratio: True         # Zachowuje proporcje logo
+                keep_ratio: False         # Zachowuje proporcje logo
                 size_hint: (1, 1)        # Wypełnia cały dostępny obszar BoxLayouta
 
         # Środkowy tekst (Najbliższe...)
