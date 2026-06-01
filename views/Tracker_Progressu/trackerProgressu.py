@@ -7,7 +7,6 @@ from kivy.utils import get_color_from_hex
 
 from Widgets.progressBar import ProgressBar, ProgressBarStyle
 from KivyWidgets.kivyProgressBarBackend import KivyProgressBarBackend
-from database import get_connection
 
 class PointControlRow(BoxLayout):
     label_text = StringProperty("")

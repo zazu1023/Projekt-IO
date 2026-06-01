@@ -22,7 +22,6 @@ from Widgets.datePicker import DatePicker, DatePickerStyle
 from KivyWidgets.kivyDatePickerBackend import KivyDatePickerBackend
 from datetime import date
 from KivyWidgets.KivyButtonBackend import CustomButtonWidget 
-import database as db 
 
 # ==============================================================
 # INICJALIZACJA I DANE TESTOWE

@@ -19,7 +19,6 @@ from KivyWidgets.kivyDatePickerBackend import KivyDatePickerBackend
 
 from Widgets.Brick import CalendarBrickData
 from Style.ButtonStyle import ButtonStyle
-from database import save_daily_note, get_daily_note
 
 DAY_NAMES = {
     'pl': {0: "Pon", 1: "Wt", 2: "Śr", 3: "Czw", 4: "Pt", 5: "Sob", 6: "Ndz"},
@@ -225,6 +224,8 @@ class CalendarWidget(BoxLayout):
     # 1. TUTAJ DODAJEMY day_date W NAWIASIE
     def create_brick(self, event_data, day_date): 
         # KOLORY
+
+        app = App.get_running_app()
         theme_colors = {
             "zajęcia": ("86a6c1", "7092ad"),
             "egzamin": ("e57373", "ef5350")
@@ -247,7 +248,7 @@ class CalendarWidget(BoxLayout):
         brick.info_text = f"{event_data.start_time} | {event_data.end_time}"
 
         # IKONA NOTATNIKA (sprawdzenie bazy)
-        existing_text = get_daily_note(event_data.id, str(day_date))
+        existing_text = app.repo.get_daily_note(event_data.id, str(day_date))
         brick.has_note = bool(existing_text and existing_text.strip())
 
         # KLIKANIE W KAFELEK
@@ -258,9 +259,9 @@ class CalendarWidget(BoxLayout):
     def on_event_click(self, event_data, day_date):  # <--- DODAJ ", day_date"
         # 1. Zmieniamy datę na tekst w formacie YYYY-MM-DD
         date_str = str(day_date)
-        
+        app = App.get_running_app()
         # 2. Pobieramy notatkę korzystając z PRAWIDŁOWEJ daty i ID
-        existing_text = get_daily_note(event_data.id, date_str)
+        existing_text = app.repo.get_daily_note(event_data.id, date_str)
         
         backend = KivyNotePopupBackend()
         popup = NotePopup(
@@ -274,7 +275,9 @@ class CalendarWidget(BoxLayout):
         popup.open()
     def save_note_to_db(self, subject_id, note_date, content):
         # 3. ZAPIS DO PRAWDZIWEJ BAZY DANYCH!
-        save_daily_note(subject_id, note_date, content)
+        app = App.get_running_app()
+
+        app.repo.save_daily_note(subject_id, note_date, content)
         print(f"Baza zaktualizowana: {subject_id} na dzień {note_date}")
         
         # Opcjonalnie: odświeżamy kalendarz po zapisie, 
