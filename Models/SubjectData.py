@@ -26,7 +26,7 @@ class SubjectData(EventDispatcher):
         instance.id = db_dict.get("id")
         instance.title = db_dict.get("name", "Brak nazwy")
         instance.teacher=db_dict.get("teacher", "Nieznany")
-        instance.note=db_dict.get("note", "")
+        instance.note=db_dict.get("note") or ""
         instance.status = db_dict.get("status", "inprogress")
         instance.absences = db_dict.get("current_absences", 0)
         instance.max_absences = db_dict.get("max_absences", 0)

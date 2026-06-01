@@ -7,27 +7,24 @@
 <BackButton@CustomButtonWidget>:
     style: ButtonStyle(bg_color="#c0c2c4", text_color="#000000", border_radius=8)
     size_hint: 1, 1
-    radius: [dp(8)]
 
 <SuccessButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#2ecc71", text_color="#000000", border_radius=15)
+    style: ButtonStyle(bg_color="#2ecc71", text_color="#000000", border_radius=6)
     size_hint: 1, 1
-    radius: [dp(15)]
+
 
 <WarningButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#f1c40f", text_color="#000000", border_radius=15)
+    style: ButtonStyle(bg_color="#f1c40f", text_color="#000000", border_radius=6)
     size_hint: 1, 1
-    radius: [dp(15)]
 
 <DangerButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#e74c3c", text_color="#000000", border_radius=15)
+    style: ButtonStyle(bg_color="#e74c3c", text_color="#000000", border_radius=6)
     size_hint: 1, 1
-    radius: [dp(15)]
 
 <FailedButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#272724", text_color="#ffffff", border_radius=15)
+    style: ButtonStyle(bg_color="#272724", text_color="#ffffff", border_radius=6)
     size_hint: 1, 1
-    radius: [dp(15)]
+  
 
 
 
@@ -128,6 +125,7 @@
                         Label:
                             text: app.translate('current_status' , app.language)
                             bold: True
+                            font_size: '18sp'
                             size_hint_y: None
                             height: dp(20)
                             text_size: self.size
@@ -183,6 +181,7 @@
                             text: app.translate('absences' , app.language)
                             bold: True
                             size_hint_y: None
+                            font_size: '18sp'
                             height: dp(20)
                             text_size: self.size
                             halign: 'left'
@@ -212,13 +211,13 @@
                                 size_hint: None, 1
                                 width: dp(40) # Kwadratowy mały przycisk
                                 on_release: root.change_absences(1)
-                            Widget: # Pychacz, żeby przyciski były do lewej krawędzi!
+                            Widget:
 
                     # 3. PANEL EDYCJI
                     BoxLayout:
                         orientation: 'vertical'
                         size_hint_y: None
-                        height: dp(420) 
+                        height: dp(460) 
                         padding: dp(15)
                         spacing: dp(8) 
                         canvas.before:
@@ -232,12 +231,15 @@
                         Label:
                             text: app.translate('edit_subject' , app.language)
                             bold: True
+                            font_size: '18sp'
+                            color: get_color_from_hex("#ffffff") # Upewniamy się, że jest czysto biała
                             size_hint_y: None
-                            height: dp(30)
+                            height: dp(40)         # Zwiększona wysokość, by zmieścić duży tekst
                             text_size: self.size
                             halign: 'left'
+                            valign: 'middle'
                             
-                        # UWAGA: Usunięto bindowania "text: ...", zrobimy to w Pythonie
+            
                         Label:
                             text: app.translate('subject_name' , app.language)
                             size_hint_y: None
@@ -282,6 +284,14 @@
                             halign: 'left'
                         DarkRoundedInput:
                             id: input_max_pluses
+                        Label:
+                            text: app.translate('max_colloqium_pluses' , app.language)
+                            size_hint_y: None
+                            height: dp(15)
+                            text_size: self.size
+                            halign: 'left'
+                        DarkRoundedInput:
+                            id: input_max_colloquium_pluses
                             
                         Widget: 
 
@@ -302,27 +312,22 @@
                 Label:
                     text: app.translate('general_note' , app.language)
                     bold: True
+                    font_size: '18sp'
                     size_hint_y: None
                     height: dp(20)
                     text_size: self.size
                     halign: 'left'
                 
-                # UWAGA: Tu też usunięto bindowanie "text:"
                 TextInput:
                     id: input_note
                     multiline: True
                     background_color: get_color_from_hex("#e0e0e0") # Jasnoszare tło z docelowego
-                    text: root.selectedSubject.note if root.selectedSubject else ""
-                    # on_text: if root.selectedSubject: root.selectedSubject.note = self.text
-                    
+                    text: (root.selectedSubject.note or "") if root.selectedSubject else ""
                     
                 PrimaryButton:
-                    text: app.translate('save_note' , app.language)
-                    size_hint: 1, None # Wymuszamy pełną szerokość
+                    text: app.translate('save_changes' , app.language)
+                    size_hint: 1, None 
                     height: dp(40)
-                    on_release: 
-                        if root.selectedSubject: root.selectedSubject.title = input_title.text
-                        if root.selectedSubject: root.selectedSubject.teacher = input_teacher.text
-                        if root.selectedSubject: root.selectedSubject.conditions = input_conditions.text
-                        if root.selectedSubject: root.selectedSubject.note = input_note.text
-                        print("Zapisano!")
+                    on_release:
+                        root.save_changes() 
+                       

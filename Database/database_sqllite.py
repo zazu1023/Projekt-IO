@@ -56,7 +56,8 @@ class SqliteAppRepository(IAppRepository):
                 max_colloquium_points REAL DEFAULT 0,
                 current_colloquium_points REAL DEFAULT 0, -- aktualnie zdobyte punkty z kolokwiow
                 term_start TEXT,                 
-                term_end TEXT                    
+                term_end TEXT,
+                note TEXT                    
             )
         ''')
 
@@ -185,6 +186,22 @@ class SqliteAppRepository(IAppRepository):
             ) VALUES (?, ?, ?, ?, ?, ?)
             ''',
             (name, teacher, status, grading_rules, max_absences, max_activity_points)
+        )
+
+    @db_transaction
+    def update_subject(self, subject_id: int, data: dict) -> None:
+        name = data.get('title')
+        teacher = data.get('teacher', '')
+        grading_rules = data.get('conditions', '')
+        max_colloquium_points = data.get('max_colloquium_pluses', 0.0) 
+        note = data.get('note')
+        self.get_db_connection().execute(
+            '''
+            UPDATE subjects 
+            SET name = ?, teacher = ?, grading_rules = ?, max_colloquium_points = ? , note = ? 
+            WHERE id = ?
+            ''',
+            (name, teacher, grading_rules, max_colloquium_points,note ,subject_id)
         )
 
     @db_transaction

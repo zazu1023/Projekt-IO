@@ -33,29 +33,16 @@
     shorten: True
     shorten_from: 'right'
     size_hint: None , None
-    size: 150 , 75
+    size: dp(150) , dp(75)
     canvas.before:
         Color:
             rgba: 
-                (get_color_from_hex(root.style.bg_color)[0]*0.5, 
-                get_color_from_hex(root.style.bg_color)[1]*0.5, 
-                get_color_from_hex(root.style.bg_color)[2]*0.5, 1) \
-                if (self.state == 'down') else \
-                
-            
-                (get_color_from_hex(root.style.bg_color)[0]*0.8, 
-                get_color_from_hex(root.style.bg_color)[1]*0.8, 
-                get_color_from_hex(root.style.bg_color)[2]*0.8, 1) \
-                if (self.hovered ) else \
-                
-            
-                get_color_from_hex(root.style.bg_color) if root.style else [0.2, 0.2, 0.2, 1]
+                root.get_current_bg_color(root.btn_state ,root.style)
         RoundedRectangle:
             pos: self.pos
             size: self.size
             radius: [root.style.border_radius] if root.style else [8,]
 
-    # Kolor tekstu
     color: root.style.text_color if root.style else [1, 1, 1, 1]
 
 <BrickWidget>:

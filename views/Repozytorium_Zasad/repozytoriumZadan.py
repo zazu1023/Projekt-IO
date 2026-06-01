@@ -6,6 +6,8 @@ from kivy.app import App
 from kivy.uix.progressbar import ProgressBar
 from KivyWidgets.KivyBrickBackend import DashboardBrick2
 
+from Models.SubjectData import SubjectData
+
 class SubjectDatarep(EventDispatcher):
     title = StringProperty("")
     teacher = StringProperty("")
@@ -41,21 +43,24 @@ class repoScreen(Screen):
         # Zakładam, że w pliku .kv tego ekranu masz GridLayout lub StackLayout z id: bricks_container
         self.ids.grid_przedmiotow.clear_widgets()
         
-        # 2. Pobieramy listę obiektów (z bazy danych)
-        wszystkie_przedmioty = app.get_subjects_from_db()
+       
+        rows = app.repo.get_all_subjects()
         
         # 3. Pętla budująca kafelki
-        for przedmiot in wszystkie_przedmioty:
-            # Tworzymy widżet kafelka i OD RAZU wstrzykujemy mu obiekt z danymi
-            print(przedmiot.status)
+        for row in rows:
+
+            przedmiot = SubjectData.create_from_db_dict(row)
+  
             if przedmiot.status == "completed":
                 nowy_kafelek = SubjectGreenrep(subject_obj=przedmiot)
             elif przedmiot.status == "inprogress":
-                nowy_kafelek = SubjectWhiterep(subject_obj=przedmiot)
-            elif przedmiot.status == "atrisk":
                 nowy_kafelek = SubjectRedrep(subject_obj=przedmiot)
+            elif przedmiot.status == "atrisk":
+                nowy_kafelek = SubjectWhiterep(subject_obj=przedmiot)
+            elif przedmiot.status == "failed":
+                nowy_kafelek = SubjectWhiterep(subject_obj=przedmiot)
             else:
+                print(f"expected status value but got: {przedmiot.status}")
                 raise ValueError()
-            # Dodajemy gotowy kafelek do ekranu
+    
             self.ids.grid_przedmiotow.add_widget(nowy_kafelek)
-

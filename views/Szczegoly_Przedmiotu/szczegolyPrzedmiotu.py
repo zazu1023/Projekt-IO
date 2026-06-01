@@ -21,7 +21,6 @@ class SzczegolyPrzedmiotuScreen(Screen):
         self.app = App.get_running_app()
     def on_pre_enter(self):
         if self.selectedSubject:
-            # Ręczne odświeżenie pól tekstowych po wejściu w nowy kafelek
             self.ids.input_title.text = self.selectedSubject.title
             self.ids.input_teacher.text = self.selectedSubject.teacher
             self.ids.input_note.text = self.selectedSubject.note
@@ -44,3 +43,14 @@ class SzczegolyPrzedmiotuScreen(Screen):
 
             self.selectedSubject.status = new_status
             self.app.repo.set_status(subject_id = self.selectedSubject.id ,new_status = new_status)
+
+    def save_changes(self) -> None:
+        if self.selectedSubject:
+            title = self.ids.input_title.text
+            teacher = self.ids.input_teacher.text
+            conditions = self.ids.input_conditions.text
+            note = self.ids.input_note.text
+            max_colloquium_pluses = self.ids.input_max_colloquium_pluses.text
+
+            self.app.repo.update_subject( subject_id = self.selectedSubject.id ,data = {'title': title , 'teacher': teacher , 'conditions': conditions , 'note': note , 'max_colloquium_pluses' :max_colloquium_pluses})
+            print("Zapisano!")
