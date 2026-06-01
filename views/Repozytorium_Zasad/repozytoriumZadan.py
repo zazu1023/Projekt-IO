@@ -15,7 +15,7 @@ class SubjectCard(BoxLayout):
     absences = StringProperty('')
 
 class RepozytoriumZasadScreen(Screen):
-    def on_enter(self):
+    def on_pre_enter(self):
         self.populate_cards()
         
 
