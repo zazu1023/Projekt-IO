@@ -38,6 +38,7 @@
     "pluses_label": "Plusy",
     "exam_points_label": "Punkty za kolokwium",
     "scored_points": "Zdobyto {total} z {max} punktów ({percent}%)",
+    "no_defined_conditions": "Brak zdefiniowanych warunków.",
 
     "lbl_subjects": "Przedmioty",
     "lbl_select_subject_above": "Wybierz przedmiot z listy powyżej...",
@@ -140,6 +141,7 @@
     "pluses_label": "Activity points",
     "exam_points_label": "Exam points",
     "scored_points": "Scored {total} of {max} points ({percent}%)",
+    "no_defined_conditions": "No defined conditions.",
 
     "lbl_subjects": "Subjects",
     "lbl_select_subject_above": "Select a subject from the list above...",
