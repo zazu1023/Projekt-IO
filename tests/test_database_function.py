@@ -54,10 +54,10 @@ def test_language_settings(db_repo):
 
 def test_add_and_get_subjects(db_repo):
     subject_data = {
-        'title': 'Mathematics',
-        'teacher': 'Dr. Smith',
+        'title': 'Matematyka Dyskretna',
+        'teacher': 'dr inż. Jan Kowalski',
         'status': 'inprogress',
-        'conditions': 'Final exam 50%',
+        'conditions': 'Egzamin końcowy 50%, projekty 50%',
         'max_absences': 3,
         'max_pluses': 10.0
     }
@@ -66,32 +66,32 @@ def test_add_and_get_subjects(db_repo):
     fetched_subjects = db_repo.get_all_subjects()
     
     assert len(fetched_subjects) == 1
-    assert fetched_subjects[0]['name'] == 'Mathematics'
-    assert fetched_subjects[0]['teacher'] == 'Dr. Smith'
+    assert fetched_subjects[0]['name'] == 'Matematyka Dyskretna'
+    assert fetched_subjects[0]['teacher'] == 'dr inż. Jan Kowalski'
     assert fetched_subjects[0]['current_absences'] == 0
 
 def test_update_subject(db_repo):
-    db_repo.add_subject({'title': 'Physics'})
+    db_repo.add_subject({'title': 'Fizyka'})
     subject_id = db_repo.get_all_subjects()[0]['id']
     
     update_data = {
-        'title': 'Advanced Physics',
-        'teacher': 'Prof. Johnson',
-        'conditions': 'Project',
+        'title': 'Fizyka Kwantowa',
+        'teacher': 'prof. dr hab. Andrzej Nowak',
+        'conditions': 'Projekt zaliczeniowy',
         'max_colloquium_pluses': 20.0,
-        'note': 'Hard subject'
+        'note': 'Trudny przedmiot, wymagana obecność'
     }
     
     db_repo.update_subject(subject_id, update_data)
     updated_subject = db_repo.get_all_subjects()[0]
     
-    assert updated_subject['name'] == 'Advanced Physics'
-    assert updated_subject['note'] == 'Hard subject'
+    assert updated_subject['name'] == 'Fizyka Kwantowa'
+    assert updated_subject['note'] == 'Trudny przedmiot, wymagana obecność'
     assert updated_subject['max_colloquium_points'] == 20.0
 
 def test_remove_subject(db_repo):
-    db_repo.add_subject({'title': 'Chemistry'})
-    db_repo.add_subject({'title': 'Biology'})
+    db_repo.add_subject({'title': 'Chemia Organiczna'})
+    db_repo.add_subject({'title': 'Biologia Komórki'})
     
     subjects_before = db_repo.get_all_subjects()
     assert len(subjects_before) == 2
@@ -101,10 +101,10 @@ def test_remove_subject(db_repo):
     
     subjects_after = db_repo.get_all_subjects()
     assert len(subjects_after) == 1
-    assert subjects_after[0]['name'] == 'Biology'
+    assert subjects_after[0]['name'] == 'Biologia Komórki'
 
 def test_set_status(db_repo):
-    db_repo.add_subject({'title': 'History', 'status': 'inprogress'})
+    db_repo.add_subject({'title': 'Historia Polski', 'status': 'inprogress'})
     subject_id = db_repo.get_all_subjects()[0]['id']
     
     db_repo.set_status(subject_id, 'completed')
@@ -117,7 +117,7 @@ def test_set_status(db_repo):
 # ==========================================
 
 def test_add_absence_logic(db_repo):
-    db_repo.add_subject({'title': 'Art'})
+    db_repo.add_subject({'title': 'Rysunek Techniczny'})
     subject_id = db_repo.get_all_subjects()[0]['id']
     
     # didaje 2 nieobecnosci
@@ -137,22 +137,22 @@ def test_add_absence_logic(db_repo):
 # ==========================================
 
 def test_set_and_get_daily_note(db_repo):
-    db_repo.add_subject({'title': 'Programming'})
+    db_repo.add_subject({'title': 'Programowanie w Pythonie'})
     subject_id = db_repo.get_all_subjects()[0]['id']
     test_date = '2026-06-01'
     
     # tworzymy nowa notatke
-    db_repo.set_daily_note(subject_id, test_date, 'Learn Python decorators')
+    db_repo.set_daily_note(subject_id, test_date, 'Nauka dekoratorów i generatorów')
     note_content = db_repo.get_daily_note(subject_id, test_date)
-    assert note_content == 'Learn Python decorators'
+    assert note_content == 'Nauka dekoratorów i generatorów'
     
     # testujemy mechanizm nadpisywania
-    db_repo.set_daily_note(subject_id, test_date, 'Updated note content')
+    db_repo.set_daily_note(subject_id, test_date, 'Zaktualizowana treść notatki z zajęć')
     updated_content = db_repo.get_daily_note(subject_id, test_date)
-    assert updated_content == 'Updated note content'
+    assert updated_content == 'Zaktualizowana treść notatki z zajęć'
 
 def test_get_nonexistent_daily_note_returns_empty_string(db_repo):
-    db_repo.add_subject({'title': 'Database Systems'})
+    db_repo.add_subject({'title': 'Systemy Baz Danych'})
     subject_id = db_repo.get_all_subjects()[0]['id']
     
     note_content = db_repo.get_daily_note(subject_id, '2099-01-01')
