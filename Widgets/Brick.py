@@ -3,8 +3,6 @@ from dataclasses import dataclass
 
 from typing import Optional
 
-from Widgets.Button import ButtonStyle
-
 @dataclass(frozen=True)
 class LessonNote:
     id: str                # ID z bazy danych

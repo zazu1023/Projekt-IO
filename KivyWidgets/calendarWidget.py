@@ -18,7 +18,7 @@ from Widgets.datePicker import DatePicker, DatePickerStyle
 from KivyWidgets.kivyDatePickerBackend import KivyDatePickerBackend
 
 from Widgets.Brick import CalendarBrickData
-from Widgets.Button import ButtonStyle
+from Style.ButtonStyle import ButtonStyle
 from database import save_daily_note, get_daily_note
 
 DAY_NAMES = {
@@ -235,7 +235,7 @@ class CalendarWidget(BoxLayout):
         style = ButtonStyle(
             bg_color=bg_c,
             hover_bg_color=hover_c,
-            text_color=(0, 0, 0, 1),
+            text_color="#000000",
             border_radius=25
         )
 

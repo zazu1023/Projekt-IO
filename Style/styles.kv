@@ -1,6 +1,6 @@
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 #:import ButtonStyle Style.ButtonStyle.ButtonStyle
-#:import Shapes Widgets.Button.Shapes
+#:import Shapes Style.ButtonShape.Shapes
 <SidebarButton@Button>:
     size_hint_y: None
     height: 50
@@ -72,7 +72,7 @@
 
     canvas.before:
         Color:
-            rgba: root.get_brick_bg_color()
+            rgba: root.style.get_bg_color(root.btn_state) if root.style else [0.2, 0.2, 0.2, 1]
         RoundedRectangle:
             pos: self.pos
             size: self.size
