@@ -1,4 +1,5 @@
 #:import SessionPanel KivyWidgets.SessionPanel.SessionPanel
+#:import Factory kivy.factory.Factory
 MainLayout:
 
 # 2. DEFINICJA WYGLĄDU:
@@ -51,6 +52,7 @@ MainLayout:
                 size_hint_x: None
                 width: dp(40)
                 height: dp(30)
+                on_release: Factory.NotificationPopup().open()
                 canvas.after:
                     Color:
                         rgba: 1, 1, 1, 1

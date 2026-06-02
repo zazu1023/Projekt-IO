@@ -104,7 +104,10 @@
     "calendar_months": ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"],
     "calendar_days": ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Ndz"],
     "confirm_button": "Zatwierdź",
-    "calendar_title": "Wybierz datę sesji"
+    "calendar_title": "Wybierz datę sesji",
+
+    "no_upcoming_events": "Brak nadchodzących wydarzeń",
+    "btn_close": "Zamknij"
 },
 
 "en" :{
@@ -212,6 +215,9 @@
     "calendar_months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
     "calendar_days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     "confirm_button": "Confirm",
-    "calendar_title": "Select session date"
+    "calendar_title": "Select session date",
+
+    "no_upcoming_events": "No upcoming events",
+    "btn_close": "Close"
 }
 }

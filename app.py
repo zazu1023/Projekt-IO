@@ -1,5 +1,5 @@
 import json
-
+import Widgets.notifications
 
 from Database.database_sqllite import SqliteAppRepository
 
@@ -111,6 +111,5 @@ if __name__ == "__main__":
 
     DS.remove_all_subjects()
     DS.add_test_subjects()
-
 
     StudentPlannerApp(repository=repo).run()

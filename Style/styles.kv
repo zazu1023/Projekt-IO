@@ -123,3 +123,33 @@
     size_hint_y: None
     height: dp(40)
     text_size: root.width, None
+
+# =========================================================================
+# 4. POPUP POWIADOMIEN (Dzwonek)
+# =========================================================================
+<NotificationPopup>:
+    title: "Nadchodzące wydarzenia"
+    title_align: 'center'
+    size_hint: 0.8, 0.7 
+    auto_dismiss: False
+    background_color: 0.15, 0.15, 0.15, 1
+    
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 15
+        
+        ScrollView:
+            BoxLayout:
+                id: events_container
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: 10
+                
+        BlueButton:
+            text: app.translate("btn_close", app.language)
+            size_hint_y: None
+            height: dp(50)
+            size_hint_x: 1
+            on_release: root.dismiss()
