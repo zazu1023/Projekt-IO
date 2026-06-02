@@ -1,6 +1,7 @@
 #:import ButtonStyle Style.ButtonStyle.ButtonStyle
-#:import Shapes Style.ButtonShape.Shapes
 #:import get_color_from_hex kivy.utils.get_color_from_hex
+
+
 
 <DashboardBrick>:
     size_hint: 1, None
@@ -12,24 +13,33 @@
 
     RelativeLayout:
         size_hint: 1, 1
+        Widget:
+            size_hint: 1, 1
+            canvas:
+                StencilPush
+                RoundedRectangle:
+                    pos: 0, 0
+                    size: self.size
+                    radius: [root.style.border_radius] if root.style else [dp(20)]
+                StencilUse
+                
+                # B. Rysowanie obrazka bezpośrednio na płótnie
+                Color:
+                    rgba: 1, 1, 1, 0.1 # Opacity (Przezroczystość)
+                Rectangle:
+                    source: 'Images/notebook.png'
+                    size: self.height * 1.5, self.height * 1.5
+                    # x = krawędź minus 60%, y = wyśrodkowanie pionowe
+                    pos: self.width - (self.height * 1.5 * 0.6), (self.height - (self.height * 1.5)) / 2
+                
 
-        Image:
-      
-            source: 'Images/notebook.png' 
-            opacity: 0.1
-            allow_stretch: True
-            keep_ratio: True 
-            
-            size_hint: None, None
-            height: root.height * 1.5
-            width: self.height
-          
-
-            # Odejmowanie self.width * 0.6 oznacza, że 60% obrazka
-            # jest widoczne, a 40% wylatuje "za burtę" z prawej strony.
-            x: root.width - (self.width * 0.6)
-            
-            center_y: root.height / 2
+                StencilUnUse
+                RoundedRectangle:
+                    pos: 0, 0
+                    size: self.size
+                    radius: [root.style.border_radius] if root.style else [dp(20)]
+                StencilPop
+                
         BoxLayout:
             orientation: 'vertical'
             size_hint: 1, 1
@@ -39,7 +49,7 @@
             Label:
                 text: root.subject_obj.title if root.subject_obj else ""
                 bold: True
-                color: get_color_from_hex(root.style.text_color) if root.style else [0,0,0,1]
+                color: get_color_from_hex(root.style.text_color) if root.style else app.theme.DefaultColors.DEFAULT_BLACK
                 
                 text_size: self.width, None
                 shorten: True
@@ -51,7 +61,7 @@
 
             Label:
                 text: root.subject_obj.teacher if root.subject_obj else ""
-                color: get_color_from_hex(root.style.text_color) if root.style else [0,0,0,1]
+                color: get_color_from_hex(root.style.text_color) if root.style else app.theme.DefaultColors.DEFAULT_BLACK
                 
                 # ZMIANA: To samo dla nazwiska prowadzącego
                 text_size: self.width, None
@@ -66,27 +76,27 @@
                 text: app.translate(f"my_subject_{root.subject_obj.status}", app.language) if root.subject_obj else ""
                 bold: True
          
-                color: get_color_from_hex(root.style.text_color) if root.style else [0,0,0,1]
-                text_size: self.size # Status zwykle jest krótki, tu wystarczy self.size
+                color: get_color_from_hex(root.style.text_color) if root.style else app.theme.DefaultColors.DEFAULT_BLACK
+                text_size: self.size
                 halign: 'left'
                 valign: 'bottom'
                 font_size: max(sp(10), min(root.width * 0.04, sp(14)))
 
 <SubjectGreen@DashboardBrick>:
     status_text: app.translate('my_subject_completed' , app.language)
-    style: ButtonStyle(bg_color="#62c57b", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_COMPLETED, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_DARK, border_radius=10)
 
 <SubjectRed@DashboardBrick>:
     status_text: app.translate('my_subject_atrisk' , app.language)
-    style: ButtonStyle(bg_color="#f28b82", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_ATRISK, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_DARK, border_radius=10)
 
 <SubjectWhite@DashboardBrick>:
     status_text: app.translate('my_subject_inprogress' , app.language)
-    style: ButtonStyle(bg_color="#d9d9d7", text_color="000000", border_radius=10, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_INPROGRESS, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_DARK, border_radius=10)
 
 <SubjectBlack@DashboardBrick>:
     status_text: app.translate('my_subject_failed' , app.language)
-    style: ButtonStyle(bg_color="#272724", text_color="ffffff", border_radius=10, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_FAILED, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_BRIGHT, border_radius=10)
     
 <MojePrzedmiotyScreen@Screen>
     BoxLayout:
@@ -96,12 +106,6 @@
         spacing: dp(15)
         
         # Ciemnoszare tło całej aplikacji (jak na screenie poza niebieskim obszarem)
-        canvas.before:
-            Color:
-                rgba: get_color_from_hex("#332b2b")
-            Rectangle:
-                pos: self.pos
-                size: self.size
 
         # Nagłówek
         Label:
@@ -119,7 +123,7 @@
             padding: dp(15)
             canvas.before:
                 Color:
-                    rgba: get_color_from_hex("#1c4271") # Niebieskie tło
+                    rgba: get_color_from_hex(app.theme.UiColors.SECONDARY_BG_COLOR)
                 RoundedRectangle:
                     pos: self.pos
                     size: self.size

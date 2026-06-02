@@ -2,6 +2,8 @@ import json
 import Widgets.notifications
 
 from Database.database_sqllite import SqliteAppRepository
+from Style.Colors import ThemeManager
+
 
 from kivy.config import Config
 
@@ -11,7 +13,7 @@ Config.set('graphics', 'minimum_height', '600')
 
 from kivy.app import App
 from kivy.lang import Builder
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty , ObjectProperty
 
 from datetime import datetime
 from Widgets.countdown import CountdownWidget, CountdownStyle, KivyCountdownBackend
@@ -23,6 +25,7 @@ from screenHandler import *
 class StudentPlannerApp(App):
 
     language = StringProperty("pl")
+    theme = ObjectProperty(ThemeManager())
 
     def __init__(self, repository, **kwargs):
         super().__init__(**kwargs)

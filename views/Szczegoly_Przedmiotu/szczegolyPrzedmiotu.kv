@@ -5,24 +5,24 @@
 
 
 <BackButton@CustomToggleButtonWidget>:
-    style: ButtonStyle(bg_color="#c0c2c4", text_color="#000000", border_radius=8)
+    style: ButtonStyle(bg_color=app.theme.ButtonColors.TOP_BAR_BG_COLOR, text_color=app.theme.ButtonColors.TOP_BAR_TEXT_COLOR, border_radius=8)
     size_hint: 1, 1
 
 <SuccessButton@CustomToggleButtonWidget>:
-    style: ButtonStyle(bg_color="#2ecc71", text_color="#000000", border_radius=6, border_color="#ffffff", border_width=dp(1.5))
+    style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_COMPLETED, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_DARK, border_radius=6, border_color="#ffffff", border_width=dp(1.5))
     size_hint: 1, 1
 
 
-<WarningButton@CustomToggleButtonWidget>:
-    style: ButtonStyle(bg_color="#f1c40f", text_color="#000000", border_radius=6, border_color="#ffffff", border_width=dp(1.5))
+<InProgressButton@CustomToggleButtonWidget>:
+    style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_INPROGRESS, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_DARK, border_radius=6, border_color="#ffffff", border_width=dp(1.5))
     size_hint: 1, 1
 
 <DangerButton@CustomToggleButtonWidget>:
-    style: ButtonStyle(bg_color="#e74c3c", text_color="#000000", border_radius=6, border_color="#ffffff", border_width=dp(1.5))
+    style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_ATRISK, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_DARK, border_radius=6, border_color="#ffffff", border_width=dp(1.5))
     size_hint: 1, 1
 
 <FailedButton@CustomToggleButtonWidget>:
-    style: ButtonStyle(bg_color="#272724", text_color="#ffffff", border_radius=6, border_color="#ffffff", border_width=dp(1.5))
+    style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_FAILED, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_BRIGHT, border_radius=6, border_color="#ffffff", border_width=dp(1.5))
     size_hint: 1, 1
   
 
@@ -116,7 +116,7 @@
                         spacing: dp(10)
                         canvas.before:
                             Color:
-                                rgba: get_color_from_hex("#063e6e")
+                                rgba: get_color_from_hex(app.theme.UiColors.SECONDARY_BG_COLOR)
                             RoundedRectangle:
                                 pos: self.pos
                                 size: self.size
@@ -152,7 +152,7 @@
                                 on_release: root.change_status('completed')
                                 state: 'down' if (root.selectedSubject and root.selectedSubject.status == 'completed') else 'normal'
 
-                            WarningButton:
+                            InProgressButton:
                                 group: "status"
                                 id: btn_status_inprogress
                                 text: app.translate('my_subject_inprogress', app.language)
@@ -185,7 +185,7 @@
                         spacing: dp(10)
                         canvas.before:
                             Color:
-                                rgba: get_color_from_hex("#063e6e")
+                                rgba: get_color_from_hex(app.theme.UiColors.SECONDARY_BG_COLOR)
                             RoundedRectangle:
                                 pos: self.pos
                                 size: self.size
@@ -236,7 +236,7 @@
                         spacing: dp(8) 
                         canvas.before:
                             Color:
-                                rgba: get_color_from_hex("#063e6e")
+                                rgba: get_color_from_hex(app.theme.UiColors.SECONDARY_BG_COLOR)
                             RoundedRectangle:
                                 pos: self.pos
                                 size: self.size
@@ -317,7 +317,7 @@
                 size_hint_x: 0.5
                 canvas.before:
                     Color:
-                        rgba: get_color_from_hex("#063e6e")
+                        rgba: get_color_from_hex(app.theme.UiColors.SECONDARY_BG_COLOR)
                     RoundedRectangle:
                         pos: self.pos
                         size: self.size
