@@ -4,25 +4,25 @@
 #:import ButtonState Style.ButtonState.ButtonState
 
 
-<BackButton@CustomButtonWidget>:
+<BackButton@CustomToggleButtonWidget>:
     style: ButtonStyle(bg_color="#c0c2c4", text_color="#000000", border_radius=8)
     size_hint: 1, 1
 
-<SuccessButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#2ecc71", text_color="#000000", border_radius=6, border_color="#ffffff", border_width=2)
+<SuccessButton@CustomToggleButtonWidget>:
+    style: ButtonStyle(bg_color="#2ecc71", text_color="#000000", border_radius=6, border_color="#ffffff", border_width=dp(1.5))
     size_hint: 1, 1
 
 
-<WarningButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#f1c40f", text_color="#000000", border_radius=6)
+<WarningButton@CustomToggleButtonWidget>:
+    style: ButtonStyle(bg_color="#f1c40f", text_color="#000000", border_radius=6, border_color="#ffffff", border_width=dp(1.5))
     size_hint: 1, 1
 
-<DangerButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#e74c3c", text_color="#000000", border_radius=6)
+<DangerButton@CustomToggleButtonWidget>:
+    style: ButtonStyle(bg_color="#e74c3c", text_color="#000000", border_radius=6, border_color="#ffffff", border_width=dp(1.5))
     size_hint: 1, 1
 
-<FailedButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#272724", text_color="#ffffff", border_radius=6)
+<FailedButton@CustomToggleButtonWidget>:
+    style: ButtonStyle(bg_color="#272724", text_color="#ffffff", border_radius=6, border_color="#ffffff", border_width=dp(1.5))
     size_hint: 1, 1
   
 
@@ -146,19 +146,19 @@
                             height: dp(35) 
                             # Przyciski wypełnią tę przestrzeń, bo dostały size_hint: 1, 1
                             SuccessButton:
-                                state: 'down' if root.selectedSubject and root.selectedSubject.status == self.text else 'normal'
+                                group: "status"
                                 text: app.translate('my_subject_completed', app.language)
                                 on_release: root.change_status('completed')
                             WarningButton:
-                                state: 'down' if root.selectedSubject and root.selectedSubject.status == self.text else 'normal'
+                                group: "status"
                                 text: app.translate('my_subject_inprogress', app.language)
                                 on_release: root.change_status('inprogress')
                             DangerButton:
-                                state: 'down' if root.selectedSubject and root.selectedSubject.status == self.text else 'normal'
+                                group: "status"
                                 text: app.translate('my_subject_atrisk', app.language)
                                 on_release: root.change_status('atrisk')
                             FailedButton:
-                                state: 'down' if root.selectedSubject and root.selectedSubject.status == self.text else 'normal'
+                                group: "status"
                                 text: app.translate('my_subject_failed', app.language)
                                 on_release: root.change_status('failed')
 

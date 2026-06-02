@@ -54,14 +54,15 @@ class ButtonStyle(BasicButtonStyle):
         
         if state == ButtonState.DISABLED:
             return get_color_from_hex(self.disabled_bg_color)
-        elif state == ButtonState.PRESSED:
-            if self.pressed_bg_color: 
-                return get_color_from_hex(self.pressed_bg_color)
-            return [base_color[0] * 0.5, base_color[0] * 0.5, base_color[0] * 0.5, 1]
         elif state == ButtonState.HOVER:
             if self.hover_bg_color: 
                 return get_color_from_hex(self.hover_bg_color)
             return [base_color[0] * 0.8, base_color[1] * 0.8, base_color[2] * 0.8, 1]
+        elif state == ButtonState.PRESSED:
+            if self.pressed_bg_color: 
+                return get_color_from_hex(self.pressed_bg_color)
+            return [base_color[0], base_color[1], base_color[2], 1]
+       
         return base_color
 
     def get_border_color(self, state: ButtonState) -> list:

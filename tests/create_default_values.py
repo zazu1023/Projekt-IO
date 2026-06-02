@@ -5,6 +5,17 @@ subjects = [
     {'title':'WDI' , 'teacher': "Rafal Kawa" , 'status': "inprogress"},
     {'title':'WDI' , 'teacher': "Rafal Kawa" , 'status': "failed"},
     {'title':'WDI' , 'teacher': "Rafal Kawa" , 'status': "pykpykpyk"},
+    {'title':'WDI' , 'teacher': "Rafal Kawa" , 'status': "failed"},
+    {'title':'WDI' , 'teacher': "Rafal Kawa" , 'status': "failed"},
+    {'title':'WDI' , 'teacher': "Rafal Kawa" , 'status': "failed"},
+    {'title':'WDI' , 'teacher': "Rafal Kawa" , 'status': "failed"},
+    {'title':'WDI' , 'teacher': "Rafal Kawa" , 'status': "failed"},
+    {'title':'WDI' , 'teacher': "Rafal Kawa" , 'status': "failed"},
+    {'title':'WDI' , 'teacher': "Rafal Kawa" , 'status': "failed"},
+    {'title':'WDI' , 'teacher': "Rafal Kawa" , 'status': "failed"},
+    {'title':'WDI' , 'teacher': "Rafal Kawa" , 'status': "failed"},
+    
+    
 ]
 
 class DatabaseStarter():

@@ -128,7 +128,8 @@
             # Siatka, która automatycznie układa kafelki od lewej do prawej
             ScrollView:
                 do_scroll_x: False
-
+                scroll_timeout: 0
+                scroll_distance: dp(5)
                 GridLayout:
                     id: grid_przedmiotow
                     cols: 3 # Ilość kolumn (dostosuj do szerokości okna)

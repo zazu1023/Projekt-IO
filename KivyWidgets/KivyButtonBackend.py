@@ -4,7 +4,7 @@ from kivy.uix.togglebutton import ToggleButtonBehavior
 
 from kivy.uix.boxlayout import BoxLayout
 
-from kivy.properties import ObjectProperty , BooleanProperty
+from kivy.properties import ObjectProperty , BooleanProperty , StringProperty
 from kivy.core.window import Window
 
 from Style.ButtonStyle import ButtonStyle
@@ -14,6 +14,8 @@ class CustomButtonBase(BoxLayout):
     style = ObjectProperty(None)
     btn_state = ObjectProperty(ButtonState.NORMAL)
     hovered = BooleanProperty(False)
+
+    text =  StringProperty("")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
