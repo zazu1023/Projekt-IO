@@ -147,20 +147,34 @@
                             # Przyciski wypełnią tę przestrzeń, bo dostały size_hint: 1, 1
                             SuccessButton:
                                 group: "status"
+                                id: btn_status_completed
                                 text: app.translate('my_subject_completed', app.language)
                                 on_release: root.change_status('completed')
+                                state: 'down' if (root.selectedSubject and root.selectedSubject.status == 'completed') else 'normal'
+
                             WarningButton:
                                 group: "status"
+                                id: btn_status_inprogress
                                 text: app.translate('my_subject_inprogress', app.language)
                                 on_release: root.change_status('inprogress')
+                       
+                                state: 'down' if (root.selectedSubject and root.selectedSubject.status == 'inprogress') else 'normal'
+
                             DangerButton:
                                 group: "status"
+                                id: btn_status_atrisk
                                 text: app.translate('my_subject_atrisk', app.language)
                                 on_release: root.change_status('atrisk')
+                  
+                                state: 'down' if (root.selectedSubject and root.selectedSubject.status == 'atrisk') else 'normal'
+
                             FailedButton:
                                 group: "status"
+                                id: btn_status_failed
                                 text: app.translate('my_subject_failed', app.language)
                                 on_release: root.change_status('failed')
+                         
+                                state: 'down' if (root.selectedSubject and root.selectedSubject.status == 'failed') else 'normal'
 
                     # 2. PANEL NIEOBECNOŚCI
                     BoxLayout:

@@ -21,10 +21,26 @@ class SzczegolyPrzedmiotuScreen(Screen):
         self.app = App.get_running_app()
     def on_pre_enter(self):
         if self.selectedSubject:
-            self.ids.input_title.text = self.selectedSubject.title
-            self.ids.input_teacher.text = self.selectedSubject.teacher
-            self.ids.input_note.text = self.selectedSubject.note
+            self.ids.input_title.text = str(self.selectedSubject.title or "")
+            self.ids.input_teacher.text = str(self.selectedSubject.teacher or "")
+            self.ids.input_conditions.text = str(getattr(self.selectedSubject, 'conditions', ''))
+            self.ids.input_max_absences.text = str(self.selectedSubject.max_absences or "0")
+            self.ids.input_max_pluses.text = str(getattr(self.selectedSubject, 'max_pluses', '0'))
+            self.ids.input_max_colloquium_pluses.text = str(getattr(self.selectedSubject, 'max_colloquium_pluses', '0'))
+            self.ids.input_note.text = str(self.selectedSubject.note or "")
 
+            status_to_btn_id = {
+                'completed': 'btn_status_completed',
+                'inprogress': 'btn_status_inprogress',
+                'atrisk': 'btn_status_atrisk',
+                'failed': 'btn_status_failed'
+            }
+            
+  
+            btn_id = status_to_btn_id.get(self.selectedSubject.status)
+            
+            if btn_id:
+                self.ids[btn_id].state = 'down'
 
     def get_status_color(self , status_string) -> str:
         return LABEL_COLORS.get(status_string, get_color_from_hex("#95a5a6"))
