@@ -27,9 +27,6 @@ from KivyWidgets.KivyButtonBackend import CustomButtonWidget
 # INICJALIZACJA I DANE TESTOWE
 # ==============================================================
 
-
-
-
 class ExamsAndColloquiumsScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -39,10 +36,11 @@ class ExamsAndColloquiumsScreen(Screen):
         Clock.schedule_once(self.load_events, 0)
 
     def load_subjects(self, dt):
+        app = App.get_running_app()
         grid = self.ids.subjects_grid
         grid.clear_widgets() 
         
-        db_connection = db.get_connection()
+        db_connection = app.repo.get_db_connection()
         fetched_subjects = db_connection.execute("SELECT id, name, teacher FROM subjects").fetchall()
 
         for subject_record in fetched_subjects:
@@ -78,11 +76,12 @@ class ExamsAndColloquiumsScreen(Screen):
         self.load_events()
 
     def load_events(self, dt=None):
+        app = App.get_running_app()
         container = self.ids.events_container
         container.clear_widgets() 
         
         try:
-            db_connection = db.get_connection()
+            db_connection = app.repo.get_db_connection()
             cursor = db_connection.cursor()
             query = """
                 SELECT events.id, events.title, events.date_time, subjects.name AS subject_name 
@@ -98,11 +97,9 @@ class ExamsAndColloquiumsScreen(Screen):
                 card.title_text = str(event_record['title'])
                 card.subject_text = str(event_record['subject_name']) 
                 
-                # Przypisujemy do lokalnych zmiennych, aby uchronić się przed błędem "late binding" w lambdzie
                 event_id = event_record['id']
                 event_title = str(event_record['title'])
                 
-                # Bezpieczny bind
                 card.ids.btn_delete.bind(
                     on_release=lambda instance, e_id=event_id, e_title=event_title: self.show_delete_popup(e_id, e_title)
                 )
@@ -114,43 +111,43 @@ class ExamsAndColloquiumsScreen(Screen):
     def submit_event(self):
         app = App.get_running_app()
 
-        # 1. sprawdzenie, czy wybrano przedmiot
+        # 1. WALIDACJA: Czy wybrano przedmiot
         if not self.selected_subject_id:
             self.show_error_popup(app.translate("err_select_subject", app.language))
             return 
+            
         event_title = self.ids.input_event_title.text.strip()
         event_date = self.ids.input_event_date.text.strip()
         event_time = self.ids.input_event_time.text.strip()
+        event_type = self.ids.input_event_type.text 
         
-        # 2. walidacja tytułu (nie może być pusty)
+        if event_type == app.translate("type_placeholder", app.language):
+            self.show_error_popup(app.translate("err_empty_event_type", app.language))
+            return
         if not event_title:
             self.show_error_popup(app.translate("err_empty_event_title", app.language))
             return
-
-        # 3. walidacja daty (format YYYY-MM-DD)
         if not re.match(r"^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$", event_date):
             self.show_error_popup(app.translate("err_invalid_date_format", app.language))
             return
-
-        # 4. walidacja godziny (format HH:MM)
         if not re.match(r"^([01]\d|2[0-3]):([0-5]\d)$", event_time):
             self.show_error_popup(app.translate("err_invalid_time_format", app.language))
             return
 
         full_event_start = f"{event_date} {event_time}"
         
-        db_connection = db.get_connection()
+        db_connection = app.repo.get_db_connection()
         db_connection.execute(
             "INSERT INTO events (subject_id, type, title, date_time) VALUES (?, ?, ?, ?)", 
-            (self.selected_subject_id, 'Exam', event_title, full_event_start)
+            (self.selected_subject_id, event_type, event_title, full_event_start)
         )
         db_connection.commit()
         
         self.load_events()
-        
         self.ids.input_event_title.text = ""
         self.ids.input_event_date.text = ""
         self.ids.input_event_time.text = ""
+        self.ids.input_event_type.text = app.translate("type_placeholder", app.language)
 
     def show_error_popup(self, error_message):
         app = App.get_running_app()
@@ -179,7 +176,6 @@ class ExamsAndColloquiumsScreen(Screen):
             app = App.get_running_app()
             content = BoxLayout(orientation='vertical', padding=dp(20), spacing=dp(20))
             
-            # Bezpieczny tekst: usuwamy znaki '[', ']', które mogłyby zepsuć Kivy Markup i wywalić aplikację
             safe_title = event_title.replace('[', '').replace(']', '')
             
             base_msg = app.translate("popup_delete_msg", app.language)
@@ -207,7 +203,6 @@ class ExamsAndColloquiumsScreen(Screen):
             )
 
             btn_cancel.bind(on_release=popup.dismiss)
-            # Przekazujemy id i okienko popup do funkcji usuwającej
             btn_confirm.bind(on_release=lambda instance: self.delete_event(event_id, popup))
             
             popup.open()
@@ -215,29 +210,23 @@ class ExamsAndColloquiumsScreen(Screen):
             print(f"CRITICAL ERROR (show_delete_popup): {e}")
 
     def delete_event(self, event_id, popup):
+        app = App.get_running_app()
+        db_connection = app.repo.get_db_connection()
         try:
-            db_connection = db.get_connection()
             cursor = db_connection.cursor()
-            
-            # Krok 1: Usuwamy fizycznie z bazy danych
             cursor.execute("DELETE FROM events WHERE id = ?", (event_id,))
             db_connection.commit()
             
-            # Krok 2: Zamykamy okienko z zapytaniem
             popup.dismiss()
-            
-            # Krok 3: Odświeżamy listę na ekranie (skasowane wydarzenie natychmiast zniknie)
             self.load_events()
             
         except Exception as e:
-            app = App.get_running_app()
-            db_connection.rollback()  # Wycofujemy zmiany, jeśli coś poszło nie tak
+            db_connection.rollback()
             popup.dismiss()
             error_prefix = app.translate("err_db_delete", app.language)
             self.show_error_popup(f"{error_prefix}{str(e)}")
 
     def open_calendar(self):
-        """Otwiera własny DatePicker."""
         app = App.get_running_app()
         dp_style = DatePickerStyle(
             bg_color=(0.15, 0.15, 0.15, 1), 

@@ -106,8 +106,17 @@
     "confirm_button": "Zatwierdź",
     "calendar_title": "Wybierz datę sesji",
 
+    "popup_upcoming_events": "Nadchodzące wydarzenia",
     "no_upcoming_events": "Brak nadchodzących wydarzeń",
-    "btn_close": "Zamknij"
+    "btn_close": "Zamknij",
+
+    "lbl_type": "Typ",
+    "type_exam": "Egzamin",
+    "type_colloquium": "Kolokwium",
+    "type_project": "Projekt",
+    "type_other": "Inne",
+    "type_placeholder": "Wybierz z listy...",
+    "err_empty_event_type": "Proszę wybrać typ wydarzenia z listy!"
 },
 
 "en" :{
@@ -217,7 +226,16 @@
     "confirm_button": "Confirm",
     "calendar_title": "Select session date",
 
+    "popup_upcoming_events": "Upcoming events",
     "no_upcoming_events": "No upcoming events",
-    "btn_close": "Close"
+    "btn_close": "Close",
+
+    "lbl_type": "Type",
+    "type_exam": "Exam",
+    "type_colloquium": "Colloquium",
+    "type_project": "Project",
+    "type_other": "Other",
+    "type_placeholder": "Choose from list...",
+    "err_empty_event_type": "Please choose an event type from the list!"
 }
 }

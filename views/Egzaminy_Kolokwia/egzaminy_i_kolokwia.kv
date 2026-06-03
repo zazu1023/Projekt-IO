@@ -47,7 +47,7 @@
             pos: self.pos
             size: self.size
             radius: [dp(12)]
-    
+            
     # 1. LEWA STRONA: Wszystkie informacje tekstowe (Data, Tytuł, Przedmiot)
     BoxLayout:
         orientation: 'vertical'
@@ -209,24 +209,55 @@
                         width: dp(40)
                         on_release: root.open_calendar()
 
-                Label:
-                    text: app.translate("lbl_time_hhmm", app.language)
+# ========================================================
+                # SEKCJA: GODZINA + TYP WYDARZENIA (Podział 50/50 + Wyrównanie)
+                # ========================================================
+                
+                # 1. Pasek z samymi etykietami
+                BoxLayout:
+                    orientation: 'horizontal'
                     size_hint_y: None
                     height: dp(15)
-                    text_size: self.size
-                    halign: 'left'
+                    spacing: dp(15)
                     
+                    Label:
+                        text: app.translate("lbl_time_hhmm", app.language)
+                        text_size: self.size
+                        halign: 'left'
+                        
+                    Label:
+                        text: app.translate("lbl_type", app.language) 
+                        text_size: self.size
+                        halign: 'left'
+                    
+                    # Bufor wyrównujący etykiety do prawej krawędzi
+                    Widget:
+                        size_hint_x: None
+                        width: dp(35)
+
+                # 2. Pasek z polami wprowadzania
                 BoxLayout:
                     orientation: 'horizontal'
                     size_hint_y: None
                     height: dp(35)
-                    spacing: dp(10)
+                    spacing: dp(15)
+                    
                     DarkRoundedInput:
                         id: input_event_time
-                        size_hint_x: 1 
+                        
+                    Spinner:
+                        id: input_event_type
+                        text: app.translate("type_placeholder", app.language)
+                        values: [app.translate("type_exam", app.language), app.translate("type_colloquium", app.language), app.translate("type_project", app.language), app.translate("type_other", app.language)]
+                        background_normal: ''
+                        background_color: get_color_from_hex("#322d2d")
+                        color: 1, 1, 1, 1
+                        
+                    # Bufor o szerokości dp(35) + spacing dp(15) daje dokładnie dp(50) odcięcia,
+                    # czyli idealnie tyle, ile zajmuje kalendarz z przerwą powyżej!
                     Widget:
                         size_hint_x: None
-                        width: dp(40) 
+                        width: dp(35)
 
                 PrimaryButton:
                     text: app.translate("btn_confirm_add", app.language)
@@ -259,7 +290,6 @@
                     text_size: self.size
                     halign: 'left'
 
-                # To jest to brakujące ID, przez które wysypywał się Python:
                 ScrollView:
                     do_scroll_x: False
                     do_scroll_y: True

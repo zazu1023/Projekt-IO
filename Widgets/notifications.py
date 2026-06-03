@@ -22,7 +22,14 @@ class NotificationPopup(Popup):
             return
 
         for event_data in upcoming_events:
-            event_text = f"{event_data['date_time']} | {event_data['title']}"
+            date_time = event_data['date_time']
+            title = event_data['title']
+            event_type = event_data.get('type', '')
+            
+            if event_type:
+                event_text = f"{date_time} | {title} ({event_type})"
+            else:
+                event_text = f"{date_time} | {title}"
             
             event_label = Label(
                 text=event_text,

@@ -90,6 +90,7 @@ class SqliteAppRepository(IAppRepository):
             CREATE TABLE IF NOT EXISTS events (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 subject_id INTEGER,
+                type TEXT,
                 title TEXT,
                 date_time TEXT,                  
                 FOREIGN KEY (subject_id) REFERENCES subjects (id) ON DELETE CASCADE
@@ -250,7 +251,7 @@ class SqliteAppRepository(IAppRepository):
     @db_transaction
     def get_upcoming_events(self) -> list[dict]:
         rows = self.get_db_connection().execute('''
-            SELECT title, date_time 
+            SELECT type, title, date_time 
             FROM events 
             WHERE date_time >= date('now')
             ORDER BY date_time ASC
