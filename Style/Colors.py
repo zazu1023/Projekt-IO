@@ -10,10 +10,19 @@ class UiColorsGroup(EventDispatcher):
     TOP_BAR_TEXT_COLOR = StringProperty("#1565c0")
     NAV_BAR_BG_COLOR = StringProperty("#0b3d91")
 
+    SCREEN_MAIN_TEXT_COLOR = "#ffffff"
+
+    SCREEN_SECONDARY_TEXT_COLOR = "#ffffff"
+
 class ButtonColorsGroup(EventDispatcher):
     TOP_BAR_BG_COLOR = StringProperty("#9ea6b3")
     TOP_BAR_TEXT_COLOR = StringProperty("#000000")
     NAV_BUTTON_BG_COLOR = StringProperty("#2e588c")
+
+    SUBJECT_PLUS_BG_COLOR = StringProperty("#c0392b")
+    SUBJECT_MINUS_BG_COLOR = StringProperty("#2980b9")
+    SUBJECT_PLUS_TEXT_COLOR = StringProperty("#ffffff")
+    SUBJECT_MINUS_TEXT_COLOR = StringProperty("#ffffff")
 
 class SubjectColorsGroup(EventDispatcher):
     SUBJECT_BG_COLOR_COMPLETED = StringProperty("#62c57b")
@@ -22,6 +31,21 @@ class SubjectColorsGroup(EventDispatcher):
     SUBJECT_BG_COLOR_FAILED = StringProperty("#272724")
     SUBJECT_TEXT_COLOR_BRIGHT = StringProperty("#ffffff")
     SUBJECT_TEXT_COLOR_DARK = StringProperty("#000000")
+
+
+    
+
+
+class WidgetsColorsGroup(EventDispatcher):
+    FORM_TEXTINPUT_BG_COLOR = StringProperty("#322d2d") 
+    FORM_TEXTINPUT_TEXT_COLOR = StringProperty("#ffffff")
+    # FORM_TEXTINPUT_BG_COLOR = StringProperty("#ffffff") 
+    # FORM_TEXTINPUT_TEXT_COLOR = StringProperty("#000001")
+    FORM_TEXTINPUT_FOCUS_BORDER = StringProperty("#ffffff")
+
+
+    SCROLLBAR_COLOR_ACTIVE = StringProperty("#888888")
+    SCROLLBAR_COLOR_INACTIVE = StringProperty("#666666")
 
 class DefaultColorsGroup(EventDispatcher):
     DEFAULT_WHITE = StringProperty("#ffffff")
@@ -33,3 +57,4 @@ class ThemeManager(EventDispatcher):
     ButtonColors = ObjectProperty(ButtonColorsGroup())
     SubjectColors = ObjectProperty(SubjectColorsGroup())
     DefaultColors = ObjectProperty(DefaultColorsGroup())
+    WidgetColors = ObjectProperty(WidgetsColorsGroup())

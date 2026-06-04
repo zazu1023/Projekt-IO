@@ -1,4 +1,3 @@
-
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 #:import ButtonStyle Style.ButtonStyle.ButtonStyle
 #:import ButtonState Style.ButtonState.ButtonState
@@ -12,7 +11,6 @@
     style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_COMPLETED, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_DARK, border_radius=6, border_color="#ffffff", border_width=dp(1.5))
     size_hint: 1, 1
 
-
 <InProgressButton@CustomToggleButtonWidget>:
     style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_INPROGRESS, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_DARK, border_radius=6, border_color="#ffffff", border_width=dp(1.5))
     size_hint: 1, 1
@@ -25,32 +23,34 @@
     style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_FAILED, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_BRIGHT, border_radius=6, border_color="#ffffff", border_width=dp(1.5))
     size_hint: 1, 1
   
+<SubjectDetailsLabelMain@Label>:
+    bold: True
+    font_size: '18sp'
+    size_hint_y: None
+    height: self.texture_size[1] 
+    text_size: self.width, None
+    halign: 'left'
+    valign: 'middle'
+    color: app.theme.UiColors.SCREEN_MAIN_TEXT_COLOR
 
+<SubjectDetailsLabelSecondary@Label>:
+    font_size: '14sp'
+    size_hint_y: None
+    height: self.texture_size[1]
+    text_size: self.width, None
+    halign: 'left'
+    valign: 'middle'
+    color: app.theme.UiColors.SCREEN_SECONDARY_TEXT_COLOR
 
-
-<PrimaryButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#114c85", text_color="#ffffff", border_radius=10)
 
 <MinusButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#c0392b", text_color="#ffffff", border_radius=8)
+    style: ButtonStyle(bg_color=app.theme.ButtonColors.SUBJECT_MINUS_BG_COLOR, text_color=app.theme.ButtonColors.SUBJECT_MINUS_TEXT_COLOR, border_radius=8)
     radius: [dp(8)]
 
 <PlusButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="#2980b9", text_color="#ffffff", border_radius=8)
+    style: ButtonStyle(bg_color=app.theme.ButtonColors.SUBJECT_PLUS_BG_COLOR, text_color=app.theme.ButtonColors.SUBJECT_PLUS_TEXT_COLOR, border_radius=8)
     radius: [dp(8)]
 
-# ========================================================
-# 2. SZABLON: Ciemne pole tekstowe
-# ========================================================
-<DarkRoundedInput@TextInput>:
-    background_normal: ''
-    background_color: get_color_from_hex("#322d2d") # Ciemne tło pola
-    foreground_color: 1, 1, 1, 1 # Biały tekst
-    cursor_color: 1, 1, 1, 1
-    size_hint_y: None
-    height: dp(35)
-    multiline: False
-    padding_y: [self.height / 2.0 - (self.line_height / 2.0), 0] # Wyśrodkowanie tekstu w pionie
 # ========================================================
 # 3. GŁÓWNY WIDOK EKRANU
 # ========================================================
@@ -59,33 +59,23 @@
         orientation: 'vertical'
         padding: dp(20)
         spacing: dp(20)
-        canvas.before:
-            Color:
-                rgba: get_color_from_hex("#3b3232")
-            Rectangle:
-                pos: self.pos
-                size: self.size
 
         # --- GÓRNY PASEK ---
         BoxLayout:
-            orientation: 'vertical'  # Układa elementy jeden pod drugim
+            orientation: 'vertical'
             size_hint_y: None
-            height: dp(80)           # Zwiększona wysokość, bo mamy dwa wiersze
-            spacing: dp(10)          # Odstęp między tytułem a przyciskiem
+            height: self.minimum_height
+            spacing: dp(10)
             
-            Label:
+            SubjectDetailsLabelMain:
                 text: f"{app.translate('subject_details_title',app.language)} {root.selectedSubject.title if root.selectedSubject else ''}"
-                font_size: '28sp'    # Troszkę większa czcionka, jak na makiecie
-                bold: True
-                halign: 'left'
-                valign: 'middle'
-                text_size: self.size
+                font_size: '28sp' 
 
             BackButton:
                 text: app.translate('back_button' , app.language)
                 size_hint: None, None
                 size: dp(90), dp(35)
-                pos_hint: {'x': 0}   # Przykleja przycisk mocno do lewej krawędzi!
+                pos_hint: {'x': 0}
                 on_release: app.change_screen('mySubjects')
 
         # --- GŁÓWNA ZAWARTOŚĆ ---
@@ -97,8 +87,8 @@
                 do_scroll_x: False
                 size_hint_x: 0.5
                 bar_width: dp(8)
-                bar_color: get_color_from_hex("#888888")
-                bar_inactive_color: get_color_from_hex("#666666")
+                bar_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_ACTIVE)
+                bar_inactive_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_INACTIVE)
                 
                 BoxLayout:
                     orientation: 'vertical'
@@ -111,7 +101,7 @@
                     BoxLayout:
                         orientation: 'vertical'
                         size_hint_y: None
-                        height: dp(135) # Lekko powiększony, by przyciski oddychały
+                        height: dp(135)
                         padding: dp(15)
                         spacing: dp(10)
                         canvas.before:
@@ -122,29 +112,18 @@
                                 size: self.size
                                 radius: [dp(12)]
                                 
-                        Label:
+                        SubjectDetailsLabelMain:
                             text: app.translate('current_status' , app.language)
-                            bold: True
-                            font_size: '18sp'
-                            size_hint_y: None
-                            height: dp(20)
-                            text_size: self.size
-                            halign: 'left'
                             
-                        Label:
+                        SubjectDetailsLabelMain:
                             text: app.translate('my_subject_' + root.selectedSubject.status , app.language) if root.selectedSubject else app.translate('my_subject_completed', app.language)
                             color: root.get_status_color(root.selectedSubject.status if root.selectedSubject else 'unknown')
-                            bold: True
-                            size_hint_y: None
-                            height: dp(20)
-                            text_size: self.size
-                            halign: 'left'
                             
                         BoxLayout:
                             spacing: dp(10)
                             size_hint_y: None
                             height: dp(35) 
-                            # Przyciski wypełnią tę przestrzeń, bo dostały size_hint: 1, 1
+                            
                             SuccessButton:
                                 group: "status"
                                 id: btn_status_completed
@@ -157,7 +136,6 @@
                                 id: btn_status_inprogress
                                 text: app.translate('my_subject_inprogress', app.language)
                                 on_release: root.change_status('inprogress')
-                       
                                 state: 'down' if (root.selectedSubject and root.selectedSubject.status == 'inprogress') else 'normal'
 
                             DangerButton:
@@ -165,7 +143,6 @@
                                 id: btn_status_atrisk
                                 text: app.translate('my_subject_atrisk', app.language)
                                 on_release: root.change_status('atrisk')
-                  
                                 state: 'down' if (root.selectedSubject and root.selectedSubject.status == 'atrisk') else 'normal'
 
                             FailedButton:
@@ -173,14 +150,13 @@
                                 id: btn_status_failed
                                 text: app.translate('my_subject_failed', app.language)
                                 on_release: root.change_status('failed')
-                         
                                 state: 'down' if (root.selectedSubject and root.selectedSubject.status == 'failed') else 'normal'
 
                     # 2. PANEL NIEOBECNOŚCI
                     BoxLayout:
                         orientation: 'vertical'
                         size_hint_y: None
-                        height: dp(130)
+                        height: self.minimum_height
                         padding: dp(15)
                         spacing: dp(10)
                         canvas.before:
@@ -191,25 +167,12 @@
                                 size: self.size
                                 radius: [dp(12)]
                                 
-                        Label:
+                        SubjectDetailsLabelMain:
                             text: app.translate('absences' , app.language)
-                            bold: True
-                            size_hint_y: None
-                            font_size: '18sp'
-                            height: dp(20)
-                            text_size: self.size
-                            halign: 'left'
                             
-                        Label:
-                            
+                        SubjectDetailsLabelMain:
                             text: str(root.selectedSubject.absences) + "/" + str(root.selectedSubject.max_absences) if root.selectedSubject else "1/2"
-                            font_size: '34sp'
-                            bold: True
-                            size_hint_y: None
-                            height: dp(35)
-                            text_size: self.size
-                            halign: 'left'
-                            
+                            font_size: "30sp"
                         BoxLayout:
                             spacing: dp(10)
                             size_hint_y: None
@@ -218,12 +181,12 @@
                             MinusButton:
                                 text: "-"
                                 size_hint: None, 1
-                                width: dp(40) # Kwadratowy mały przycisk
+                                width: dp(40)
                                 on_release: root.change_absences(-1)
                             PlusButton:
                                 text: "+"
                                 size_hint: None, 1
-                                width: dp(40) # Kwadratowy mały przycisk
+                                width: dp(40)
                                 on_release: root.change_absences(1)
                             Widget:
 
@@ -242,70 +205,42 @@
                                 size: self.size
                                 radius: [dp(12)]
                                 
-                        Label:
+                        SubjectDetailsLabelMain:
                             text: app.translate('edit_subject' , app.language)
-                            bold: True
-                            font_size: '18sp'
-                            color: get_color_from_hex("#ffffff") # Upewniamy się, że jest czysto biała
-                            size_hint_y: None
-                            height: dp(40)         # Zwiększona wysokość, by zmieścić duży tekst
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'middle'
                             
-            
-                        Label:
+                        # --- TUTAJ WCHODZI KLASA SECONDARY ---
+                        SubjectDetailsLabelSecondary:
                             text: app.translate('subject_name' , app.language)
-                            size_hint_y: None
-                            height: dp(15)
-                            text_size: self.size
-                            halign: 'left'
-                        DarkRoundedInput:
+                        RoundedInput:
                             id: input_title
 
-                        Label:
+                        SubjectDetailsLabelSecondary:
                             text: app.translate('teacher' , app.language)
-                            size_hint_y: None
-                            height: dp(15)
-                            text_size: self.size
-                            halign: 'left'
-                        DarkRoundedInput:
+                        RoundedInput:
                             id: input_teacher
                         
-                        Label:
+                        SubjectDetailsLabelSecondary:
                             text: app.translate('passing_conditions' , app.language)
-                            size_hint_y: None
-                            height: dp(15)
-                            text_size: self.size
-                            halign: 'left'
-                        DarkRoundedInput:
+                        RoundedInput:
                             id: input_conditions
 
-                        Label:
+                        SubjectDetailsLabelSecondary:
                             text: app.translate('max_absences' , app.language)
-                            size_hint_y: None
-                            height: dp(15)
-                            text_size: self.size
-                            halign: 'left'
-                        DarkRoundedInput:
+                        RoundedInput:
                             id: input_max_absences
+                            input_filter: 'int'
                             
-                        Label:
+                        SubjectDetailsLabelSecondary:
                             text: app.translate('max_pluses' , app.language)
-                            size_hint_y: None
-                            height: dp(15)
-                            text_size: self.size
-                            halign: 'left'
-                        DarkRoundedInput:
+                        RoundedInput:
                             id: input_max_pluses
-                        Label:
+                            input_filter: 'int'
+
+                        SubjectDetailsLabelSecondary:
                             text: app.translate('max_colloqium_pluses' , app.language)
-                            size_hint_y: None
-                            height: dp(15)
-                            text_size: self.size
-                            halign: 'left'
-                        DarkRoundedInput:
+                        RoundedInput:
                             id: input_max_colloquium_pluses
+                            input_filter: 'int'
                             
                         Widget: 
 
@@ -323,25 +258,19 @@
                         size: self.size
                         radius: [dp(12)]
 
-                Label:
+                SubjectDetailsLabelMain:
                     text: app.translate('general_note' , app.language)
-                    bold: True
-                    font_size: '18sp'
-                    size_hint_y: None
-                    height: dp(20)
-                    text_size: self.size
-                    halign: 'left'
-                
-                TextInput:
+                RoundedInput:
                     id: input_note
+                    center_text: False
                     multiline: True
-                    background_color: get_color_from_hex("#e0e0e0") # Jasnoszare tło z docelowego
+                    size_hint_y: 1   # <--- 1. KLUCZ! "Zajmij całe pozostałe miejsce rodzica"
+                    padding: dp(15)
                     text: (root.selectedSubject.note or "") if root.selectedSubject else ""
                     
-                PrimaryButton:
+                BlueButton:
                     text: app.translate('save_changes' , app.language)
                     size_hint: 1, None 
                     height: dp(40)
                     on_release:
-                        root.save_changes() 
-                       
+                        root.save_changes()

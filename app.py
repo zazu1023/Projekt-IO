@@ -39,8 +39,8 @@ class StudentPlannerApp(App):
             data = json.load(file)
         
         self.translations = data
-
-        Builder.load_file('Style/styles.kv')
+        
+        Builder.load_file('Style/universalWidgets.kv')
         Builder.load_file('views/Kalendarz/calendar.kv')
 
         root_widget = Builder.load_file('views/main.kv')

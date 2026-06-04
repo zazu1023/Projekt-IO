@@ -1,28 +1,5 @@
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 #:import ButtonStyle Style.ButtonStyle.ButtonStyle
-#:import Shapes Style.ButtonShape.Shapes
-<SidebarButton@Button>:
-    size_hint_y: None
-    height: 50
-
-    background_normal: ""
-    background_down: ""
-    background_color: 0, 0, 0, 0
-
-    color: app.styles.LIGHT_COLOR
-
-    font_size: 15
-    bold: True
-
-    canvas.before:
-        Color:
-            rgba: app.styles.SIDE_BUTTON_ACTIVE_COLOR if self.state == "down" else app.styles.SIDE_BUTTON_COLOR
-        RoundedRectangle:
-            pos: self.pos
-            size: self.size
-            radius: [25]
-    on_state:
-        self.canvas.ask_update()
 
 <CustomButtonBase>:
     background_color: (0, 0, 0, 0) 
@@ -68,6 +45,26 @@
         shorten: True
         shorten_from: 'right'
         color: root.style.get_text_color(root.btn_state) if root.style else [1, 1, 1, 1]
+
+<RoundedInput@TextInput>:
+    center_text: True
+    background_normal: ''
+    background_active: ''  # <--- 1. KLUCZ! Wyłączamy domyślną grafikę Kivy dla stanu "aktywnego"
+    
+    background_color: get_color_from_hex(app.theme.WidgetColors.FORM_TEXTINPUT_BG_COLOR)
+    foreground_color: get_color_from_hex(app.theme.WidgetColors.FORM_TEXTINPUT_TEXT_COLOR)
+    cursor_color: 1, 1, 1, 1
+    size_hint_y: None
+    height: dp(35)
+    multiline: False
+    padding_y: [self.height / 2.0 - (self.line_height / 2.0), 0] if self.center_text else [dp(15), dp(15)]
+    
+    canvas.after:
+        Color:
+            rgba: get_color_from_hex(app.theme.WidgetColors.FORM_TEXTINPUT_FOCUS_BORDER) if self.focus else [0, 0, 0, 0]
+        Line:
+            width: dp(2)
+            rounded_rectangle: [self.x, self.y, self.width, self.height, dp(6)]
 
 # =========================================================================
 # 2. SEKCJA BRICK (Kafelki kalendarza / przedmiotów)
@@ -126,11 +123,9 @@
 # =========================================================================
 # 3. KONKRETNE IMPLEMENTACJE STYLÓW
 # =========================================================================
-<BlueBrick@BrickWidget>:
-    style: ButtonStyle(bg_color="2e588c", text_color="#ffffff", border_radius=10, shape=Shapes.ROUNDED)
 
 <BlueButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="2e588c", text_color="#ffffff", border_radius=9, shape=Shapes.ROUNDED)
+    style: ButtonStyle(bg_color="2e588c", text_color="#ffffff", border_radius=9)
     size_hint_y: None
     height: dp(40)
     text_size: root.width, None
