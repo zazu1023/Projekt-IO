@@ -159,3 +159,44 @@
             height: dp(50)
             size_hint_x: 1
             on_release: root.dismiss()
+
+
+<IconButton@ButtonBehavior+Image>:
+    color: (0.7, 0.7, 0.7, 1) if self.state == 'down' else (1, 1, 1, 1)
+
+<WhiteCheckBox@CheckBox>:
+    size_hint: None, None
+    size: dp(40), dp(40) 
+    canvas:
+        # Rysuje białą ramkę checkboxa
+        Color:
+            rgba: 1, 1, 1, 1
+        Line:
+            width: dp(1.5) 
+            rectangle: (self.center_x - dp(9), self.center_y - dp(9), dp(18), dp(18)) 
+        
+        # Rysuje wypełniony biały kwadracik w środku, jeśli jest zaznaczony (self.active)
+        Color:
+            rgba: (1, 1, 1, 1) if self.active else (0, 0, 0, 0)
+        Rectangle:
+            pos: self.center_x - dp(5), self.center_y - dp(5)
+            size: dp(10), dp(10)
+
+<LabelMain@Label>:
+    bold: True
+    font_size: '18sp'
+    size_hint_y: None
+    height: self.texture_size[1] 
+    text_size: self.width, None
+    halign: 'left'
+    valign: 'middle'
+    color: app.theme.UiColors.SCREEN_MAIN_TEXT_COLOR
+
+<LabelSecondary@Label>:
+    font_size: '14sp'
+    size_hint_y: None
+    height: self.texture_size[1]
+    text_size: self.width, None
+    halign: 'left'
+    valign: 'middle'
+    color: app.theme.UiColors.SCREEN_SECONDARY_TEXT_COLOR

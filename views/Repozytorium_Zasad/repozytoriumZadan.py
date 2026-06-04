@@ -31,24 +31,7 @@ class RepozytoriumZasadScreen(Screen):
 
         try:
             subjects = app.repo.get_all_subjects()
-            test_subject1 = {
-                'name': 'Analiza Matematyczna',
-                'teacher': 'Dr. Testowy',
-                'status': 'atrisk',
-                'current_absences': 24,
-                'max_absences': 50,
-                'grading_rules': 'Wymagane zaliczenie z kolokwium.'
-            }
-            test_subject2 = {
-                'name': 'Analiza Matematyczna2',
-                'teacher': 'Dr hab. Jan Kowalski',
-                'status': 'atrisk',
-                'current_absences': 2,
-                'max_absences': 50,
-                'grading_rules': '- Obecność obowiązkowa na wykładach\n- Minimum 30 pkt z kolokwium\n- Oddanie wszystkich zadań domowych w terminie.'
-            }
-            subjects.append(test_subject1)
-            subjects.append(test_subject2)
+
             for s in subjects:
                 curr = s.get('current_absences', 0)
                 raw_mx = s.get('max_absences', 0)

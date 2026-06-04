@@ -23,24 +23,7 @@
     style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_FAILED, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_BRIGHT, border_radius=6, border_color="#ffffff", border_width=dp(1.5))
     size_hint: 1, 1
   
-<SubjectDetailsLabelMain@Label>:
-    bold: True
-    font_size: '18sp'
-    size_hint_y: None
-    height: self.texture_size[1] 
-    text_size: self.width, None
-    halign: 'left'
-    valign: 'middle'
-    color: app.theme.UiColors.SCREEN_MAIN_TEXT_COLOR
 
-<SubjectDetailsLabelSecondary@Label>:
-    font_size: '14sp'
-    size_hint_y: None
-    height: self.texture_size[1]
-    text_size: self.width, None
-    halign: 'left'
-    valign: 'middle'
-    color: app.theme.UiColors.SCREEN_SECONDARY_TEXT_COLOR
 
 
 <MinusButton@CustomButtonWidget>:
@@ -67,7 +50,7 @@
             height: self.minimum_height
             spacing: dp(10)
             
-            SubjectDetailsLabelMain:
+            LabelMain:
                 text: f"{app.translate('subject_details_title',app.language)} {root.selectedSubject.title if root.selectedSubject else ''}"
                 font_size: '28sp' 
 
@@ -112,10 +95,10 @@
                                 size: self.size
                                 radius: [dp(12)]
                                 
-                        SubjectDetailsLabelMain:
+                        LabelMain:
                             text: app.translate('current_status' , app.language)
                             
-                        SubjectDetailsLabelMain:
+                        LabelMain:
                             text: app.translate('my_subject_' + root.selectedSubject.status , app.language) if root.selectedSubject else app.translate('my_subject_completed', app.language)
                             color: root.get_status_color(root.selectedSubject.status if root.selectedSubject else 'unknown')
                             
@@ -167,10 +150,10 @@
                                 size: self.size
                                 radius: [dp(12)]
                                 
-                        SubjectDetailsLabelMain:
+                        LabelMain:
                             text: app.translate('absences' , app.language)
                             
-                        SubjectDetailsLabelMain:
+                        LabelMain:
                             text: str(root.selectedSubject.absences) + "/" + str(root.selectedSubject.max_absences) if root.selectedSubject else "1/2"
                             font_size: "30sp"
                         BoxLayout:
@@ -205,38 +188,38 @@
                                 size: self.size
                                 radius: [dp(12)]
                                 
-                        SubjectDetailsLabelMain:
+                        LabelMain:
                             text: app.translate('edit_subject' , app.language)
                             
                         # --- TUTAJ WCHODZI KLASA SECONDARY ---
-                        SubjectDetailsLabelSecondary:
+                        LabelSecondary:
                             text: app.translate('subject_name' , app.language)
                         RoundedInput:
                             id: input_title
 
-                        SubjectDetailsLabelSecondary:
+                        LabelSecondary:
                             text: app.translate('teacher' , app.language)
                         RoundedInput:
                             id: input_teacher
                         
-                        SubjectDetailsLabelSecondary:
+                        LabelSecondary:
                             text: app.translate('passing_conditions' , app.language)
                         RoundedInput:
                             id: input_conditions
 
-                        SubjectDetailsLabelSecondary:
+                        LabelSecondary:
                             text: app.translate('max_absences' , app.language)
                         RoundedInput:
                             id: input_max_absences
                             input_filter: 'int'
                             
-                        SubjectDetailsLabelSecondary:
+                        LabelSecondary:
                             text: app.translate('max_pluses' , app.language)
                         RoundedInput:
                             id: input_max_pluses
                             input_filter: 'int'
 
-                        SubjectDetailsLabelSecondary:
+                        LabelSecondary:
                             text: app.translate('max_colloqium_pluses' , app.language)
                         RoundedInput:
                             id: input_max_colloquium_pluses
@@ -258,7 +241,7 @@
                         size: self.size
                         radius: [dp(12)]
 
-                SubjectDetailsLabelMain:
+                LabelMain:
                     text: app.translate('general_note' , app.language)
                 RoundedInput:
                     id: input_note

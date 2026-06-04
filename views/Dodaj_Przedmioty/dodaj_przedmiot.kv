@@ -1,490 +1,348 @@
-#:import get_color_from_hex kivy.utils.get_color_from_hex
-#:import ButtonStyle Style.ButtonStyle.ButtonStyle
+<DayLabel@Label>:
+    font_size: '14sp'
+    color: app.theme.UiColors.SCREEN_SECONDARY_TEXT_COLOR
+    size_hint_x: None
+    width: self.texture_size[0]
+    halign: 'left'
+    valign: 'middle'
 
-<CustomBaseButton@CustomButtonWidget>:
-    is_selected: False 
-    background_color: 0, 0, 0, 0
-    background_normal: ''
-    size_hint: 1, 1 
-    canvas.before:
-        Color:
-            rgba: get_color_from_hex("#082440") if (self.hovered or self.is_selected) else get_color_from_hex("#114c85")
-        RoundedRectangle:
-            pos: self.pos
-            size: self.size
-            radius: [dp(15)]
-
-<PrimaryButton@CustomBaseButton>:
-    style: ButtonStyle(bg_color="#114c85", text_color="#ffffff", border_radius=15)
-
-<DangerButton@CustomBaseButton>:
-    style: ButtonStyle(bg_color="#e74c3c", text_color="#ffffff", border_radius=15)
-
-<IconButton@ButtonBehavior+Image>:
-    color: (0.7, 0.7, 0.7, 1) if self.state == 'down' else (1, 1, 1, 1)
-
-<DarkRoundedInput@TextInput>:
-    background_normal: ''
-    background_color: get_color_from_hex("#322d2d")
-    foreground_color: 1, 1, 1, 1
-    cursor_color: 1, 1, 1, 1
-    hint_text_color: 0.6, 0.6, 0.6, 1
-    size_hint_y: None
-    height: dp(35)
-    multiline: False
-    padding_x: [dp(10), dp(10)]
-    padding_y: [self.height / 2.0 - (self.line_height / 2.0), 0]
-
-<LightTextArea@TextInput>:
-    background_normal: ''
-    background_color: get_color_from_hex("#b3b3b3")
-    foreground_color: 0, 0, 0, 1
-    cursor_color: 0, 0, 0, 1
-    hint_text_color: 0, 0, 0, 1
-    size_hint_y: None
-    height: max(dp(80), self.minimum_height)
-    multiline: True
-    padding: [dp(10), dp(10)]
-    canvas.before:
-        Color:
-            rgba: get_color_from_hex("#888888")
-        Line:
-            width: 1.2
-            rectangle: self.x, self.y, self.width, self.height
-
-<WhiteCheckBox@CheckBox>:
-    size_hint: None, None
-    size: dp(40), dp(40) 
-    canvas:
-        Color:
-            rgba: 1, 1, 1, 1
-        Line:
-            width: dp(1) 
-            rectangle: (self.center_x - dp(9), self.center_y - dp(9), dp(18), dp(18)) 
-        Color:
-            rgba: (1, 1, 1, 1) if self.active else (0, 0, 0, 0)
-        Rectangle:
-            pos: self.center_x - dp(5), self.center_y - dp(5)
-            size: dp(10), dp(10) 
-
+# ========================================================
+# WIDOK DODAWANIA PRZEDMIOTU
+# ========================================================
 <AddSubjectScreen>:
     BoxLayout:
         orientation: 'vertical'
         padding: dp(20)
         spacing: dp(20)
+        
+        # Tło ekranu podpięte pod motyw
         canvas.before:
             Color:
-                rgba: get_color_from_hex("#3b3232")
+                rgba: get_color_from_hex(app.theme.UiColors.MAIN_BG_COLOR)
             Rectangle:
                 pos: self.pos
                 size: self.size
 
-        Label:
-            text: app.translate("add_subject", app.language)
-            font_size: '28sp'
-            bold: True
+        # --- GÓRNY PASEK ---
+        BoxLayout:
+            orientation: 'vertical'
             size_hint_y: None
-            height: dp(50)
-            halign: 'left'
-            valign: 'middle'
-            text_size: self.size
+            height: self.minimum_height
+            spacing: dp(10)
 
+            LabelMain:
+                text: app.translate("add_subject", app.language)
+                font_size: '28sp'
+
+        # --- GŁÓWNA ZAWARTOŚĆ ---
         ScrollView:
+            id: main_scroll  # <--- 1. DODANO ID DLA SCROLLVIEW
             do_scroll_x: False
             do_scroll_y: True
+            bar_width: dp(8)
+            bar_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_ACTIVE)
+            bar_inactive_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_INACTIVE)
             
+            # Główny kontener pozycjonujący
             BoxLayout:
                 orientation: 'vertical'
                 size_hint_y: None
-                height: self.minimum_height
-                padding: dp(20)
-                spacing: dp(20)
-                canvas.before:
-                    Color:
-                        rgba: get_color_from_hex("#063e6e")
-                    RoundedRectangle:
-                        pos: self.pos
-                        size: self.size
-                        radius: [dp(12)]
-
-                # ==========================================
-                # RZĄD 1: Przedmiot | Prowadzący | Pusta Kolumna
-                # ==========================================
+                # MAGIA SCROLLA: Wysokość dopasowana do treści, ale minimum taka jak ekran
+                height: max(self.minimum_height, main_scroll.height)
+                
+                # Twój główny, niebieski panel z formularzem
                 BoxLayout:
-                    orientation: 'horizontal'
+                    orientation: 'vertical'
                     size_hint_y: None
-                    height: dp(70) 
+                    height: self.minimum_height
+                    padding: dp(20)
                     spacing: dp(20)
-                    
+                    canvas.before:
+                        Color:
+                            rgba: get_color_from_hex(app.theme.UiColors.SECONDARY_BG_COLOR)
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [dp(12)]
+
+                    # ==========================================
+                    # RZĄD 1: Przedmiot | Prowadzący 
+                    # ==========================================
                     BoxLayout:
-                        orientation: 'vertical'
-                        size_hint_x: 1
-                        spacing: dp(5)
-                        Label:
-                            text: app.translate("subject_name", app.language)
-                            size_hint_y: None
-                            height: dp(30)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'bottom'
+                        orientation: 'horizontal'
+                        size_hint_y: None
+                        height: self.minimum_height
+                        spacing: dp(20)
+                        
                         BoxLayout:
-                            orientation: 'horizontal'
-                            spacing: dp(10)
-                            DarkRoundedInput:
+                            orientation: 'vertical'
+                            size_hint_y: None
+                            height: self.minimum_height
+                            spacing: dp(5)
+                            LabelSecondary:
+                                text: app.translate("subject_name", app.language)
+                            RoundedInput:
                                 id: input_name
                                 hint_text: app.translate("hint_math", app.language)
-                                size_hint_x: 1
-                            Widget:
-                                size_hint_x: None
-                                width: dp(40)
-                            
-                    BoxLayout:
-                        orientation: 'vertical'
-                        size_hint_x: 1
-                        spacing: dp(5)
-                        Label:
-                            text: app.translate("teacher", app.language)
-                            size_hint_y: None
-                            height: dp(30)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'bottom'
+                                
                         BoxLayout:
-                            orientation: 'horizontal'
-                            spacing: dp(10)
-                            DarkRoundedInput:
+                            orientation: 'vertical'
+                            size_hint_y: None
+                            height: self.minimum_height
+                            spacing: dp(5)
+                            LabelSecondary:
+                                text: app.translate("teacher", app.language)
+                            RoundedInput:
                                 id: input_teacher
                                 hint_text: app.translate("hint_teacher", app.language)
-                                size_hint_x: 1
-                            Widget:
-                                size_hint_x: None
-                                width: dp(40)
 
-                    Widget:
-                        size_hint_x: 1
-
-                # ==========================================
-                # RZĄD 2: Warunki zaliczenia
-                # ==========================================
-                BoxLayout:
-                    orientation: 'vertical'
-                    size_hint_y: None
-                    height: input_conditions.height + dp(35)
-                    spacing: dp(5)
-                    Label:
-                        text: app.translate("passing_conditions", app.language)
-                        size_hint_y: None
-                        height: dp(30)
-                        text_size: self.size
-                        halign: 'left'
-                        valign: 'bottom'
-                    # Zmienione wyrównanie: dodany poziomy BoxLayout i Widget pełniący rolę odstępu z prawej
+                    # ==========================================
+                    # RZĄD 2: Warunki zaliczenia
+                    # ==========================================
                     BoxLayout:
-                        orientation: 'horizontal'
-                        spacing: dp(10)
-                        LightTextArea:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: self.minimum_height
+                        spacing: dp(5)
+                        
+                        LabelSecondary:
+                            text: app.translate("passing_conditions", app.language)
+                            
+                        RoundedInput:
                             id: input_conditions
                             hint_text: app.translate("hint_conditions", app.language)
-                        Widget:
-                            size_hint_x: None
-                            width: dp(40)
-
-                # ==========================================
-                # RZĄD 3: Nieobecności | Plusy | Kolokwia
-                # ==========================================
-                BoxLayout:
-                    orientation: 'horizontal'
-                    size_hint_y: None
-                    height: dp(70)
-                    spacing: dp(20)
-                    
-                    BoxLayout:
-                        orientation: 'vertical'
-                        size_hint_x: 1
-                        spacing: dp(5)
-                        Label:
-                            text: app.translate("max_absences", app.language)
+                            center_text: False
+                            multiline: True
                             size_hint_y: None
-                            height: dp(30)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'bottom'
-                        BoxLayout:
-                            orientation: 'horizontal'
-                            spacing: dp(10)
-                            DarkRoundedInput:
-                                id: input_absences
-                                hint_text: app.translate("hint_2", app.language)
-                                size_hint_x: 1
-                            Widget:
-                                size_hint_x: None
-                                width: dp(40)
+                            height: dp(80)
 
-                    BoxLayout:
-                        orientation: 'vertical'
-                        size_hint_x: 1
-                        spacing: dp(5)
-                        Label:
-                            text: app.translate("max_pluses", app.language)
-                            size_hint_y: None
-                            height: dp(30)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'bottom'
-                        BoxLayout:
-                            orientation: 'horizontal'
-                            spacing: dp(10)
-                            DarkRoundedInput:
-                                id: input_pluses
-                                hint_text: app.translate("hint_5", app.language)
-                                size_hint_x: 1
-                            Widget:
-                                size_hint_x: None
-                                width: dp(40)
-
-                    BoxLayout:
-                        orientation: 'vertical'
-                        size_hint_x: 1
-                        spacing: dp(5)
-                        Label:
-                            text: app.translate("exam_points_label", app.language)
-                            size_hint_y: None
-                            height: dp(30)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'bottom'
-                        BoxLayout:
-                            orientation: 'horizontal'
-                            spacing: dp(10)
-                            DarkRoundedInput:
-                                id: input_points
-                                hint_text: app.translate("hint_100", app.language)
-                                size_hint_x: 1
-                            Widget:
-                                size_hint_x: None
-                                width: dp(40)
-
-                # ==========================================
-                # RZĄD 4: Godzina startu | Czas trwania
-                # ==========================================
-                BoxLayout:
-                    orientation: 'horizontal'
-                    size_hint_y: None
-                    height: dp(70)
-                    spacing: dp(20)
-                    
-                    BoxLayout:
-                        orientation: 'vertical'
-                        size_hint_x: 1
-                        spacing: dp(5)
-                        Label:
-                            text: app.translate("lbl_start_time", app.language)
-                            size_hint_y: None
-                            height: dp(30)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'bottom'
-                        BoxLayout:
-                            orientation: 'horizontal'
-                            spacing: dp(10)
-                            DarkRoundedInput:
-                                id: input_time
-                                hint_text: app.translate("hint_time_0800", app.language)
-                                size_hint_x: 1
-                            Widget:
-                                size_hint_x: None
-                                width: dp(40)
-
-                    BoxLayout:
-                        orientation: 'vertical'
-                        size_hint_x: 1
-                        spacing: dp(5)
-                        Label:
-                            text: app.translate("lbl_duration", app.language)
-                            size_hint_y: None
-                            height: dp(30)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'bottom'
-                        BoxLayout:
-                            orientation: 'horizontal'
-                            spacing: dp(10)
-                            DarkRoundedInput:
-                                id: input_duration
-                                hint_text: app.translate("hint_duration_15", app.language)
-                                size_hint_x: 1
-                            Widget:
-                                size_hint_x: None
-                                width: dp(40)
-
-                    Widget:
-                        size_hint_x: 1
-
-                # ==========================================
-                # RZĄD 5: Początek zajęć | Koniec zajęć
-                # ==========================================
-                BoxLayout:
-                    orientation: 'horizontal'
-                    size_hint_y: None
-                    height: dp(70)
-                    spacing: dp(20)
-                    
-                    BoxLayout:
-                        orientation: 'vertical'
-                        size_hint_x: 1
-                        spacing: dp(5)
-                        Label:
-                            text: app.translate("lbl_term_start", app.language)
-                            size_hint_y: None
-                            height: dp(30)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'bottom'
-                        BoxLayout:
-                            orientation: 'horizontal'
-                            spacing: dp(10)
-                            DarkRoundedInput:
-                                id: input_start_date
-                                hint_text: app.translate("hint_date_2026", app.language)
-                                size_hint_x: 1
-                            IconButton:
-                                source: 'Images/ikona_kalendarz.png'
-                                size_hint_x: None
-                                width: dp(40)
-                                on_release: root.open_calendar('start')
-
-                    BoxLayout:
-                        orientation: 'vertical'
-                        size_hint_x: 1
-                        spacing: dp(5)
-                        Label:
-                            text: app.translate("lbl_term_end", app.language)
-                            size_hint_y: None
-                            height: dp(30)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'bottom'
-                        BoxLayout:
-                            orientation: 'horizontal'
-                            spacing: dp(10)
-                            DarkRoundedInput:
-                                id: input_end_date
-                                hint_text: app.translate("hint_date_2027", app.language)
-                                size_hint_x: 1
-                            IconButton:
-                                source: 'Images/ikona_kalendarz.png'
-                                size_hint_x: None
-                                width: dp(40)
-                                on_release: root.open_calendar('end')
-
-                    Widget:
-                        size_hint_x: 1
-
-                # ==========================================
-                # RZĄD 6: Dni zajęć
-                # ==========================================
-                BoxLayout:
-                    orientation: 'vertical'
-                    size_hint_y: None
-                    height: dp(75)
-                    spacing: dp(5)
-                    
-                    Label:
-                        text: app.translate("lbl_class_days", app.language)
-                        size_hint_y: None
-                        height: dp(30)
-                        text_size: self.size
-                        halign: 'left'
-                        valign: 'bottom'
-                        
+                    # ==========================================
+                    # RZĄD 3: Nieobecności | Plusy | Kolokwia
+                    # ==========================================
                     BoxLayout:
                         orientation: 'horizontal'
                         size_hint_y: None
-                        height: dp(40)
-                        spacing: dp(5)
+                        height: self.minimum_height
+                        spacing: dp(20)
                         
-                        WhiteCheckBox:
-                            id: chk_mon
-                        Label:
-                            text: app.translate("day_mon", app.language)
-                            size_hint_x: None
-                            width: dp(40)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'middle'
+                        BoxLayout:
+                            orientation: 'vertical'
+                            size_hint_y: None
+                            height: self.minimum_height
+                            spacing: dp(5)
+                            LabelSecondary:
+                                text: app.translate("max_absences", app.language)
+                            RoundedInput:
+                                id: input_absences
+                                hint_text: app.translate("hint_2", app.language)
+                                input_filter: 'int'
+                                
+                        BoxLayout:
+                            orientation: 'vertical'
+                            size_hint_y: None
+                            height: self.minimum_height
+                            spacing: dp(5)
+                            LabelSecondary:
+                                text: app.translate("max_pluses", app.language)
+                            RoundedInput:
+                                id: input_pluses
+                                hint_text: app.translate("hint_5", app.language)
+                                input_filter: 'int'
+                                
+                        BoxLayout:
+                            orientation: 'vertical'
+                            size_hint_y: None
+                            height: self.minimum_height
+                            spacing: dp(5)
+                            LabelSecondary:
+                                text: app.translate("exam_points_label", app.language)
+                            RoundedInput:
+                                id: input_points
+                                hint_text: app.translate("hint_100", app.language)
+                                input_filter: 'int'
 
-                        WhiteCheckBox:
-                            id: chk_tue
-                        Label:
-                            text: app.translate("day_tue", app.language)
-                            size_hint_x: None
-                            width: dp(40)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'middle'
+                    # ==========================================
+                    # RZĄD 4: Godzina startu | Czas trwania
+                    # ==========================================
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        size_hint_y: None
+                        height: self.minimum_height
+                        spacing: dp(20)
+                        
+                        BoxLayout:
+                            orientation: 'vertical'
+                            size_hint_y: None
+                            height: self.minimum_height
+                            spacing: dp(5)
+                            LabelSecondary:
+                                text: app.translate("lbl_start_time", app.language)
+                            RoundedInput:
+                                id: input_time
+                                hint_text: app.translate("hint_time_0800", app.language)
+                                
+                        BoxLayout:
+                            orientation: 'vertical'
+                            size_hint_y: None
+                            height: self.minimum_height
+                            spacing: dp(5)
+                            LabelSecondary:
+                                text: app.translate("lbl_duration", app.language)
+                            RoundedInput:
+                                id: input_duration
+                                hint_text: app.translate("hint_duration_15", app.language)
 
-                        WhiteCheckBox:
-                            id: chk_wed
-                        Label:
-                            text: app.translate("day_wed", app.language)
-                            size_hint_x: None
-                            width: dp(40)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'middle'
+                    # ==========================================
+                    # RZĄD 5: Początek zajęć | Koniec zajęć
+                    # ==========================================
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        size_hint_y: None
+                        height: self.minimum_height
+                        spacing: dp(20)
+                        
+                        BoxLayout:
+                            orientation: 'vertical'
+                            size_hint_y: None
+                            height: self.minimum_height
+                            spacing: dp(5)
+                            LabelSecondary:
+                                text: app.translate("lbl_term_start", app.language)
+                            BoxLayout:
+                                orientation: 'horizontal'
+                                size_hint_y: None
+                                height: self.minimum_height
+                                spacing: dp(10)
+                                RoundedInput:
+                                    id: input_start_date
+                                    hint_text: app.translate("hint_date_2026", app.language)
+                                IconButton:
+                                    source: 'Images/ikona_kalendarz.png'
+                                    size_hint_x: None
+                                    width: dp(35)
+                                    on_release: root.open_calendar('start')
 
-                        WhiteCheckBox:
-                            id: chk_thu
-                        Label:
-                            text: app.translate("day_thu", app.language)
-                            size_hint_x: None
-                            width: dp(40)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'middle'
+                        BoxLayout:
+                            orientation: 'vertical'
+                            size_hint_y: None
+                            height: self.minimum_height
+                            spacing: dp(5)
+                            LabelSecondary:
+                                text: app.translate("lbl_term_end", app.language)
+                            BoxLayout:
+                                orientation: 'horizontal'
+                                size_hint_y: None
+                                height: self.minimum_height
+                                spacing: dp(10)
+                                RoundedInput:
+                                    id: input_end_date
+                                    hint_text: app.translate("hint_date_2027", app.language)
+                                IconButton:
+                                    source: 'Images/ikona_kalendarz.png'
+                                    size_hint_x: None
+                                    width: dp(35)
+                                    on_release: root.open_calendar('end')
 
-                        WhiteCheckBox:
-                            id: chk_fri
-                        Label:
-                            text: app.translate("day_fri", app.language)
-                            size_hint_x: None
-                            width: dp(40)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'middle'
-
-                        WhiteCheckBox:
-                            id: chk_sat
-                        Label:
-                            text: app.translate("day_sat", app.language)
-                            size_hint_x: None
-                            width: dp(40)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'middle'
-
-                        WhiteCheckBox:
-                            id: chk_sun
-                        Label:
-                            text: app.translate("day_sun", app.language)
-                            size_hint_x: None
-                            width: dp(40)
-                            text_size: self.size
-                            halign: 'left'
-                            valign: 'middle'
+                    # ==========================================
+                    # RZĄD 6: Dni zajęć
+                    # ==========================================
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: self.minimum_height
+                        spacing: dp(10)
+                        
+                        LabelSecondary:
+                            text: app.translate("lbl_class_days", app.language)
                             
-                        Widget: 
+                        StackLayout:
+                            orientation: 'lr-tb'
+                            size_hint_y: None
+                            height: self.minimum_height
+                            spacing: [dp(20), dp(10)]
+                            
+                            BoxLayout:
+                                orientation: 'horizontal'
+                                size_hint: None, None
+                                size: self.minimum_width, dp(40)
+                                spacing: dp(5)
+                                WhiteCheckBox:
+                                    id: chk_mon
+                                DayLabel:
+                                    text: app.translate("day_mon", app.language)
 
+                            BoxLayout:
+                                orientation: 'horizontal'
+                                size_hint: None, None
+                                size: self.minimum_width, dp(40)
+                                spacing: dp(5)
+                                WhiteCheckBox:
+                                    id: chk_tue
+                                DayLabel:
+                                    text: app.translate("day_tue", app.language)
+
+                            BoxLayout:
+                                orientation: 'horizontal'
+                                size_hint: None, None
+                                size: self.minimum_width, dp(40)
+                                spacing: dp(5)
+                                WhiteCheckBox:
+                                    id: chk_wed
+                                DayLabel:
+                                    text: app.translate("day_wed", app.language)
+
+                            BoxLayout:
+                                orientation: 'horizontal'
+                                size_hint: None, None
+                                size: self.minimum_width, dp(40)
+                                spacing: dp(5)
+                                WhiteCheckBox:
+                                    id: chk_thu
+                                DayLabel:
+                                    text: app.translate("day_thu", app.language)
+
+                            BoxLayout:
+                                orientation: 'horizontal'
+                                size_hint: None, None
+                                size: self.minimum_width, dp(40)
+                                spacing: dp(5)
+                                WhiteCheckBox:
+                                    id: chk_fri
+                                DayLabel:
+                                    text: app.translate("day_fri", app.language)
+
+                            BoxLayout:
+                                orientation: 'horizontal'
+                                size_hint: None, None
+                                size: self.minimum_width, dp(40)
+                                spacing: dp(5)
+                                WhiteCheckBox:
+                                    id: chk_sat
+                                DayLabel:
+                                    text: app.translate("day_sat", app.language)
+
+                            BoxLayout:
+                                orientation: 'horizontal'
+                                size_hint: None, None
+                                size: self.minimum_width, dp(40)
+                                spacing: dp(5)
+                                WhiteCheckBox:
+                                    id: chk_sun
+                                DayLabel:
+                                    text: app.translate("day_sun", app.language)
+                    Widget:
+                        size_hint_y: None
+                        height: dp(10)
+
+                    # ==========================================
+                    # RZĄD 7: Przycisk Zapisu
+                    # ==========================================
+                    BlueButton:
+                        text: app.translate("btn_save_subject", app.language)
+                        size_hint: None, None
+                        size: dp(160), dp(40)
+                        pos_hint: {'x': 0}
+                        on_release: root.save_subject()
+
+                # MAGIA CZĘŚĆ 2: Wypychacz (Wypełni wolną przestrzeń i wyrzuci formularz do góry)
                 Widget:
-                    size_hint_y: None
-                    height: dp(10)
-
-                # ==========================================
-                # RZĄD 7: Przycisk Zapisu
-                # ==========================================
-                PrimaryButton:
-                    text: app.translate("btn_save_subject", app.language)
-                    size_hint: None, None
-                    size: dp(160), dp(40)
-                    pos_hint: {'x': 0}
-                    on_release: root.save_subject()
