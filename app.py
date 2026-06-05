@@ -69,7 +69,12 @@ class StudentPlannerApp(App):
             if config:
                 
                 Builder.load_file(config['kv'])
-                new_screen = config['class'](name=target_screen)
+                screen_kwargs = {
+                    'name': target_screen,
+                    'repo': self.repo,
+                    'app': self,
+                }
+                new_screen = config['class'](**screen_kwargs)
                 self.sm.add_widget(new_screen)
             else:
                 print(f"Error invaild scren name {target_screen}")

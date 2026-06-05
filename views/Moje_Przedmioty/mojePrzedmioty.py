@@ -1,5 +1,5 @@
 from kivy.uix.screenmanager import Screen
-from kivy.app import App
+from kivy.properties import ObjectProperty
 
 from KivyWidgets.KivyBrickBackend import DashboardBrick
 
@@ -16,13 +16,13 @@ class SubjectBlack(DashboardBrick):
     pass
 
 class MojePrzedmiotyScreen(Screen):
-    def on_pre_enter(self, *args):
-        app = App.get_running_app()
-        
-        self.ids.grid_przedmiotow.clear_widgets()
-        
+    repo = ObjectProperty(None)
+    app = ObjectProperty(None)
 
-        rows = app.repo.get_all_subjects()
+    def on_pre_enter(self, *args):
+        self.ids.grid_przedmiotow.clear_widgets()
+
+        rows = self.repo.get_all_subjects()
         
         # 3. Pętla budująca kafelki
         for row in rows:

@@ -1,7 +1,6 @@
 from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import StringProperty, NumericProperty, ObjectProperty
-from kivy.app import App
 from kivy.factory import Factory
 from kivy.utils import get_color_from_hex
 
@@ -30,9 +29,11 @@ class ProgressCard(BoxLayout):
     pluses_val = NumericProperty(0)
     exam_val = NumericProperty(0)
     
-    def __init__(self, subject_id, name, teacher, max_activity, current_activity, max_colloquium, current_colloquium, **kwargs):
+    def __init__(self, subject_id, name, teacher, max_activity, current_activity, max_colloquium, current_colloquium, repo=None, app=None, **kwargs):
         super().__init__(**kwargs)
         self.subject_id = subject_id
+        self.repo = repo
+        self.app = app
         
         if teacher:
             self.title_text = f"{name} ({teacher})"
@@ -50,9 +51,9 @@ class ProgressCard(BoxLayout):
             self.max_points = 100
             
         style = ProgressBarStyle(
-            bg_color=get_color_from_hex("#c4c4c4"),    # Oryginalne szare tło paska
-            fill_color=get_color_from_hex("#1c4271"),  # Oryginalny niebieski pasek
-            text_color=(1, 1, 1, 1)                    # Kolor tekstu (jeśli używasz)
+            bg_color=get_color_from_hex("#c4c4c4"),
+            fill_color=get_color_from_hex("#1c4271"),
+            text_color=(1, 1, 1, 1)
         )
         self.pb = ProgressBar(
             value=self.get_total(), 
@@ -62,9 +63,8 @@ class ProgressCard(BoxLayout):
         )
         self.ids.progress_container.add_widget(self.pb.render())
         
-        # Bindowanie: jeśli użytkownik kliknie zmianę języka, zaktualizuj napisy
-        app = App.get_running_app()
-        app.bind(language=self.on_language_change)
+        if self.app:
+            self.app.bind(language=self.on_language_change)
         
         self.update_texts()
 
@@ -75,7 +75,7 @@ class ProgressCard(BoxLayout):
         return self.pluses_val + self.exam_val
 
     def save_to_db(self):
-        conn = get_connection()
+        conn = self.repo.get_db_connection()
         conn.execute('''
             UPDATE subjects 
             SET current_activity_points = ?, current_colloquium_points = ? 
@@ -101,31 +101,29 @@ class ProgressCard(BoxLayout):
         self.pb.updateValue(self.get_total()) 
         self.update_texts()
 
-    # ZMIANA: Dynamiczne pobieranie i formatowanie tłumaczenia
     def update_texts(self):
         total = self.get_total()
         capped_total = min(total, self.max_points)
         percentage = round((capped_total / self.max_points) * 100, 1) if self.max_points > 0 else 0.0
         
-        app = App.get_running_app()
-        # Pobieramy szablon ze słownika (np. "Scored {total} of {max} points ({percent}%)")
-        template = app.translate("scored_points", app.language)
-        if not template: # Zabezpieczenie jakby brakowało w JSONie
+        template = self.app.translate("scored_points", self.app.language)
+        if not template:
             template = "Zdobyto {total} z {max} punktów ({percent}%)"
             
-        # .format() podmienia tagi w klamrach na konkretne wartości liczbowe
         self.points_text = template.format(total=total, max=self.max_points, percent=percentage)
 
 class TrackerProgresuScreen(Screen):
+    repo = ObjectProperty(None)
+    app = ObjectProperty(None)
+
     def on_pre_enter(self, *args):
         self.load_cards()
 
     def load_cards(self):
         self.ids.cards_container.clear_widgets()
         
-        conn = get_connection()
+        conn = self.repo.get_db_connection()
         
-        # Pobieramy przedmioty z oficjalnej tabeli subjects
         cursor = conn.execute('''
             SELECT id, name, teacher, 
                    max_activity_points, current_activity_points, 
@@ -134,15 +132,11 @@ class TrackerProgresuScreen(Screen):
         ''')
         rows = cursor.fetchall()
         
-        # INTELIGENTNY TEST: Ponieważ app.py dodaje do testów przedmioty z zerowymi punktami max
-        # (np. INSERT INTO subjects (id, name) VALUES (1, 'IO')), paski miałyby 0 punktów.
-        # Jeśli punkty maksymalne są równe 0, automatycznie nadamy im przykładowe limity, żeby dało się klikać!
         needs_reload = False
         for row in rows:
             if (row['max_activity_points'] == 0 or row['max_activity_points'] is None) and \
                (row['max_colloquium_points'] == 0 or row['max_colloquium_points'] is None):
                 
-                # Przypisujemy testowo np. max 10 za plusy i max 30 za kolokwium
                 conn.execute('''
                     UPDATE subjects 
                     SET max_activity_points = 10, max_colloquium_points = 30,
@@ -161,7 +155,6 @@ class TrackerProgresuScreen(Screen):
             ''')
             rows = cursor.fetchall()
 
-        # Generujemy karty na podstawie prawdziwych danych z bazy
         for row in rows:
             card = ProgressCard(
                 subject_id=row['id'],
@@ -170,6 +163,8 @@ class TrackerProgresuScreen(Screen):
                 max_activity=row['max_activity_points'],
                 current_activity=row['current_activity_points'],
                 max_colloquium=row['max_colloquium_points'],
-                current_colloquium=row['current_colloquium_points']
+                current_colloquium=row['current_colloquium_points'],
+                repo=self.repo,
+                app=self.app,
             )
             self.ids.cards_container.add_widget(card)

@@ -1,7 +1,6 @@
 from kivy.uix.screenmanager import Screen
 from kivy.properties import ObjectProperty
 from kivy.utils import get_color_from_hex
-from kivy.app import App
 
 
 LABEL_COLORS = {
@@ -14,11 +13,13 @@ LABEL_COLORS = {
 
 class SzczegolyPrzedmiotuScreen(Screen):
     selectedSubject = ObjectProperty(None, allownone=True,rebind=True)
+    repo = ObjectProperty(None)
+    app = ObjectProperty(None)
 
     def __init__(self, **kw):
         super().__init__(**kw)
         self.selectedSubject = None
-        self.app = App.get_running_app()
+
     def on_pre_enter(self):
         if self.selectedSubject:
             self.ids.input_title.text = str(self.selectedSubject.title or "")
@@ -48,7 +49,7 @@ class SzczegolyPrzedmiotuScreen(Screen):
     def change_absences(self, diff:int) -> None:
     
         if self.selectedSubject:
-            self.selectedSubject.absences = self.app.repo.add_absence(subject_id = self.selectedSubject.id , amount = diff )
+            self.selectedSubject.absences = self.repo.add_absence(subject_id = self.selectedSubject.id , amount = diff )
 
     def change_status(self , new_status) -> None:
         if self.selectedSubject:
@@ -58,7 +59,7 @@ class SzczegolyPrzedmiotuScreen(Screen):
             if self.selectedSubject.status == new_status: return
 
             self.selectedSubject.status = new_status
-            self.app.repo.set_status(subject_id = self.selectedSubject.id ,new_status = new_status)
+            self.repo.set_status(subject_id = self.selectedSubject.id ,new_status = new_status)
 
     def save_changes(self) -> None:
         if self.selectedSubject:
@@ -68,5 +69,5 @@ class SzczegolyPrzedmiotuScreen(Screen):
             note = self.ids.input_note.text
             max_colloquium_pluses = self.ids.input_max_colloquium_pluses.text
 
-            self.app.repo.update_subject( subject_id = self.selectedSubject.id ,data = {'title': title , 'teacher': teacher , 'conditions': conditions , 'note': note , 'max_colloquium_pluses' :max_colloquium_pluses})
+            self.repo.update_subject( subject_id = self.selectedSubject.id ,data = {'title': title , 'teacher': teacher , 'conditions': conditions , 'note': note , 'max_colloquium_pluses' :max_colloquium_pluses})
             print("Zapisano!")

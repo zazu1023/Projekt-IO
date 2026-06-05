@@ -1,9 +1,8 @@
 from datetime import date, timedelta
-from kivy.app import App
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, ObjectProperty
 
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
@@ -27,6 +26,8 @@ DAY_NAMES = {
 
 class CalendarWidget(BoxLayout):
     week_label = StringProperty("")
+    repo = ObjectProperty(None)
+    app = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -133,7 +134,6 @@ class CalendarWidget(BoxLayout):
         return selected_date - timedelta(days=selected_date.weekday())
 
     def on_kv_post(self, base_widget):
-        self.app = App.get_running_app()
         if self.app:
             self.app.bind(language=self._on_language_change)
         self.refresh_calendar()
@@ -225,7 +225,6 @@ class CalendarWidget(BoxLayout):
     def create_brick(self, event_data, day_date): 
         # KOLORY
 
-        app = App.get_running_app()
         theme_colors = {
             "zajęcia": ("86a6c1", "7092ad"),
             "egzamin": ("e57373", "ef5350")
@@ -248,7 +247,7 @@ class CalendarWidget(BoxLayout):
         brick.info_text = f"{event_data.start_time} | {event_data.end_time}"
 
         # IKONA NOTATNIKA (sprawdzenie bazy)
-        existing_text = app.repo.get_daily_note(event_data.id, str(day_date))
+        existing_text = self.repo.get_daily_note(event_data.id, str(day_date))
         brick.has_note = bool(existing_text and existing_text.strip())
 
         # KLIKANIE W KAFELEK
@@ -259,9 +258,7 @@ class CalendarWidget(BoxLayout):
     def on_event_click(self, event_data, day_date):  # <--- DODAJ ", day_date"
         # 1. Zmieniamy datę na tekst w formacie YYYY-MM-DD
         date_str = str(day_date)
-        app = App.get_running_app()
-        # 2. Pobieramy notatkę korzystając z PRAWIDŁOWEJ daty i ID
-        existing_text = app.repo.get_daily_note(event_data.id, date_str)
+        existing_text = self.repo.get_daily_note(event_data.id, date_str)
         
         backend = KivyNotePopupBackend()
         popup = NotePopup(
@@ -274,10 +271,7 @@ class CalendarWidget(BoxLayout):
         )
         popup.open()
     def save_note_to_db(self, subject_id, note_date, content):
-        # 3. ZAPIS DO PRAWDZIWEJ BAZY DANYCH!
-        app = App.get_running_app()
-
-        app.repo.save_daily_note(subject_id, note_date, content)
+        self.repo.set_daily_note(subject_id, note_date, content)
         print(f"Baza zaktualizowana: {subject_id} na dzień {note_date}")
         
         # Opcjonalnie: odświeżamy kalendarz po zapisie, 

@@ -1,6 +1,8 @@
 from kivy.uix.screenmanager import Screen
+from kivy.properties import ObjectProperty
 from KivyWidgets.calendarWidget import CalendarWidget
 
 
 class StartKalendarz(Screen):
-    pass
+    repo = ObjectProperty(None)
+    app = ObjectProperty(None)

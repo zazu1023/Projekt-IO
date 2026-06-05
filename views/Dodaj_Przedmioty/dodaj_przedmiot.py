@@ -8,8 +8,8 @@ parent_dir = os.path.dirname(current_dir)
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
-from kivy.app import App
 from kivy.uix.screenmanager import Screen
+from kivy.properties import ObjectProperty
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivy.uix.boxlayout import BoxLayout
@@ -24,13 +24,15 @@ from KivyWidgets.kivyDatePickerBackend import KivyDatePickerBackend
 kv_path = os.path.join(parent_dir, 'kv', 'dodaj_przedmiot.kv')
 
 class AddSubjectScreen(Screen):
+    repo = ObjectProperty(None)
+    app = ObjectProperty(None)
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.active_date_field = None  # przechowuje informacje, które pole daty aktualizujemy
 
     def open_calendar(self, field_id):
         """Otwiera własny DatePicker zamiast MDDatePicker."""
-        app = App.get_running_app()
         self.active_date_field = field_id
 
         dp_style = DatePickerStyle(
@@ -49,7 +51,7 @@ class AddSubjectScreen(Screen):
         picker_ui = picker.render()
         
         popup = Popup(
-            title=app.translate("popup_choose_date", app.language),
+            title=self.app.translate("popup_choose_date", self.app.language),
             content=picker_ui,
             size_hint=(None, None),
             size=(400, 450)
@@ -70,7 +72,6 @@ class AddSubjectScreen(Screen):
         popup.open()
 
     def save_subject(self):
-        app = App.get_running_app()
         # 1. POBIERANIE DANYCH
         subject_name = self.ids.input_name.text.strip()
         teacher_name = self.ids.input_teacher.text.strip()
@@ -81,10 +82,10 @@ class AddSubjectScreen(Screen):
 
         # 2. WALIDACJA TEKSTÓW
         if not subject_name:
-            self.show_error_popup(app.translate("err_subject_req", app.language))
+            self.show_error_popup(self.app.translate("err_subject_req", self.app.language))
             return
         if not teacher_name:
-            self.show_error_popup(app.translate("err_teacher_req", app.language))
+            self.show_error_popup(self.app.translate("err_teacher_req", self.app.language))
             return
 
         # 3. WALIDACJA DAT
@@ -92,10 +93,10 @@ class AddSubjectScreen(Screen):
             d_start = datetime.strptime(start_date, '%Y-%m-%d')
             d_end = datetime.strptime(end_date, '%Y-%m-%d')
             if d_end < d_start:
-                self.show_error_popup(app.translate("err_end_before_start", app.language))
+                self.show_error_popup(self.app.translate("err_end_before_start", self.app.language))
                 return
         except ValueError:
-            self.show_error_popup(app.translate("err_invalid_dates", app.language))
+            self.show_error_popup(self.app.translate("err_invalid_dates", self.app.language))
             return
 
         # 4. KONWERSJA I WALIDACJA LICZB
@@ -107,7 +108,7 @@ class AddSubjectScreen(Screen):
             try:
                 absences = int(absences_text)
             except ValueError:
-                self.show_error_popup(app.translate("err_absences_int", app.language))
+                self.show_error_popup(self.app.translate("err_absences_int", self.app.language))
                 return
 
             pluses = parse_float(self.ids.input_pluses.text.strip() or "0.0")
@@ -115,17 +116,17 @@ class AddSubjectScreen(Screen):
             duration_hours = parse_float(self.ids.input_duration.text.strip() or "0.0")
 
             if absences < 0 or pluses < 0 or max_points < 0 or duration_hours <= 0:
-                self.show_error_popup(app.translate("err_num_positive", app.language))
+                self.show_error_popup(self.app.translate("err_num_positive", self.app.language))
                 return
 
             duration_minutes = int(duration_hours * 60)
         except ValueError:
-            self.show_error_popup(app.translate("err_num_only", app.language))
+            self.show_error_popup(self.app.translate("err_num_only", self.app.language))
             return
 
         # 5. WALIDACJA GODZINY
         if not re.match(r"^([01]\d|2[0-3]):([0-5]\d)$", start_time):
-            self.show_error_popup(app.translate("err_start_time", app.language))
+            self.show_error_popup(self.app.translate("err_start_time", self.app.language))
             return
 
         # 6. DNI TYGODNIA
@@ -134,11 +135,11 @@ class AddSubjectScreen(Screen):
         selected_days = [val for chk, val in day_mapping.items() if chk.active]
         
         if not selected_days:
-            self.show_error_popup(app.translate("err_select_day", app.language))
+            self.show_error_popup(self.app.translate("err_select_day", self.app.language))
             return
 
         # 7. ZAPIS DO BAZY
-        db_connection = db.get_connection()
+        db_connection = self.repo.get_db_connection()
         cursor = db_connection.cursor()
         try:
             cursor.execute("""
@@ -155,7 +156,7 @@ class AddSubjectScreen(Screen):
             print(f"SUKCES! Zapisano przedmiot '{subject_name}' oraz jego harmonogram do bazy danych.")
         except Exception as e:
             db_connection.rollback()
-            error_prefix = app.translate("err_db_save", app.language)
+            error_prefix = self.app.translate("err_db_save", self.app.language)
             self.show_error_popup(f"{error_prefix}{str(e)}")
     
     def clear_form(self):
@@ -175,20 +176,19 @@ class AddSubjectScreen(Screen):
             checkbox.active = False
 
     def show_error_popup(self, error_message):
-        app = App.get_running_app()
         content = BoxLayout(orientation='vertical', padding=dp(20), spacing=dp(20))
         label = Label(text=error_message, halign='center', valign='middle')
         label.bind(size=label.setter('text_size'))
         content.add_widget(label)
 
         btn_ok = Factory.DangerButton()
-        btn_ok.text = app.translate("btn_will_fix", app.language)
+        btn_ok.text = self.app.translate("btn_will_fix", self.app.language)
         btn_ok.size_hint_y = None
         btn_ok.height = dp(40)
         content.add_widget(btn_ok)
 
         popup = Popup(
-            title=app.translate("popup_error_form_title", app.language), 
+            title=self.app.translate("popup_error_form_title", self.app.language), 
             content=content, 
             size_hint=(None, None), size=(dp(400), dp(200)), 
             auto_dismiss=True

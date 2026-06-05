@@ -1,41 +1,41 @@
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 from views.Dodaj_Przedmioty.dodaj_przedmiot import AddSubjectScreen
 
-# =====================================================================
-# FIXTURE DLA TŁUMACZEN
-# =====================================================================
-@pytest.fixture(autouse=True)
-def mock_app_translations():
-    with patch('kivy.app.App.get_running_app') as mock_app:
-        app_instance = MagicMock()
-        app_instance.language = 'pl'
-        translations = {
-            "err_subject_req": "Nazwa przedmiotu jest wymagana!",
-            "err_teacher_req": "Nazwa prowadzącego jest wymagana!",
-            "err_end_before_start": "Data końca nie może być wcześniejsza niż startu!",
-            "err_invalid_dates": "Daty muszą być w formacie YYYY-MM-DD!",
-            "err_absences_int": "Liczba nieobecności musi być liczbą całkowitą.",
-            "err_num_positive": "Wartości liczbowe muszą być dodatnie (czas > 0)!",
-            "err_num_only": "Pola liczbowe mogą zawierać tylko cyfry\n(np. 1.5 lub 1,5).",
-            "err_start_time": "Godzina startu musi być w formacie HH:MM\n(np. 08:00)",
-            "err_select_day": "Zaznacz co najmniej jeden dzień zajęć!",
-            "err_db_save": "Wystąpił błąd podczas zapisu do bazy:\n"
-        }
-        
-        app_instance.translate.side_effect = lambda key, lang: translations.get(key, key)
-        mock_app.return_value = app_instance
-        yield app_instance
-
-# =====================================================================
-# KONFIGURACJA SRODOWISKA TESTOWEGO
-# =====================================================================
+TRANSLATIONS = {
+    "err_subject_req": "Nazwa przedmiotu jest wymagana!",
+    "err_teacher_req": "Nazwa prowadzącego jest wymagana!",
+    "err_end_before_start": "Data końca nie może być wcześniejsza niż startu!",
+    "err_invalid_dates": "Daty muszą być w formacie YYYY-MM-DD!",
+    "err_absences_int": "Liczba nieobecności musi być liczbą całkowitą.",
+    "err_num_positive": "Wartości liczbowe muszą być dodatnie (czas > 0)!",
+    "err_num_only": "Pola liczbowe mogą zawierać tylko cyfry\n(np. 1.5 lub 1,5).",
+    "err_start_time": "Godzina startu musi być w formacie HH:MM\n(np. 08:00)",
+    "err_select_day": "Zaznacz co najmniej jeden dzień zajęć!",
+    "err_db_save": "Wystąpił błąd podczas zapisu do bazy:\n",
+}
 
 @pytest.fixture
-def mock_screen():
+def mock_app():
+    app = MagicMock()
+    app.language = 'pl'
+    app.translate.side_effect = lambda key, lang: TRANSLATIONS.get(key, key)
+    return app
+
+@pytest.fixture
+def mock_repo():
+    repo = MagicMock()
+    db_connection = MagicMock()
+    db_cursor = MagicMock()
+    db_cursor.lastrowid = 42
+    db_connection.cursor.return_value = db_cursor
+    repo.get_db_connection.return_value = db_connection
+    return repo
+
+@pytest.fixture
+def mock_screen(mock_app, mock_repo):
     screen = MagicMock()
-    
-    # domyslne, poprawne dane
+
     screen.ids.input_name.text = "Programowanie Obiektowe"
     screen.ids.input_teacher.text = "Inż. Anna Nowak"
     screen.ids.input_conditions.text = "Projekt i kolokwium"
@@ -47,7 +47,6 @@ def mock_screen():
     screen.ids.input_start_date.text = "2026-10-05"
     screen.ids.input_end_date.text = "2027-01-30"
 
-    # domyslnie zaznaczona sroda
     screen.ids.chk_mon.active = False
     screen.ids.chk_tue.active = False
     screen.ids.chk_wed.active = True
@@ -56,18 +55,14 @@ def mock_screen():
     screen.ids.chk_sat.active = False
     screen.ids.chk_sun.active = False
 
+    screen.app = mock_app
+    screen.repo = mock_repo
     screen.save_subject = AddSubjectScreen.save_subject.__get__(screen, AddSubjectScreen)
     return screen
 
 @pytest.fixture
-def mock_db():
-    with patch('views.Dodaj_Przedmioty.dodaj_przedmiot.db.get_connection') as mock_get_conn:
-        db_connection = MagicMock()
-        db_cursor = MagicMock()
-        db_cursor.lastrowid = 42 
-        db_connection.cursor.return_value = db_cursor
-        mock_get_conn.return_value = db_connection
-        yield db_connection
+def mock_db(mock_repo):
+    return mock_repo.get_db_connection.return_value
 
 
 def test_save_valid_data(mock_screen, mock_db):
@@ -80,7 +75,7 @@ def test_save_all_days_selected(mock_screen, mock_db):
     for cb in ['chk_mon', 'chk_tue', 'chk_wed', 'chk_thu', 'chk_fri', 'chk_sat', 'chk_sun']:
         getattr(mock_screen.ids, cb).active = True
     mock_screen.save_subject()
-    assert mock_db.cursor().execute.call_count == 8 # 1(subjects) + 7(schedule)
+    assert mock_db.cursor().execute.call_count == 8
 
 def test_empty_name(mock_screen, mock_db):
     mock_screen.ids.input_name.text = ""
@@ -229,7 +224,7 @@ def test_fractional_absences_not_allowed(mock_screen, mock_db):
     mock_db.commit.assert_not_called()
 
 def test_extreme_large_values(mock_screen, mock_db):
-    mock_screen.ids.input_points.text = "2147483647" # max int32
+    mock_screen.ids.input_points.text = "2147483647"
     mock_screen.save_subject()
     mock_screen.show_error_popup.assert_not_called()
 
@@ -241,7 +236,6 @@ def test_extreme_small_positive_values(mock_screen, mock_db):
 def test_comma_to_dot_conversion(mock_screen, mock_db):
     mock_screen.ids.input_duration.text = "1,75"
     mock_screen.save_subject()
-    #1.75 * 60 = 105 minut
     duration_min = mock_db.cursor().execute.call_args_list[1][0][1][3]
     assert duration_min == 105
 
