@@ -1,39 +1,27 @@
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 #:import ButtonStyle Style.ButtonStyle.ButtonStyle
 
-<CustomBaseButton@CustomButtonWidget>:
-    is_selected: False 
-    background_color: 0, 0, 0, 0
+<ExamSubjectButton>:
+    size_hint_y: None
+    height: dp(85)
+    size_hint_x: 1
+    style: ButtonStyle(bg_color=app.theme.ButtonColors.NAV_BUTTON_BG_COLOR, text_color=app.theme.ButtonColors.NAV_BUTTON_TEXT_COLOR , pressed_bg_color = app.theme.ButtonColors.NAV_BUTTON_PRESSED_BG_COLOR , pressed_text_color = app.theme.ButtonColors.NAV_BUTTON_PRESSED_TEXT_COLOR  )
+
+<ExamDangerButton@CustomButtonWidget>:
+    style: ButtonStyle(bg_color=app.theme.ButtonColors.REMOVE_BG_COLOR, text_color=app.theme.ButtonColors.REMOVE_TEXT_COLOR, border_radius=9)
+    size_hint_y: None
+    height: dp(40)
+
+<ExamSpinner@Spinner>:
     background_normal: ''
-    size_hint: 1, 1 
-    canvas.before:
-        Color:
-            rgba: get_color_from_hex("#082440") if (self.hovered or self.is_selected) else get_color_from_hex("#114c85")
-        RoundedRectangle:
-            pos: self.pos
-            size: self.size
-            radius: [dp(15)]
-
-<PrimaryButton@CustomBaseButton>:
-    style: ButtonStyle(bg_color="#114c85", text_color="#ffffff", border_radius=15)
-
-<DangerButton@CustomBaseButton>:
-    style: ButtonStyle(bg_color="#e74c3c", text_color="#ffffff", border_radius=15)
-
-<IconButton@ButtonBehavior+Image>:
-    color: (0.7, 0.7, 0.7, 1) if self.state == 'down' else (1, 1, 1, 1)
-
-<DarkRoundedInput@TextInput>:
-    background_normal: ''
-    background_color: get_color_from_hex("#322d2d")
-    foreground_color: 1, 1, 1, 1
-    cursor_color: 1, 1, 1, 1
+    background_color: get_color_from_hex(app.theme.WidgetColors.FORM_TEXTINPUT_BG_COLOR)
+    color: get_color_from_hex(app.theme.WidgetColors.FORM_TEXTINPUT_TEXT_COLOR)
     size_hint_y: None
     height: dp(35)
-    multiline: False
-    padding_y: [self.height / 2.0 - (self.line_height / 2.0), 0]
+    text_size: self.width - dp(12), None
+    halign: 'left'
+    valign: 'middle'
 
-# --- SZABLON KARTY WYDARZENIA Z PRZYCISKIEM 'X' ---
 <EventCard@FloatLayout>:
     subject_text: ""
     date_text: ""
@@ -42,46 +30,31 @@
     height: dp(75)
     canvas.before:
         Color:
-            rgba: get_color_from_hex("#114c85")
+            rgba: get_color_from_hex(app.theme.ButtonColors.NAV_BUTTON_BG_COLOR)
         RoundedRectangle:
             pos: self.pos
             size: self.size
             radius: [dp(12)]
-            
-    # 1. LEWA STRONA: Wszystkie informacje tekstowe (Data, Tytuł, Przedmiot)
+
     BoxLayout:
         orientation: 'vertical'
-        size_hint: 0.8, 1  # Lekko poszerzone, żeby zmieścić długie tytuły
+        size_hint: 0.8, 1
         pos_hint: {'x': 0, 'y': 0}
         padding: [dp(15), dp(10), 0, dp(10)]
-        
-        Label:
-            text: root.date_text
-            font_size: '12sp'
-            size_hint_y: None
-            height: dp(15)
-            text_size: self.size
-            halign: 'left'
-            
-        Label:
-            text: root.title_text
-            bold: True
-            text_size: self.size
-            halign: 'left'
-            valign: 'middle'
-            
-        Label:
-            text: root.subject_text
-            font_size: '11sp'
-            bold: True
-            color: 1, 1, 1, 1
-            size_hint_y: None
-            height: dp(15)
-            text_size: self.size
-            halign: 'left'
-            valign: 'bottom'
 
-    # 2. PRAWA STRONA: Samotny "X"
+        LabelSecondary:
+            text: root.date_text
+
+        LabelMain:
+            text: root.title_text
+            shorten: True
+            shorten_from: 'right'
+            size_hint_y: 1
+
+        LabelSecondary:
+            text: root.subject_text
+            bold: True
+
     Button:
         id: btn_delete
         text: "X"
@@ -92,8 +65,7 @@
         pos_hint: {'right': 0.98, 'top': 0.95}
         background_normal: ''
         background_color: 0, 0, 0, 0
-        color: get_color_from_hex("#e74c3c") if self.state == 'normal' else get_color_from_hex("#c0392b")
-                       
+        color: get_color_from_hex(app.theme.ButtonColors.SUBJECT_PLUS_BG_COLOR) if self.state == 'normal' else get_color_from_hex(app.theme.ButtonColors.SUBJECT_MINUS_BG_COLOR)
 
 <ExamsAndColloquiumsScreen>:
     BoxLayout:
@@ -102,30 +74,18 @@
         spacing: dp(20)
         canvas.before:
             Color:
-                rgba: get_color_from_hex("#3b3232")
+                rgba: get_color_from_hex(app.theme.UiColors.MAIN_BG_COLOR)
             Rectangle:
                 pos: self.pos
                 size: self.size
 
-        # --- GÓRNY PASEK ---
-        BoxLayout:
-            orientation: 'vertical'
-            size_hint_y: None
-            height: dp(60)
-            Label:
-                text: app.translate("exams_tests", app.language)
-                font_size: '28sp'
-                bold: True
-                halign: 'left'
-                valign: 'middle'
-                text_size: self.size
+        LabelMain:
+            text: app.translate("exams_tests", app.language)
+            font_size: '28sp'
 
-        # --- GŁÓWNA ZAWARTOŚĆ ---
         BoxLayout:
             spacing: dp(20)
-            # ========================================================
-            # LEWA KOLUMNA (Formularz i kafelki)
-            # ========================================================
+
             BoxLayout:
                 orientation: 'vertical'
                 size_hint_x: 0.6
@@ -133,25 +93,24 @@
                 spacing: dp(10)
                 canvas.before:
                     Color:
-                        rgba: get_color_from_hex("#063e6e") 
+                        rgba: get_color_from_hex(app.theme.UiColors.SECONDARY_BG_COLOR)
                     RoundedRectangle:
                         pos: self.pos
                         size: self.size
                         radius: [dp(12)]
 
-                Label:
+                LabelMain:
                     text: app.translate("lbl_subjects", app.language)
-                    bold: True
-                    size_hint_y: None
-                    height: dp(20)
-                    text_size: self.size
-                    halign: 'left'
+                    font_size: '16sp'
 
                 ScrollView:
-                    size_hint_y: 1 
+                    size_hint_y: 1
                     do_scroll_x: False
                     do_scroll_y: True
-                    
+                    bar_width: dp(6)
+                    bar_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_ACTIVE)
+                    bar_inactive_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_INACTIVE)
+
                     GridLayout:
                         id: subjects_grid
                         cols: 3
@@ -159,48 +118,30 @@
                         size_hint_y: None
                         height: self.minimum_height
 
-                Label:
-                    id: label_selected_subject
-                    text: app.translate("lbl_select_subject_above", app.language)
-                    size_hint_y: None
-                    height: dp(30)
-                    text_size: self.size
-                    halign: 'left'
-                    valign: 'middle'
-
-                # --- Sekcja Formularza ---
-                Label:
+                LabelSecondary:
                     text: app.translate("lbl_event_title", app.language)
-                    size_hint_y: None
-                    height: dp(15)
-                    text_size: self.size
-                    halign: 'left'
-                
+
                 BoxLayout:
                     orientation: 'horizontal'
                     size_hint_y: None
                     height: dp(35)
                     spacing: dp(10)
-                    DarkRoundedInput:
+                    RoundedInput:
                         id: input_event_title
-                        size_hint_x: 1 
+                        size_hint_x: 1
                     Widget:
                         size_hint_x: None
-                        width: dp(40) 
+                        width: dp(40)
 
-                Label:
+                LabelSecondary:
                     text: app.translate("lbl_event_date", app.language)
-                    size_hint_y: None
-                    height: dp(15)
-                    text_size: self.size
-                    halign: 'left'
 
                 BoxLayout:
                     orientation: 'horizontal'
                     size_hint_y: None
                     height: dp(35)
                     spacing: dp(10)
-                    DarkRoundedInput:
+                    RoundedInput:
                         id: input_event_date
                         size_hint_x: 1
                     IconButton:
@@ -209,66 +150,49 @@
                         width: dp(40)
                         on_release: root.open_calendar()
 
-# ========================================================
-                # SEKCJA: GODZINA + TYP WYDARZENIA (Podział 50/50 + Wyrównanie)
-                # ========================================================
-                
-                # 1. Pasek z samymi etykietami
                 BoxLayout:
                     orientation: 'horizontal'
                     size_hint_y: None
                     height: dp(15)
                     spacing: dp(15)
-                    
-                    Label:
+
+                    LabelSecondary:
                         text: app.translate("lbl_time_hhmm", app.language)
-                        text_size: self.size
-                        halign: 'left'
-                        
-                    Label:
-                        text: app.translate("lbl_type", app.language) 
-                        text_size: self.size
-                        halign: 'left'
-                    
-                    # Bufor wyrównujący etykiety do prawej krawędzi
+                        size_hint_x: 0.5
+
+                    LabelSecondary:
+                        text: app.translate("lbl_type", app.language)
+                        size_hint_x: 0.5
+
                     Widget:
                         size_hint_x: None
                         width: dp(35)
 
-                # 2. Pasek z polami wprowadzania
                 BoxLayout:
                     orientation: 'horizontal'
                     size_hint_y: None
                     height: dp(35)
                     spacing: dp(15)
-                    
-                    DarkRoundedInput:
+
+                    RoundedInput:
                         id: input_event_time
-                        
-                    Spinner:
+                        size_hint_x: 0.5
+
+                    ExamSpinner:
                         id: input_event_type
+                        size_hint_x: 0.5
                         text: app.translate("type_placeholder", app.language)
                         values: [app.translate("type_exam", app.language), app.translate("type_colloquium", app.language), app.translate("type_project", app.language), app.translate("type_other", app.language)]
-                        background_normal: ''
-                        background_color: get_color_from_hex("#322d2d")
-                        color: 1, 1, 1, 1
-                        
-                    # Bufor o szerokości dp(35) + spacing dp(15) daje dokładnie dp(50) odcięcia,
-                    # czyli idealnie tyle, ile zajmuje kalendarz z przerwą powyżej!
+
                     Widget:
                         size_hint_x: None
                         width: dp(35)
 
-                PrimaryButton:
+                BlueButton:
                     text: app.translate("btn_confirm_add", app.language)
-                    size_hint: None, None
-                    size: dp(160), dp(40)
-                    pos_hint: {'x': 0}
+                    size_hint_x: 1
                     on_release: root.submit_event()
 
-            # ========================================================
-            # PRAWA KOLUMNA (Zapisane wydarzenia)
-            # ========================================================
             BoxLayout:
                 orientation: 'vertical'
                 size_hint_x: 0.4
@@ -276,24 +200,23 @@
                 spacing: dp(10)
                 canvas.before:
                     Color:
-                        rgba: get_color_from_hex("#063e6e")
+                        rgba: get_color_from_hex(app.theme.UiColors.SECONDARY_BG_COLOR)
                     RoundedRectangle:
                         pos: self.pos
                         size: self.size
                         radius: [dp(12)]
 
-                Label:
+                LabelMain:
                     text: app.translate("lbl_saved_events", app.language)
-                    bold: True
-                    size_hint_y: None
-                    height: dp(20)
-                    text_size: self.size
-                    halign: 'left'
+                    font_size: '16sp'
 
                 ScrollView:
                     do_scroll_x: False
                     do_scroll_y: True
-                    
+                    bar_width: dp(6)
+                    bar_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_ACTIVE)
+                    bar_inactive_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_INACTIVE)
+
                     BoxLayout:
                         id: events_container
                         orientation: 'vertical'

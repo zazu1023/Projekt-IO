@@ -75,4 +75,8 @@ class ButtonStyle(BasicButtonStyle):
     def get_text_color(self, state: ButtonState) -> list:
         if state == ButtonState.DISABLED:
             return get_color_from_hex(self.disabled_text_color)
+        if state == ButtonState.HOVER and self.hover_text_color:
+            return get_color_from_hex(self.hover_text_color)
+        if state == ButtonState.PRESSED and self.pressed_text_color:
+            return get_color_from_hex(self.pressed_text_color)
         return get_color_from_hex(self.text_color)

@@ -82,23 +82,23 @@
                 valign: 'bottom'
                 font_size: max(sp(10), min(root.width * 0.04, sp(14)))
 
-<SubjectGreen@DashboardBrick>:
+<SubjectGreen>:
     status_text: app.translate('my_subject_completed' , app.language)
     style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_COMPLETED, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_DARK, border_radius=10)
 
-<SubjectRed@DashboardBrick>:
+<SubjectRed>:
     status_text: app.translate('my_subject_atrisk' , app.language)
     style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_ATRISK, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_DARK, border_radius=10)
 
-<SubjectWhite@DashboardBrick>:
+<SubjectWhite>:
     status_text: app.translate('my_subject_inprogress' , app.language)
     style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_INPROGRESS, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_DARK, border_radius=10)
 
-<SubjectBlack@DashboardBrick>:
+<SubjectBlack>:
     status_text: app.translate('my_subject_failed' , app.language)
     style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_FAILED, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_BRIGHT, border_radius=10)
     
-<MojePrzedmiotyScreen@Screen>
+<MojePrzedmiotyScreen>:
     BoxLayout:
         
         orientation: 'vertical'

@@ -19,7 +19,8 @@ def mock_app():
 @pytest.fixture
 def mock_repo():
     repo = MagicMock()
-    repo.get_db_connection.return_value = MagicMock()
+    repo.get_all_subjects.return_value = []
+    repo.get_all_events.return_value = []
     return repo
 
 @pytest.fixture
@@ -37,7 +38,6 @@ def exam_screen_instance(mock_app, mock_repo):
         screen.ids['input_event_type'] = MagicMock()
         screen.ids['events_container'] = MagicMock()
         screen.ids['subjects_grid'] = MagicMock()
-        screen.ids['label_selected_subject'] = MagicMock()
         screen.ids['input_event_date'].text = ""
         screen.ids['input_event_time'].text = ""
         screen.ids['input_event_title'].text = ""
@@ -123,8 +123,6 @@ def test_validation_fails_on_invalid_times(exam_screen_instance, invalid_time):
     exam_screen_instance.show_error_popup.assert_called_with("Godzina musi być w formacie HH:MM\n(np. 14:30)")
 
 def test_submit_valid_event_saves_to_db(exam_screen_instance):
-    mock_db = exam_screen_instance.repo.get_db_connection.return_value
-
     exam_screen_instance.ids['input_event_date'].text = "2026-05-28"
     exam_screen_instance.ids['input_event_time'].text = "14:30"
     exam_screen_instance.ids['input_event_title'].text = "Physics Exam"
@@ -133,4 +131,6 @@ def test_submit_valid_event_saves_to_db(exam_screen_instance):
     exam_screen_instance.submit_event()
 
     exam_screen_instance.show_error_popup.assert_not_called()
-    mock_db.commit.assert_called_once()
+    exam_screen_instance.repo.add_event.assert_called_once_with(
+        1, "Egzamin", "Physics Exam", "2026-05-28 14:30"
+    )

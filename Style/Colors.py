@@ -18,11 +18,18 @@ class ButtonColorsGroup(EventDispatcher):
     TOP_BAR_BG_COLOR = StringProperty("#9ea6b3")
     TOP_BAR_TEXT_COLOR = StringProperty("#000000")
     NAV_BUTTON_BG_COLOR = StringProperty("#2e588c")
+    NAV_BUTTON_TEXT_COLOR = StringProperty("#ffffff")
+    NAV_BUTTON_PRESSED_BG_COLOR = StringProperty("#f8f9fa")
+    NAV_BUTTON_PRESSED_TEXT_COLOR = StringProperty("#000000")
 
     SUBJECT_PLUS_BG_COLOR = StringProperty("#c0392b")
     SUBJECT_MINUS_BG_COLOR = StringProperty("#2980b9")
     SUBJECT_PLUS_TEXT_COLOR = StringProperty("#ffffff")
     SUBJECT_MINUS_TEXT_COLOR = StringProperty("#ffffff")
+
+    REMOVE_BG_COLOR = StringProperty("#c0392b")
+    REMOVE_TEXT_COLOR = StringProperty("#ffffff")
+
 
 class SubjectColorsGroup(EventDispatcher):
     SUBJECT_BG_COLOR_COMPLETED = StringProperty("#62c57b")

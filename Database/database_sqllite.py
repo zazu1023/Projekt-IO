@@ -248,6 +248,37 @@ class SqliteAppRepository(IAppRepository):
             (subject_id, date, content)
         )
 
+    """
+    Events
+    """
+
+    @db_transaction
+    def get_all_events(self) -> list[dict]:
+        rows = self.get_db_connection().execute(
+            '''
+            SELECT events.id, events.title, events.date_time, events.type,
+                   events.subject_id, subjects.name AS subject_name
+            FROM events
+            JOIN subjects ON events.subject_id = subjects.id
+            ORDER BY events.date_time ASC
+            '''
+        ).fetchall()
+        return [dict(row) for row in rows]
+
+    @db_transaction
+    def add_event(self, subject_id: int, event_type: str, title: str, date_time: str) -> None:
+        self.get_db_connection().execute(
+            "INSERT INTO events (subject_id, type, title, date_time) VALUES (?, ?, ?, ?)",
+            (subject_id, event_type, title, date_time),
+        )
+
+    @db_transaction
+    def remove_event(self, event_id: int) -> None:
+        self.get_db_connection().execute(
+            "DELETE FROM events WHERE id = ?",
+            (event_id,),
+        )
+
     @db_transaction
     def get_upcoming_events(self) -> list[dict]:
         rows = self.get_db_connection().execute('''

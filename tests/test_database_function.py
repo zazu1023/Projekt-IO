@@ -347,3 +347,29 @@ def test_empty_conditions_are_allowed(db_repo):
 
     subject = db_repo.get_all_subjects()[0]
     assert subject['grading_rules'] == ''
+
+
+def test_add_and_get_all_events(db_repo):
+    subject_id = db_repo.get_all_subjects()[0]['id'] if db_repo.get_all_subjects() else None
+    if subject_id is None:
+        db_repo.add_subject({'title': 'IO', 'teacher': 'Kawa'})
+        subject_id = db_repo.get_all_subjects()[0]['id']
+
+    db_repo.add_event(subject_id, "Egzamin", "Kolokwium 1", "2026-06-10 10:00")
+    events = db_repo.get_all_events()
+
+    assert len(events) == 1
+    assert events[0]['title'] == "Kolokwium 1"
+    assert events[0]['subject_name'] == "IO"
+    assert events[0]['type'] == "Egzamin"
+
+
+def test_remove_event(db_repo):
+    db_repo.add_subject({'title': 'SK', 'teacher': 'Nowak'})
+    subject_id = db_repo.get_all_subjects()[0]['id']
+    db_repo.add_event(subject_id, "Kolokwium", "Test", "2026-06-15 12:00")
+
+    event_id = db_repo.get_all_events()[0]['id']
+    db_repo.remove_event(event_id)
+
+    assert db_repo.get_all_events() == []

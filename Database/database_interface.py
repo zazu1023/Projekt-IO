@@ -50,3 +50,23 @@ class IAppRepository(ABC):
     @abstractmethod
     def set_daily_note(self, subject_id:int , date:str, content:str) -> None:
         pass
+
+    """
+    Events
+    """
+
+    @abstractmethod
+    def get_all_events(self) -> list[dict]:
+        pass
+
+    @abstractmethod
+    def add_event(self, subject_id: int, event_type: str, title: str, date_time: str) -> None:
+        pass
+
+    @abstractmethod
+    def remove_event(self, event_id: int) -> None:
+        pass
+
+    @abstractmethod
+    def get_upcoming_events(self) -> list[dict]:
+        pass
