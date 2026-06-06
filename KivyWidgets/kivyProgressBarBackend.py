@@ -41,17 +41,17 @@ class KivyProgressBarBackend:
 
     def create(self, value: int, max_value: int, style: ProgressBarStyle):
         self.layout = BoxLayout(orientation="vertical", size_hint_y=None, height=dp(15))
-        
-        # Przekazujemy kolory ze stylu do ThickProgressBar
+        fill_color = style.resolve_fill_color(value, max_value)
+
         self.progress_bar = ThickProgressBar(
-            max_value=max_value, 
-            value=value, 
-            bg_color=style.bg_color, 
-            fill_color=style.fill_color
+            max_value=max_value,
+            value=value,
+            bg_color=style.bg_color,
+            fill_color=fill_color,
         )
         self.layout.add_widget(self.progress_bar)
-        
+
         return self.layout
     
-    def setValue(self, value: int, max_value: int):
-        self.progress_bar.update_values(value, max_value)
+    def setValue(self, value: int, max_value: int, fill_color=None):
+        self.progress_bar.update_values(value, max_value, fill_color)

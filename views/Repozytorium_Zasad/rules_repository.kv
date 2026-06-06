@@ -3,25 +3,23 @@
 <SubjectCard>:
     orientation: 'vertical'
     size_hint_y: None
-    height: dp(250) # Nieco wyższa, by pomieścić wszystkie sekcje
+    height: dp(250)
     padding: [dp(15), dp(8), dp(15), dp(15)]
     spacing: dp(10)
     canvas.before:
         Color:
-            rgba: get_color_from_hex("#063e6e") # Główne tło karty
+            rgba: get_color_from_hex(app.theme.UiColors.SECONDARY_BG_COLOR)
         RoundedRectangle:
             pos: self.pos
             size: self.size
             radius: [dp(12)]
 
-    # --- NAGŁÓWEK (Tytuł + Badge Statusu) ---
     FloatLayout:
         size_hint_y: None
         height: dp(32)
 
-        Label:
+        LabelMain:
             text: root.title
-            bold: True
             font_size: '18sp'
             halign: 'left'
             valign: 'middle'
@@ -38,35 +36,25 @@
             height: dp(24)
             x: self.parent.right - self.width
             center_y: self.parent.center_y
-
             font_size: '12sp'
             halign: 'center'
             valign: 'middle'
             text_size: self.size
-            color: (0, 0, 0, 1)
-
+            color: root.get_status_text_rgba()
             canvas.before:
                 Color:
-                    rgba:
-                        get_color_from_hex("#2ecc71") if root.status == "completed" else \
-                        get_color_from_hex("#f1c40f") if root.status == "atrisk" else \
-                        get_color_from_hex("#e74c3c")
+                    rgba: root.get_status_bg_rgba()
                 RoundedRectangle:
                     pos: self.pos
                     size: self.size
                     radius: [dp(6)]
 
-    # --- SUBTYTUŁ ---
-    Label:
+    LabelSecondary:
         text: root.teacher
         font_size: '13sp'
-        color: (0.8, 0.8, 0.8, 1)
-        halign: 'left'
-        text_size: self.size
         size_hint_y: None
         height: dp(20)
 
-    # --- KONTEJNER: NIEOBECNOŚCI ---
     BoxLayout:
         id: progress_container_wrapper
         orientation: 'vertical'
@@ -76,25 +64,22 @@
         height: dp(60)
         canvas.before:
             Color:
-                rgba: get_color_from_hex("#1c4271")
+                rgba: get_color_from_hex(app.theme.WidgetColors.FORM_TEXTINPUT_BG_COLOR)
             RoundedRectangle:
                 pos: self.pos
                 size: self.size
                 radius: [dp(8)]
 
-        Label:
+        LabelSecondary:
             text: app.translate("absences", app.language) + ": " + root.absences
             font_size: '12sp'
             bold: True
-            halign: 'left'
-            text_size: self.size
 
         BoxLayout:
             id: progress_container
             size_hint_y: None
             height: dp(15)
 
-    # --- KONTEJNER: WARUNKI ZALICZENIA ---
     BoxLayout:
         orientation: 'vertical'
         padding: [dp(12), dp(10)]
@@ -103,28 +88,27 @@
         height: dp(80)
         canvas.before:
             Color:
-                rgba: get_color_from_hex("#2d2d2d")
+                rgba: get_color_from_hex(app.theme.UiColors.MAIN_BG_COLOR)
             RoundedRectangle:
                 pos: self.pos
                 size: self.size
                 radius: [dp(5)]
-        
-        Label:
+
+        LabelSecondary:
             text: app.translate("passing_conditions", app.language)
             font_size: '10sp'
-            color: (0.7, 0.7, 0.7, 1)
-            halign: 'left'
-            text_size: self.size
             size_hint_y: None
             height: dp(15)
-            
+
         ScrollView:
             size_hint_y: 1
             do_scroll_x: False
             do_scroll_y: True
             bar_width: dp(4)
+            bar_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_ACTIVE)
+            bar_inactive_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_INACTIVE)
 
-            Label:
+            LabelSecondary:
                 text: root.rules if root.rules else app.translate("no_defined_conditions", app.language)
                 font_size: '12sp'
                 halign: 'left'
@@ -138,23 +122,20 @@
         orientation: 'vertical'
         padding: dp(20)
         spacing: dp(20)
-        canvas.before:
-            Color:
-                rgba: get_color_from_hex("#3b3232")
-            Rectangle:
-                pos: self.pos
-                size: self.size
 
-        Label:
+        LabelMain:
             text: app.translate("rules_repository", app.language)
             font_size: '28sp'
-            bold: True
             size_hint_y: None
             height: dp(50)
-            text_size: self.size
-            halign: 'left'
 
         ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            bar_width: dp(6)
+            bar_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_ACTIVE)
+            bar_inactive_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_INACTIVE)
+
             GridLayout:
                 id: rules_container
                 cols: 2

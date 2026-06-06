@@ -12,7 +12,10 @@ class SubjectData(EventDispatcher):
     max_absences = NumericProperty(2)
     conditions = StringProperty("bleble" , allownone=True)
     max_pluses = NumericProperty(10.0)
-    
+    max_colloquium_pluses = NumericProperty(0.0)
+    current_pluses = NumericProperty(0)
+    current_colloquium_pluses = NumericProperty(0)
+
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
         
@@ -32,5 +35,8 @@ class SubjectData(EventDispatcher):
         instance.max_absences = db_dict.get("max_absences", 0)
         instance.conditions = db_dict.get("grading_rules", "")
         instance.max_pluses = float(db_dict.get("max_activity_points", 0.0))
+        instance.max_colloquium_pluses = float(db_dict.get("max_colloquium_points", 0.0))
+        instance.current_pluses = int(db_dict.get("current_activity_points") or 0)
+        instance.current_colloquium_pluses = int(db_dict.get("current_colloquium_points") or 0)
 
         return instance

@@ -27,6 +27,11 @@ class ButtonColorsGroup(EventDispatcher):
     SUBJECT_PLUS_TEXT_COLOR = StringProperty("#ffffff")
     SUBJECT_MINUS_TEXT_COLOR = StringProperty("#ffffff")
 
+    TRACKER_PLUS_BG_COLOR = StringProperty("#5cb85c")
+    TRACKER_PLUS_TEXT_COLOR = StringProperty("#ffffff")
+    TRACKER_MINUS_BG_COLOR = StringProperty("#c94c4c")
+    TRACKER_MINUS_TEXT_COLOR = StringProperty("#ffffff")
+
     REMOVE_BG_COLOR = StringProperty("#c0392b")
     REMOVE_TEXT_COLOR = StringProperty("#ffffff")
 
@@ -53,6 +58,15 @@ class WidgetsColorsGroup(EventDispatcher):
 
     SCROLLBAR_COLOR_ACTIVE = StringProperty("#888888")
     SCROLLBAR_COLOR_INACTIVE = StringProperty("#666666")
+
+    PROGRESSBAR_LOW = StringProperty("#62c57b")
+    PROGRESSBAR_MID = StringProperty("#f1c40f")
+    PROGRESSBAR_HIGH = StringProperty("#e74c3c")
+
+    PROGRESSCARD_BG_COLOR = StringProperty("#e0e0e0")
+    PROGRESSCARD_TEXT_COLOR = StringProperty("#000000")
+    PROGRESSCARD_SECONDARY_TEXT_COLOR = StringProperty("#333333")
+
 
 class DefaultColorsGroup(EventDispatcher):
     DEFAULT_WHITE = StringProperty("#ffffff")

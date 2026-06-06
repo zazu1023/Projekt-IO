@@ -193,15 +193,23 @@ class SqliteAppRepository(IAppRepository):
         name = data.get('title')
         teacher = data.get('teacher', '')
         grading_rules = data.get('conditions', '')
-        max_colloquium_points = data.get('max_colloquium_pluses', 0.0) 
+        max_absences = data.get('max_absences', 0)
+        max_activity_points = data.get('max_pluses', 0.0)
+        max_colloquium_points = data.get('max_colloquium_pluses', 0.0)
         note = data.get('note')
         self.get_db_connection().execute(
             '''
             UPDATE subjects 
-            SET name = ?, teacher = ?, grading_rules = ?, max_colloquium_points = ? , note = ? 
+            SET name = ?, teacher = ?, grading_rules = ?,
+                max_absences = ?, max_activity_points = ?,
+                max_colloquium_points = ?, note = ?
             WHERE id = ?
             ''',
-            (name, teacher, grading_rules, max_colloquium_points,note ,subject_id)
+            (
+                name, teacher, grading_rules,
+                max_absences, max_activity_points,
+                max_colloquium_points, note, subject_id,
+            )
         )
 
     @db_transaction
@@ -209,6 +217,44 @@ class SqliteAppRepository(IAppRepository):
         self.get_db_connection().execute(
             "DELETE FROM subjects WHERE id = ?", 
             (subject_id,)
+        )
+
+    @db_transaction
+    def ensure_progress_defaults(self) -> None:
+        rows = self.get_db_connection().execute(
+            '''
+            SELECT id, max_activity_points, max_colloquium_points
+            FROM subjects
+            '''
+        ).fetchall()
+
+        for row in rows:
+            max_activity = row['max_activity_points']
+            max_colloquium = row['max_colloquium_points']
+            if (not max_activity) and (not max_colloquium):
+                self.get_db_connection().execute(
+                    '''
+                    UPDATE subjects
+                    SET max_activity_points = 10,
+                        max_colloquium_points = 30,
+                        current_activity_points = 3,
+                        current_colloquium_points = 17
+                    WHERE id = ?
+                    ''',
+                    (row['id'],),
+                )
+
+    @db_transaction
+    def update_subject_progress(
+        self, subject_id: int, current_activity: int, current_colloquium: int
+    ) -> None:
+        self.get_db_connection().execute(
+            '''
+            UPDATE subjects
+            SET current_activity_points = ?, current_colloquium_points = ?
+            WHERE id = ?
+            ''',
+            (current_activity, current_colloquium, subject_id),
         )
 
     @db_transaction

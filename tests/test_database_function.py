@@ -78,6 +78,8 @@ def test_update_subject(db_repo):
         'title': 'Fizyka Kwantowa',
         'teacher': 'prof. dr hab. Andrzej Nowak',
         'conditions': 'Projekt zaliczeniowy',
+        'max_absences': 5,
+        'max_pluses': 15.0,
         'max_colloquium_pluses': 20.0,
         'note': 'Trudny przedmiot, wymagana obecność'
     }
@@ -87,6 +89,8 @@ def test_update_subject(db_repo):
     
     assert updated_subject['name'] == 'Fizyka Kwantowa'
     assert updated_subject['note'] == 'Trudny przedmiot, wymagana obecność'
+    assert updated_subject['max_absences'] == 5
+    assert updated_subject['max_activity_points'] == 15.0
     assert updated_subject['max_colloquium_points'] == 20.0
 
 def test_remove_subject(db_repo):
@@ -111,6 +115,30 @@ def test_set_status(db_repo):
     
     updated_subject = db_repo.get_all_subjects()[0]
     assert updated_subject['status'] == 'completed'
+
+def test_ensure_progress_defaults(db_repo):
+    db_repo.add_subject({'title': 'Logika'})
+    subject = db_repo.get_all_subjects()[0]
+    assert subject['max_activity_points'] == 0
+    assert subject['max_colloquium_points'] == 0
+
+    db_repo.ensure_progress_defaults()
+    updated = db_repo.get_all_subjects()[0]
+
+    assert updated['max_activity_points'] == 10
+    assert updated['max_colloquium_points'] == 30
+    assert updated['current_activity_points'] == 3
+    assert updated['current_colloquium_points'] == 17
+
+def test_update_subject_progress(db_repo):
+    db_repo.add_subject({'title': 'Algorytmy'})
+    subject_id = db_repo.get_all_subjects()[0]['id']
+
+    db_repo.update_subject_progress(subject_id, 7, 12)
+    updated = db_repo.get_all_subjects()[0]
+
+    assert updated['current_activity_points'] == 7
+    assert updated['current_colloquium_points'] == 12
 
 # ==========================================
 # TESTY NIEOBECNOŚCI (LOGIKA BIZNESOWA)

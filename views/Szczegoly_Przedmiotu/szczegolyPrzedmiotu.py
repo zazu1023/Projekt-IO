@@ -67,7 +67,20 @@ class SzczegolyPrzedmiotuScreen(Screen):
             teacher = self.ids.input_teacher.text
             conditions = self.ids.input_conditions.text
             note = self.ids.input_note.text
-            max_colloquium_pluses = self.ids.input_max_colloquium_pluses.text
+            max_absences = int(self.ids.input_max_absences.text or 0)
+            max_pluses = float(self.ids.input_max_pluses.text or 0)
+            max_colloquium_pluses = float(self.ids.input_max_colloquium_pluses.text or 0)
 
-            self.repo.update_subject( subject_id = self.selectedSubject.id ,data = {'title': title , 'teacher': teacher , 'conditions': conditions , 'note': note , 'max_colloquium_pluses' :max_colloquium_pluses})
+            self.repo.update_subject(
+                subject_id=self.selectedSubject.id,
+                data={
+                    'title': title,
+                    'teacher': teacher,
+                    'conditions': conditions,
+                    'note': note,
+                    'max_absences': max_absences,
+                    'max_pluses': max_pluses,
+                    'max_colloquium_pluses': max_colloquium_pluses,
+                },
+            )
             print("Zapisano!")

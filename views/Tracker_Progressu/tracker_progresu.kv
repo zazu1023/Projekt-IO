@@ -1,170 +1,133 @@
 #:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import ButtonStyle Style.ButtonStyle.ButtonStyle
 
-# --- Kontrolki Plus/Minus ---
+<TrackerMinusButton@CustomButtonWidget>:
+    style: ButtonStyle(bg_color=app.theme.ButtonColors.TRACKER_MINUS_BG_COLOR, text_color=app.theme.ButtonColors.TRACKER_MINUS_TEXT_COLOR, border_radius=5)
+    size_hint: None, None
+    size: dp(40), dp(30)
+
+<TrackerPlusButton@CustomButtonWidget>:
+    style: ButtonStyle(bg_color=app.theme.ButtonColors.TRACKER_PLUS_BG_COLOR, text_color=app.theme.ButtonColors.TRACKER_PLUS_TEXT_COLOR, border_radius=5)
+    size_hint: None, None
+    size: dp(40), dp(30)
+
 <PointControlRow>:
     orientation: 'horizontal'
     size_hint_y: None
-    height: dp(30)
+    height: dp(34)
     spacing: dp(10)
-    
-    Label:
-        text: root.label_text
-        color: 0, 0, 0, 1
-        bold: True
-        font_size: '13sp'
-        size_hint_x: None
-        width: dp(150) 
-        text_size: self.size
-        halign: 'left'
-        valign: 'middle'
-        
-    Label:
-        text: root.value_text
-        color: 0, 0, 0, 1
-        bold: True
-        size_hint_x: None
-        width: dp(30)
-        text_size: self.size
-        halign: 'center'
-        valign: 'middle'
-        
-    Button:
-        text: "-"
-        size_hint: None, None
-        size: dp(40), dp(30)
-        background_normal: ""
-        background_down: ""
-        background_color: 0,0,0,0
-        color: 1, 1, 1, 1
-        bold: True
-        on_release: root.on_minus() # Podpięcie akcji
-        canvas.before:
-            Color:
-                rgba: get_color_from_hex("#c94c4c") if self.state == 'normal' else get_color_from_hex("#a03a3a")
-            RoundedRectangle:
-                pos: self.pos
-                size: self.size
-                radius: [5]
-                
-    Button:
-        text: "+"
-        size_hint: None, None
-        size: dp(40), dp(30)
-        background_normal: ""
-        background_down: ""
-        background_color: 0,0,0,0
-        color: 1, 1, 1, 1
-        bold: True
-        on_release: root.on_plus() # Podpięcie akcji
-        canvas.before:
-            Color:
-                rgba: get_color_from_hex("#5cb85c") if self.state == 'normal' else get_color_from_hex("#469246")
-            RoundedRectangle:
-                pos: self.pos
-                size: self.size
-                radius: [5]
-    
-    Widget: 
 
-# --- Główna Karta ---
+    LabelSecondary:
+        text: root.label_text
+        font_size: '14sp'
+        bold: True
+        color: get_color_from_hex(app.theme.WidgetColors.PROGRESSCARD_TEXT_COLOR)
+        size_hint_x: None
+        width: dp(155)
+
+    LabelSecondary:
+        text: root.value_text
+        font_size: '15sp'
+        bold: True
+        color: get_color_from_hex(app.theme.WidgetColors.PROGRESSCARD_TEXT_COLOR)
+        size_hint_x: None
+        width: dp(28)
+        halign: 'center'
+
+    TrackerMinusButton:
+        text: "-"
+        on_release: root.on_minus()
+
+    TrackerPlusButton:
+        text: "+"
+        on_release: root.on_plus()
+
+    Widget:
+
 <ProgressCard>:
     orientation: 'vertical'
     size_hint_y: None
-    height: dp(225)
-    padding: dp(15), dp(15), dp(15), dp(15)
+    height: dp(240)
+    padding: dp(15)
     spacing: dp(8)
-    
+
     canvas.before:
         Color:
-            rgba: get_color_from_hex("#e0e0e0") 
+            rgba: get_color_from_hex(app.theme.WidgetColors.PROGRESSCARD_BG_COLOR)
         RoundedRectangle:
             pos: self.pos
             size: self.size
-            radius: [15]
-            
-    Label:
+            radius: [dp(15)]
+
+    LabelMain:
         text: root.title_text
-        color: 0, 0, 0, 1
-        bold: True
-        font_size: '18sp'
+        font_size: '20sp'
+        color: get_color_from_hex(app.theme.WidgetColors.PROGRESSCARD_TEXT_COLOR)
         size_hint_y: None
-        height: dp(25)
-        text_size: self.size
-        halign: 'left'
-        valign: 'middle'
-        
-    Label:
+        height: dp(28)
+
+    LabelSecondary:
         text: root.points_text
-        color: 0.2, 0.2, 0.2, 1
-        font_size: '14sp'
+        font_size: '15sp'
+        color: get_color_from_hex(app.theme.WidgetColors.PROGRESSCARD_SECONDARY_TEXT_COLOR)
         size_hint_y: None
-        height: dp(20)
-        text_size: self.size
-        halign: 'left'
-        valign: 'middle'
-        
+        height: dp(22)
+
     BoxLayout:
         id: progress_container
         size_hint_y: None
-        height: dp(40)
-        
+        height: dp(36)
+
     Widget:
         size_hint_y: None
-        height: dp(5) 
-        
+        height: dp(6)
+
     PointControlRow:
-        # Dynamiczne tłumaczenie (app.language sprawia, że zmienia się na żywo)
-        label_text: app.translate("pluses_label", app.language) if hasattr(app, 'translate') else "Plusy"
-        value_text: str(root.pluses_val) 
+        label_text: app.translate("pluses_label", app.language)
+        value_text: str(root.pluses_val)
         action_minus: lambda: root.change_pluses(-1)
         action_plus: lambda: root.change_pluses(1)
-        
+
     PointControlRow:
-        label_text: app.translate("exam_points_label", app.language) if hasattr(app, 'translate') else "Punkty za kolokwium"
+        label_text: app.translate("exam_points_label", app.language)
         value_text: str(root.exam_val)
         action_minus: lambda: root.change_exam(-1)
         action_plus: lambda: root.change_exam(1)
 
-# --- Główny Ekran ---
 <TrackerProgresuScreen>:
     BoxLayout:
         orientation: 'vertical'
         padding: dp(20)
         spacing: dp(15)
-        
-        Label:
-            text: app.translate("progress_tracker", app.language) if hasattr(app, 'translate') else "Tracker progresu"
-            font_size: '26sp'
-            bold: True
+
+        LabelMain:
+            text: app.translate("progress_tracker", app.language)
+            font_size: '28sp'
             size_hint_y: None
-            height: dp(40)
-            text_size: self.size
-            halign: 'left'
-            valign: 'middle'
-            color: 1, 1, 1, 1
-            
+            height: dp(44)
+
         BoxLayout:
             padding: dp(15)
             canvas.before:
                 Color:
-                    rgba: get_color_from_hex("#1c4271")
+                    rgba: get_color_from_hex(app.theme.UiColors.SECONDARY_BG_COLOR)
                 RoundedRectangle:
                     pos: self.pos
                     size: self.size
-                    radius: [15]
-                    
+                    radius: [dp(15)]
+
             ScrollView:
                 do_scroll_x: False
                 do_scroll_y: True
                 bar_width: dp(6)
-                bar_color: [0.6, 0.6, 0.6, 0.8]
-                bar_inactive_color: [0.6, 0.6, 0.6, 0.4]
+                bar_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_ACTIVE)
+                bar_inactive_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_INACTIVE)
                 scroll_type: ['content', 'bars']
-                
+
                 BoxLayout:
                     id: cards_container
                     orientation: 'vertical'
                     size_hint_y: None
                     height: self.minimum_height
-                    spacing: dp(15)
+                    spacing: dp(12)
                     padding: [0, dp(10), dp(15), dp(20)]

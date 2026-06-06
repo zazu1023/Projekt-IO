@@ -39,6 +39,16 @@ class IAppRepository(ABC):
     def remove_subject(self, subject_id:int) -> None:
         pass
 
+    @abstractmethod
+    def ensure_progress_defaults(self) -> None:
+        pass
+
+    @abstractmethod
+    def update_subject_progress(
+        self, subject_id: int, current_activity: int, current_colloquium: int
+    ) -> None:
+        pass
+
     """
     Notes
     """

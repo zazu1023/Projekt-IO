@@ -8,10 +8,59 @@ class ProgressBarState(Enum):
     LOADING = auto()
 
 class ProgressBarStyle:
-    def __init__(self, bg_color, fill_color, text_color):
-        self.bg_color=bg_color
-        self.fill_color=fill_color
-        self.text_color=text_color
+    def __init__(
+        self,
+        bg_color,
+        fill_color,
+        text_color,
+        fill_color_low=None,
+        fill_color_mid=None,
+        fill_color_high=None,
+        invert_fill_colors=False,
+    ):
+        self.bg_color = bg_color
+        self.fill_color = fill_color
+        self.text_color = text_color
+        self.fill_color_low = fill_color_low
+        self.fill_color_mid = fill_color_mid
+        self.fill_color_high = fill_color_high
+        self.invert_fill_colors = invert_fill_colors
+
+    @classmethod
+    def with_theme_gradient(cls, theme, *, inverted=False):
+        from kivy.utils import get_color_from_hex
+
+        widget_colors = theme.WidgetColors
+        return cls(
+            bg_color=get_color_from_hex(widget_colors.SCROLLBAR_COLOR_INACTIVE),
+            fill_color=get_color_from_hex(widget_colors.PROGRESSBAR_LOW),
+            text_color=get_color_from_hex(theme.DefaultColors.DEFAULT_WHITE),
+            fill_color_low=get_color_from_hex(widget_colors.PROGRESSBAR_LOW),
+            fill_color_mid=get_color_from_hex(widget_colors.PROGRESSBAR_MID),
+            fill_color_high=get_color_from_hex(widget_colors.PROGRESSBAR_HIGH),
+            invert_fill_colors=inverted,
+        )
+
+    def resolve_fill_color(self, value: int, max_value: int):
+        if self.fill_color_low is None:
+            return self.fill_color
+
+        ratio = value / max_value if max_value > 0 else 0
+        if ratio < 0.34:
+            bucket = 'low'
+        elif ratio < 0.67:
+            bucket = 'mid'
+        else:
+            bucket = 'high'
+
+        if self.invert_fill_colors:
+            bucket = {'low': 'high', 'mid': 'mid', 'high': 'low'}[bucket]
+
+        if bucket == 'low':
+            return self.fill_color_low
+        if bucket == 'mid':
+            return self.fill_color_mid
+        return self.fill_color_high
 
 class ProgressBarBackend(ABC):
     @abstractmethod
@@ -19,7 +68,7 @@ class ProgressBarBackend(ABC):
         # stworz progress bar
         pass
     @abstractmethod
-    def setValue(self, value: int, max_value: int):
+    def setValue(self, value: int, max_value: int, fill_color=None):
         # zmieniasz value
         pass
 
@@ -42,7 +91,8 @@ class ProgressBar:
             self._state=ProgressBarState.COMPLETED
         else:
             self._state=ProgressBarState.NORMAL
-        self._backend.setValue(self.value,self.max_value)
+        fill_color = self.style.resolve_fill_color(self.value, self.max_value)
+        self._backend.setValue(self.value, self.max_value, fill_color)
 
     def getPercentage(self):
         return int(self.value*100/self.max_value)

@@ -72,13 +72,7 @@
         orientation: 'vertical'
         padding: dp(20)
         spacing: dp(20)
-        canvas.before:
-            Color:
-                rgba: get_color_from_hex(app.theme.UiColors.MAIN_BG_COLOR)
-            Rectangle:
-                pos: self.pos
-                size: self.size
-
+        
         LabelMain:
             text: app.translate("exams_tests", app.language)
             font_size: '28sp'
