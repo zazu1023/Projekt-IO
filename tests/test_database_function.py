@@ -140,6 +140,37 @@ def test_update_subject_progress(db_repo):
     assert updated['current_activity_points'] == 7
     assert updated['current_colloquium_points'] == 12
 
+def test_add_subject_with_schedule(db_repo):
+    subject_id = db_repo.add_subject_with_schedule({
+        'title': 'Programowanie Obiektowe',
+        'teacher': 'Inż. Anna Nowak',
+        'conditions': 'Projekt i kolokwium',
+        'max_absences': 2,
+        'max_pluses': 3.0,
+        'max_colloquium_pluses': 50.0,
+        'term_start': '2026-10-05',
+        'term_end': '2027-01-30',
+        'schedule': [
+            {'day_of_week': 2, 'start_time': '10:30', 'duration_minutes': 120},
+            {'day_of_week': 4, 'start_time': '10:30', 'duration_minutes': 120},
+        ],
+    })
+
+    assert subject_id == 1
+    subject = db_repo.get_all_subjects()[0]
+    assert subject['name'] == 'Programowanie Obiektowe'
+    assert subject['max_colloquium_points'] == 50.0
+    assert subject['term_start'] == '2026-10-05'
+
+    connection = db_repo.get_db_connection()
+    rows = connection.execute(
+        'SELECT day_of_week, start_time, duration_minutes FROM schedule WHERE subject_id = ?',
+        (subject_id,),
+    ).fetchall()
+    assert len(rows) == 2
+    assert rows[0]['day_of_week'] == 2
+    assert rows[0]['duration_minutes'] == 120
+
 # ==========================================
 # TESTY NIEOBECNOŚCI (LOGIKA BIZNESOWA)
 # ==========================================

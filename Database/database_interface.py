@@ -36,6 +36,14 @@ class IAppRepository(ABC):
         pass
 
     @abstractmethod
+    def add_subject_with_schedule(self, data: dict) -> int:
+        pass
+
+    @abstractmethod
+    def update_subject(self, subject_id: int, data: dict) -> None:
+        pass
+
+    @abstractmethod
     def remove_subject(self, subject_id:int) -> None:
         pass
 

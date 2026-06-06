@@ -189,6 +189,48 @@ class SqliteAppRepository(IAppRepository):
         )
 
     @db_transaction
+    def add_subject_with_schedule(self, data: dict) -> int:
+        name = data.get('title')
+        teacher = data.get('teacher', '')
+        grading_rules = data.get('conditions', '')
+        max_absences = data.get('max_absences', 0)
+        max_activity_points = data.get('max_pluses', 0.0)
+        max_colloquium_points = data.get('max_colloquium_pluses', 0.0)
+        term_start = data.get('term_start', '')
+        term_end = data.get('term_end', '')
+        schedule_entries = data.get('schedule', [])
+
+        cursor = self.get_db_connection().execute(
+            '''
+            INSERT INTO subjects (
+                name, teacher, grading_rules, max_absences,
+                max_activity_points, max_colloquium_points, term_start, term_end
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''',
+            (
+                name, teacher, grading_rules, max_absences,
+                max_activity_points, max_colloquium_points, term_start, term_end,
+            ),
+        )
+        subject_id = cursor.lastrowid
+
+        for entry in schedule_entries:
+            self.get_db_connection().execute(
+                '''
+                INSERT INTO schedule (subject_id, day_of_week, start_time, duration_minutes)
+                VALUES (?, ?, ?, ?)
+                ''',
+                (
+                    subject_id,
+                    entry['day_of_week'],
+                    entry['start_time'],
+                    entry['duration_minutes'],
+                ),
+            )
+
+        return subject_id
+
+    @db_transaction
     def update_subject(self, subject_id: int, data: dict) -> None:
         name = data.get('title')
         teacher = data.get('teacher', '')

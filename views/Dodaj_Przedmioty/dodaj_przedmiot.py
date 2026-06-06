@@ -139,23 +139,28 @@ class AddSubjectScreen(Screen):
             return
 
         # 7. ZAPIS DO BAZY
-        db_connection = self.repo.get_db_connection()
-        cursor = db_connection.cursor()
         try:
-            cursor.execute("""
-                INSERT INTO subjects (name, teacher, grading_rules, max_absences, max_activity_points, max_colloquium_points, term_start, term_end) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """, (subject_name, teacher_name, pass_conditions, absences, pluses, max_points, start_date, end_date))
-            
-            new_subject_id = cursor.lastrowid 
-            for day_int in selected_days:
-                cursor.execute("INSERT INTO schedule (subject_id, day_of_week, start_time, duration_minutes) VALUES (?, ?, ?, ?)", 
-                               (new_subject_id, day_int, start_time, duration_minutes))
-            db_connection.commit()
+            self.repo.add_subject_with_schedule({
+                'title': subject_name,
+                'teacher': teacher_name,
+                'conditions': pass_conditions,
+                'max_absences': absences,
+                'max_pluses': pluses,
+                'max_colloquium_pluses': max_points,
+                'term_start': start_date,
+                'term_end': end_date,
+                'schedule': [
+                    {
+                        'day_of_week': day,
+                        'start_time': start_time,
+                        'duration_minutes': duration_minutes,
+                    }
+                    for day in selected_days
+                ],
+            })
             self.clear_form()
             print(f"SUKCES! Zapisano przedmiot '{subject_name}' oraz jego harmonogram do bazy danych.")
         except Exception as e:
-            db_connection.rollback()
             error_prefix = self.app.translate("err_db_save", self.app.language)
             self.show_error_popup(f"{error_prefix}{str(e)}")
     
