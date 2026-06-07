@@ -66,7 +66,14 @@ class ExamsAndColloquiumsScreen(Screen):
         container.clear_widgets()
 
         try:
-            for event_record in self.repo.get_all_events():
+            events_list = list(self.repo.get_all_events())
+            sorted_events = sorted(
+                events_list, 
+                key=lambda x: str(x["date_time"]), 
+                reverse=True
+            )
+
+            for event_record in sorted_events:
                 card = Factory.EventCard()
                 card.date_text = str(event_record["date_time"])
                 card.title_text = str(event_record["title"])
