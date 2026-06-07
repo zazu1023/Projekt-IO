@@ -139,7 +139,7 @@
 # 4. POPUP POWIADOMIEN (Dzwonek)
 # =========================================================================
 <NotificationPopup>:
-    title: app.translate("popup_upcoming_events", app.language) if app else "Nadchodzące wydarzenia"    
+    title: app.translate("popup_notifications", app.language) if app else "Powiadomienia"
     title_align: 'center'
     size_hint: 0.8, 0.7 
     auto_dismiss: False
@@ -152,7 +152,7 @@
         
         ScrollView:
             BoxLayout:
-                id: events_container
+                id: notifications_container
                 orientation: 'vertical'
                 size_hint_y: None
                 height: self.minimum_height

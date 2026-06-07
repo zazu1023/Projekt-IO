@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Iterable, Optional
 
 
 @dataclass
@@ -83,7 +83,7 @@ def _event_layout_key(event) -> str:
 
 def layout_timed_events(
     events: Iterable,
-    config: CalendarTimeConfig | None = None,
+    config: Optional[CalendarTimeConfig] = None,
 ) -> list[TimedEventLayout]:
     config = config or CalendarTimeConfig()
     sorted_events = sorted(events, key=lambda event: parse_time(event.start_time))

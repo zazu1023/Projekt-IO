@@ -3,41 +3,37 @@ from kivy.uix.label import Label
 from kivy.app import App
 from kivy.metrics import dp
 
+from Widgets.notificationMessages import build_notification_messages
+
+
 class NotificationPopup(Popup):
     def on_open(self):
-        self.ids.events_container.clear_widgets()
-        
-        app = App.get_running_app()
-        upcoming_events = app.repo.get_upcoming_events()
+        self.ids.notifications_container.clear_widgets()
 
-        if not upcoming_events:
-            empty_text = app.translations[app.language]["no_upcoming_events"]
-            
+        app = App.get_running_app()
+        translate = lambda key: app.translations[app.language].get(key, key)
+        messages = build_notification_messages(
+            app.repo.get_all_subjects() or [],
+            app.repo.get_upcoming_events() or [],
+            translate,
+        )
+
+        if not messages:
             empty_label = Label(
-                text=empty_text, 
-                size_hint_y=None, 
-                height=dp(40)
+                text=translate('no_notifications'),
+                size_hint_y=None,
+                height=dp(40),
             )
-            self.ids.events_container.add_widget(empty_label)
+            self.ids.notifications_container.add_widget(empty_label)
             return
 
-        for event_data in upcoming_events:
-            date_time = event_data['date_time']
-            title = event_data['title']
-            event_type = event_data.get('type', '')
-            
-            if event_type:
-                event_text = f"{date_time} | {title} ({event_type})"
-            else:
-                event_text = f"{date_time} | {title}"
-            
-            event_label = Label(
-                text=event_text,
+        for message in messages:
+            item_label = Label(
+                text=message,
                 size_hint_y=None,
                 height=dp(40),
                 halign='left',
-                valign='middle'
+                valign='middle',
             )
-            event_label.bind(size=event_label.setter('text_size'))
-            
-            self.ids.events_container.add_widget(event_label)
+            item_label.bind(size=item_label.setter('text_size'))
+            self.ids.notifications_container.add_widget(item_label)

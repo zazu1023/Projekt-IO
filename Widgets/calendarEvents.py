@@ -1,5 +1,5 @@
 from datetime import date, timedelta
-from typing import Iterable
+from typing import Iterable, Optional
 
 from Widgets.Brick import CalendarBrickData
 
@@ -7,7 +7,7 @@ DEFAULT_EXAM_DURATION_MINUTES = 90
 CALENDAR_TIMED_EVENT_TYPES = frozenset({'egzamin', 'kolokwium'})
 
 
-def _date_in_term(day_date: date, term_start: str | None, term_end: str | None) -> bool:
+def _date_in_term(day_date: date, term_start: Optional[str], term_end: Optional[str]) -> bool:
     if term_start:
         if day_date < date.fromisoformat(term_start):
             return False
@@ -24,7 +24,7 @@ def _subject_note_id(subject_id: int) -> str:
 def build_week_calendar_events(
     week_start: date,
     schedule_entries: Iterable[dict],
-    timed_events: Iterable[dict] | None = None,
+    timed_events: Optional[Iterable[dict]] = None,
 ) -> list[dict]:
     events: list[dict] = []
     monday = week_start - timedelta(days=week_start.weekday())

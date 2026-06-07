@@ -106,8 +106,11 @@
     "confirm_button": "Zatwierdź",
     "calendar_title": "Wybierz datę sesji",
 
-    "popup_upcoming_events": "Nadchodzące wydarzenia",
-    "no_upcoming_events": "Brak nadchodzących wydarzeń",
+    "popup_notifications": "Powiadomienia",
+    "no_notifications": "Brak powiadomień",
+    "notification_absence_limit": "{subject}: wykorzystano limit nieobecności ({current}/{maximum})",
+    "notification_upcoming_event": "{date_time} | {title} ({event_type})",
+    "notification_upcoming_event_no_type": "{date_time} | {title}",
     "btn_close": "Zamknij",
 
     "lbl_type": "Typ",
@@ -226,8 +229,11 @@
     "confirm_button": "Confirm",
     "calendar_title": "Select session date",
 
-    "popup_upcoming_events": "Upcoming events",
-    "no_upcoming_events": "No upcoming events",
+    "popup_notifications": "Notifications",
+    "no_notifications": "No notifications",
+    "notification_absence_limit": "{subject}: absence limit reached ({current}/{maximum})",
+    "notification_upcoming_event": "{date_time} | {title} ({event_type})",
+    "notification_upcoming_event_no_type": "{date_time} | {title}",
     "btn_close": "Close",
 
     "lbl_type": "Type",
