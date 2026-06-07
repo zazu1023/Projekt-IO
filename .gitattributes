@@ -1,0 +1,24 @@
+# Spójne końcówki linii w repozytorium (LF).
+# Na Windowsie Git sam dopasuje working copy — bez losowych ostrzeżeń przy add/commit.
+
+* text=auto eol=lf
+
+*.py text eol=lf
+*.kv text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.ini text eol=lf
+*.cfg text eol=lf
+*.gitattributes text eol=lf
+*.gitignore text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pyc binary

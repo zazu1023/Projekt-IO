@@ -68,6 +68,15 @@ class WidgetsColorsGroup(EventDispatcher):
     PROGRESSCARD_SECONDARY_TEXT_COLOR = StringProperty("#333333")
 
 
+class CalendarColorsGroup(EventDispatcher):
+    LESSON_BG_COLOR = StringProperty("#86a6c1")
+    LESSON_HOVER_BG_COLOR = StringProperty("#7092ad")
+    EXAM_BG_COLOR = StringProperty("#e57373")
+    EXAM_HOVER_BG_COLOR = StringProperty("#ef5350")
+    COLOQUIUM_BG_COLOR = StringProperty("#ffb74d")
+    COLOQUIUM_HOVER_BG_COLOR = StringProperty("#ffa726")
+
+
 class DefaultColorsGroup(EventDispatcher):
     DEFAULT_WHITE = StringProperty("#ffffff")
     DEFAULT_BLACK = StringProperty("#000000")
@@ -77,5 +86,6 @@ class ThemeManager(EventDispatcher):
     UiColors = ObjectProperty(UiColorsGroup())
     ButtonColors = ObjectProperty(ButtonColorsGroup())
     SubjectColors = ObjectProperty(SubjectColorsGroup())
+    CalendarColors = ObjectProperty(CalendarColorsGroup())
     DefaultColors = ObjectProperty(DefaultColorsGroup())
     WidgetColors = ObjectProperty(WidgetsColorsGroup())

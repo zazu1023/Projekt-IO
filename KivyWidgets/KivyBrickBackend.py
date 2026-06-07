@@ -17,3 +17,16 @@ class BrickWidget(ButtonBehavior,CustomButtonBase):
     has_note = BooleanProperty(False)
 class BlueBrick(BrickWidget):
     pass
+
+
+class CalendarEventBrick(ButtonBehavior, CustomButtonBase):
+    info_text = StringProperty()
+    title_text = StringProperty()
+    overlay_label = StringProperty()
+    has_note = BooleanProperty(False)
+    interactive = BooleanProperty(True)
+
+    def on_mouse_pos(self, window, pos):
+        if not self.interactive:
+            return
+        super().on_mouse_pos(window, pos)

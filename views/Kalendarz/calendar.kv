@@ -1,37 +1,87 @@
 #:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import ButtonStyle Style.ButtonStyle.ButtonStyle
+#:import CustomButtonWidget KivyWidgets.KivyButtonBackend.CustomButtonWidget
+#:import CalendarEventBrick KivyWidgets.KivyBrickBackend.CalendarEventBrick
 
-<CalendarNavButton@Button>:
-    background_normal: ""
-    background_down: ""
-    background_color: 0, 0, 0, 0
-    color: 1, 1, 1, 1
-    font_size: 14
-    bold: True
-    
-    # Zabezpieczenie przed wylewaniem się tekstu przy mocnym ściśnięciu okna
-    text_size: self.width - 15, None
-    halign: 'center'
-    shorten: True
-    shorten_from: 'right'
+<CalendarEventBrick@CalendarEventBrick>:
+    background_normal: ''
+    background_color: (0, 0, 0, 0)
+    orientation: 'vertical'
+    size_hint: None, None
+    padding: [8, 6, 4, 6]
+    spacing: 2
+    opacity: 0.72 if not root.interactive else 1
 
     canvas.before:
         Color:
-            rgba: get_color_from_hex("#707070") if self.state == "down" else get_color_from_hex("#5e5e5e")
+            rgba: root.style.get_bg_color(root.btn_state) if root.style else get_color_from_hex(app.theme.WidgetColors.FORM_TEXTINPUT_BG_COLOR)
         RoundedRectangle:
             pos: self.pos
             size: self.size
-            radius: [self.height / 2]
+            radius: [root.style.border_radius] if root.style else [20]
+
+        Color:
+            rgba: root.style.get_border_color(root.btn_state) if root.style else [0, 0, 0, 0]
+        Line:
+            width: (dp(root.style.border_width) if (root.style and root.style.border_width > 0) else dp(1))
+            rounded_rectangle: (self.x, self.y, self.width, self.height, (root.style.border_radius if root.style else 20))
+
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: 1 if root.height < dp(44) else (0.52 if root.overlay_label else 0.62)
+        spacing: 2
+        Label:
+            text: root.title_text
+            bold: True
+            font_size: '12sp' if root.width < dp(100) else '14sp'
+            shorten: False
+            color: root.style.get_text_color(root.btn_state) if root.style else get_color_from_hex(app.theme.DefaultColors.DEFAULT_BLACK)
+            halign: 'left'
+            valign: 'top'
+            text_size: self.width, None
+        Image:
+            source: 'Images/notebook.png'
+            opacity: 1 if root.has_note and root.height >= dp(44) else 0
+            size_hint_x: None
+            width: dp(16) if root.has_note and root.height >= dp(44) else 0
+            size_hint_y: None
+            height: dp(16) if root.has_note and root.height >= dp(44) else 0
+            allow_stretch: True
+            keep_ratio: True
+
+    Label:
+        text: root.info_text if root.height >= dp(44) else ''
+        size_hint_y: None if root.height >= dp(44) else 0
+        height: self.texture_size[1] if root.height >= dp(44) else 0
+        font_size: '12sp'
+        shorten: False
+        color: root.style.get_text_color(root.btn_state) if root.style else get_color_from_hex(app.theme.DefaultColors.DEFAULT_BLACK)
+        halign: 'left'
+        valign: 'bottom'
+        text_size: self.width, None
+
+    Label:
+        text: root.overlay_label if root.height >= dp(44) else ''
+        size_hint_y: None if root.height >= dp(44) else 0
+        height: self.texture_size[1] if root.overlay_label and root.height >= dp(44) else 0
+        font_size: '12sp'
+        bold: True
+        shorten: False
+        color: root.style.get_text_color(root.btn_state) if root.style else get_color_from_hex(app.theme.DefaultColors.DEFAULT_BLACK)
+        halign: 'left'
+        valign: 'bottom'
+        text_size: self.width, None
 
 <CalendarWidget>:
     orientation: "vertical"
-    padding: [30, 20, 30, 20] 
+    padding: [30, 20, 30, 20]
     spacing: 15
 
     Label:
         text: app.translate("start_calendar", app.language)
         font_size: '26sp'
         bold: True
-        color: 1, 1, 1, 1
+        color: get_color_from_hex(app.theme.DefaultColors.DEFAULT_WHITE)
         size_hint_y: None
         height: 40
         halign: "left"
@@ -42,10 +92,11 @@
         orientation: "vertical"
         padding: 16
         spacing: 12
+        size_hint: 1, 1
 
         canvas.before:
             Color:
-                rgba: (0.10, 0.25, 0.45, 1)
+                rgba: get_color_from_hex(app.theme.UiColors.SECONDARY_BG_COLOR)
             RoundedRectangle:
                 pos: self.pos
                 size: self.size
@@ -55,56 +106,98 @@
             text: root.week_label
             size_hint_y: None
             height: 30
-            color: 1, 1, 1, 1
+            color: get_color_from_hex(app.theme.DefaultColors.DEFAULT_WHITE)
             font_size: 14
             halign: "left"
             valign: "middle"
             text_size: self.size
 
-        # === ZMIANA: Max szerokość 740px, trzyma się lewej, kurczy przy zmniejszaniu ===
         BoxLayout:
-            size_hint_x: None
-            width: min(self.parent.width - 32, 740)
+            size_hint_x: 1
             size_hint_y: None
             height: 36
             spacing: 10
 
-            CalendarNavButton:
+            CustomButtonWidget:
+                style: ButtonStyle(bg_color=app.theme.ButtonColors.NAV_BUTTON_BG_COLOR, text_color=app.theme.ButtonColors.NAV_BUTTON_TEXT_COLOR, pressed_bg_color=app.theme.ButtonColors.NAV_BUTTON_PRESSED_BG_COLOR, pressed_text_color=app.theme.ButtonColors.NAV_BUTTON_PRESSED_TEXT_COLOR, border_radius=18, bold=True)
                 text: app.translate("btn_prev", app.language)
-                size_hint_x: 1.5
+                size_hint_x: 1
+                size_hint_y: None
+                height: dp(36)
                 on_release: root.previous_week()
 
-            CalendarNavButton:
+            CustomButtonWidget:
+                style: ButtonStyle(bg_color=app.theme.ButtonColors.NAV_BUTTON_BG_COLOR, text_color=app.theme.ButtonColors.NAV_BUTTON_TEXT_COLOR, pressed_bg_color=app.theme.ButtonColors.NAV_BUTTON_PRESSED_BG_COLOR, pressed_text_color=app.theme.ButtonColors.NAV_BUTTON_PRESSED_TEXT_COLOR, border_radius=18, bold=True)
                 text: app.translate("btn_next", app.language)
-                size_hint_x: 1.5
+                size_hint_x: 1
+                size_hint_y: None
+                height: dp(36)
                 on_release: root.next_week()
 
-            CalendarNavButton:
+            CustomButtonWidget:
+                style: ButtonStyle(bg_color=app.theme.ButtonColors.NAV_BUTTON_BG_COLOR, text_color=app.theme.ButtonColors.NAV_BUTTON_TEXT_COLOR, pressed_bg_color=app.theme.ButtonColors.NAV_BUTTON_PRESSED_BG_COLOR, pressed_text_color=app.theme.ButtonColors.NAV_BUTTON_PRESSED_TEXT_COLOR, border_radius=18, bold=True)
                 text: app.translate("btn_current", app.language)
-                size_hint_x: 2.2
+                size_hint_x: 1.4
+                size_hint_y: None
+                height: dp(36)
                 on_release: root.current_week()
 
-            CalendarNavButton:
+            CustomButtonWidget:
+                style: ButtonStyle(bg_color=app.theme.ButtonColors.NAV_BUTTON_BG_COLOR, text_color=app.theme.ButtonColors.NAV_BUTTON_TEXT_COLOR, pressed_bg_color=app.theme.ButtonColors.NAV_BUTTON_PRESSED_BG_COLOR, pressed_text_color=app.theme.ButtonColors.NAV_BUTTON_PRESSED_TEXT_COLOR, border_radius=18, bold=True)
                 text: app.translate("btn_choose", app.language)
-                size_hint_x: 1.9
+                size_hint_x: 1.2
+                size_hint_y: None
+                height: dp(36)
                 on_release: root.choose_week()
-        # =========================================================================
 
         BoxLayout:
-            orientation: "horizontal"
-            padding: 0
-            spacing: 8
+            orientation: "vertical"
+            size_hint: 1, 1
+            spacing: 0
 
             canvas.before:
                 Color:
-                    rgba: (0.196, 0.173, 0.169, 1)
+                    rgba: get_color_from_hex(app.theme.WidgetColors.FORM_TEXTINPUT_BG_COLOR)
                 RoundedRectangle:
                     pos: self.pos
                     size: self.size
                     radius: [10]
 
             BoxLayout:
-                id: days_box
-                orientation: "horizontal"
-                spacing: 8
-                padding: 8
+                orientation: "vertical"
+                size_hint: 1, 1
+                spacing: 0
+
+                ScrollView:
+                    id: header_scroll
+                    size_hint_y: None
+                    height: dp(48)
+                    do_scroll_x: True
+                    do_scroll_y: False
+                    bar_width: 0
+                    scroll_type: ['content']
+
+                    BoxLayout:
+                        id: header_row
+                        orientation: "horizontal"
+                        size_hint_x: None
+                        width: root.calendar_content_width
+                        height: dp(48)
+                        spacing: 0
+                        padding: [0, 6, 0, 0]
+
+                ScrollView:
+                    id: calendar_scroll
+                    size_hint: 1, 1
+                    do_scroll_x: True
+                    do_scroll_y: True
+                    bar_width: dp(8)
+                    bar_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_ACTIVE)
+                    bar_inactive_color: get_color_from_hex(app.theme.WidgetColors.SCROLLBAR_COLOR_INACTIVE)
+                    scroll_type: ['content', 'bars']
+
+                    FloatLayout:
+                        id: week_grid
+                        size_hint: None, None
+                        width: root.calendar_content_width
+                        height: root.calendar_grid_height

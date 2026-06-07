@@ -1,6 +1,10 @@
 import sqlite3
 import pytest
+from datetime import date
+
 from Database.database_sqllite import SqliteAppRepository
+from Widgets.calendarEvents import build_week_calendar_events
+from tests.create_default_values import DatabaseStarter
 
 @pytest.fixture
 def db_repo():
@@ -170,6 +174,57 @@ def test_add_subject_with_schedule(db_repo):
     assert len(rows) == 2
     assert rows[0]['day_of_week'] == 2
     assert rows[0]['duration_minutes'] == 120
+
+
+def test_get_all_schedule_entries(db_repo):
+    subject_id = db_repo.add_subject_with_schedule({
+        'title': 'Bazy Danych',
+        'teacher': 'Dr X',
+        'conditions': 'Egzamin',
+        'max_absences': 2,
+        'max_pluses': 5.0,
+        'max_colloquium_pluses': 30.0,
+        'term_start': '2026-03-01',
+        'term_end': '2026-06-30',
+        'schedule': [
+            {'day_of_week': 1, 'start_time': '11:00', 'duration_minutes': 90},
+        ],
+    })
+
+    entries = db_repo.get_all_schedule_entries()
+
+    assert len(entries) == 1
+    assert entries[0]['subject_id'] == subject_id
+    assert entries[0]['subject_name'] == 'Bazy Danych'
+    assert entries[0]['start_time'] == '11:00'
+
+
+def test_get_events_in_range(db_repo):
+    db_repo.add_subject({'title': 'Fizyka'})
+    subject_id = db_repo.get_all_subjects()[0]['id']
+    db_repo.add_event(subject_id, 'egzamin', 'Kolokwium', '2026-05-10 09:30')
+    db_repo.add_event(subject_id, 'egzamin', 'Egzamin', '2026-06-01 14:00')
+
+    events = db_repo.get_events_in_range('2026-05-01', '2026-05-31')
+
+    assert len(events) == 1
+    assert events[0]['title'] == 'Kolokwium'
+
+
+def test_seed_schedule_spreads_across_week(db_repo):
+    DatabaseStarter(db_repo).add_test_subjects()
+    week_start = date(2026, 6, 1)
+    entries = db_repo.get_all_schedule_entries()
+    events = build_week_calendar_events(week_start, entries)
+    by_date = {}
+    for item in events:
+        by_date.setdefault(item['date'].isoformat(), []).append(item['data'].title)
+
+    assert len(by_date['2026-06-01']) == 2
+    assert len(by_date['2026-06-02']) == 2
+    assert len(by_date['2026-06-03']) == 3
+    assert len(by_date['2026-06-04']) == 2
+    assert len(by_date['2026-06-05']) == 3
 
 # ==========================================
 # TESTY NIEOBECNOŚCI (LOGIKA BIZNESOWA)

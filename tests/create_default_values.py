@@ -1,4 +1,7 @@
 
+TERM_START = '2026-03-01'
+TERM_END = '2026-06-30'
+
 subjects = [
     {
         'title': 'Wprowadzenie do informatyki',
@@ -12,6 +15,12 @@ subjects = [
         'current_colloquium_pluses': 8,
         'current_absences': 2,
         'note': 'Do nadrobienia materiał z listy 4–6.',
+        'term_start': TERM_START,
+        'term_end': TERM_END,
+        'schedule': [
+            {'day_of_week': 0, 'start_time': '08:00', 'duration_minutes': 90},
+            {'day_of_week': 2, 'start_time': '10:30', 'duration_minutes': 120},
+        ],
     },
     {
         'title': 'Algebra liniowa',
@@ -25,6 +34,14 @@ subjects = [
         'current_colloquium_pluses': 32,
         'current_absences': 0,
         'note': 'Zaliczone — powtórzyć przed sesją dla własnej satysfakcji.',
+        'term_start': TERM_START,
+        'term_end': TERM_END,
+        'schedule': [
+            {'day_of_week': 1, 'start_time': '09:00', 'duration_minutes': 90},
+        ],
+        'events': [
+            {'type': 'Kolokwium', 'title': 'Kolokwium 1', 'date_time': '2026-06-02 09:00'},
+        ],
     },
     {
         'title': 'Bazy danych',
@@ -38,6 +55,15 @@ subjects = [
         'current_colloquium_pluses': 15,
         'current_absences': 1,
         'note': 'Projekt: schemat ER do 20.05.',
+        'term_start': TERM_START,
+        'term_end': TERM_END,
+        'schedule': [
+            {'day_of_week': 2, 'start_time': '14:00', 'duration_minutes': 120},
+            {'day_of_week': 4, 'start_time': '08:00', 'duration_minutes': 100},
+        ],
+        'events': [
+            {'type': 'Egzamin', 'title': 'Egzamin praktyczny SQL', 'date_time': '2026-06-04 08:00'},
+        ],
     },
     {
         'title': 'Fizyka',
@@ -51,6 +77,14 @@ subjects = [
         'current_colloquium_pluses': 3,
         'current_absences': 2,
         'note': 'Poprawka w terminie sesyjnej — ustalić termin z prowadzącym.',
+        'term_start': TERM_START,
+        'term_end': TERM_END,
+        'schedule': [
+            {'day_of_week': 3, 'start_time': '11:00', 'duration_minutes': 45},
+        ],
+        'events': [
+            {'type': 'Egzamin', 'title': 'Egzamin poprawkowy', 'date_time': '2026-06-04 11:00'},
+        ],
     },
     {
         'title': 'Programowanie obiektowe',
@@ -64,6 +98,15 @@ subjects = [
         'current_colloquium_pluses': 22,
         'current_absences': 0,
         'note': 'Lab 7: wzorce projektowe — Singleton, Factory.',
+        'term_start': TERM_START,
+        'term_end': TERM_END,
+        'schedule': [
+            {'day_of_week': 0, 'start_time': '12:00', 'duration_minutes': 90},
+            {'day_of_week': 3, 'start_time': '10:30', 'duration_minutes': 150},
+        ],
+        'events': [
+            {'type': 'Kolokwium', 'title': 'Kolokwium — wzorce projektowe', 'date_time': '2026-06-04 10:30'},
+        ],
     },
     {
         'title': 'Systemy operacyjne',
@@ -77,6 +120,15 @@ subjects = [
         'current_colloquium_pluses': 10,
         'current_absences': 2,
         'note': 'Zagrożenie z powodu nieobecności — wysłać usprawiedliwienie.',
+        'term_start': TERM_START,
+        'term_end': TERM_END,
+        'schedule': [
+            {'day_of_week': 1, 'start_time': '16:00', 'duration_minutes': 90},
+            {'day_of_week': 4, 'start_time': '10:00', 'duration_minutes': 60},
+        ],
+        'events': [
+            {'type': 'Kolokwium', 'title': 'Kolokwium z procesów', 'date_time': '2026-06-05 10:00'},
+        ],
     },
     {
         'title': 'Język angielski B2',
@@ -90,6 +142,15 @@ subjects = [
         'current_colloquium_pluses': 20,
         'current_absences': 1,
         'note': 'Certyfikat B2 — złożyć w dziekanacie do końca semestru.',
+        'term_start': TERM_START,
+        'term_end': TERM_END,
+        'schedule': [
+            {'day_of_week': 2, 'start_time': '08:00', 'duration_minutes': 45},
+            {'day_of_week': 4, 'start_time': '12:00', 'duration_minutes': 45},
+        ],
+        'events': [
+            {'type': 'Egzamin', 'title': 'Test końcowy B2', 'date_time': '2026-06-06 12:00'},
+        ],
     },
 ]
 
@@ -103,16 +164,21 @@ class DatabaseStarter():
 
     def add_test_subjects(self):
         for data in subjects:
-            self.repo.add_subject({
+            subject_id = self.repo.add_subject_with_schedule({
                 'title': data['title'],
                 'teacher': data.get('teacher', ''),
-                'status': data.get('status', 'inprogress'),
                 'conditions': data.get('conditions', ''),
                 'max_absences': data.get('max_absences', 0),
                 'max_pluses': data.get('max_pluses', 0),
+                'max_colloquium_pluses': data.get('max_colloquium_pluses', 0),
+                'term_start': data.get('term_start', TERM_START),
+                'term_end': data.get('term_end', TERM_END),
+                'schedule': data.get('schedule', []),
             })
 
-            subject_id = self.repo.get_all_subjects()[-1]['id']
+            status = data.get('status', 'inprogress')
+            if status != 'inprogress':
+                self.repo.set_status(subject_id, status)
 
             self.repo.update_subject(subject_id, {
                 'title': data['title'],
@@ -133,3 +199,11 @@ class DatabaseStarter():
             absences = data.get('current_absences', 0)
             if absences:
                 self.repo.add_absence(subject_id, absences)
+
+            for event in data.get('events', []):
+                self.repo.add_event(
+                    subject_id,
+                    event['type'],
+                    event['title'],
+                    event['date_time'],
+                )

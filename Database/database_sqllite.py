@@ -231,6 +231,20 @@ class SqliteAppRepository(IAppRepository):
         return subject_id
 
     @db_transaction
+    def get_all_schedule_entries(self) -> list[dict]:
+        rows = self.get_db_connection().execute(
+            '''
+            SELECT schedule.id AS schedule_id, schedule.subject_id, schedule.day_of_week,
+                   schedule.start_time, schedule.duration_minutes,
+                   subjects.name AS subject_name, subjects.term_start, subjects.term_end
+            FROM schedule
+            JOIN subjects ON schedule.subject_id = subjects.id
+            ORDER BY schedule.day_of_week, schedule.start_time
+            '''
+        ).fetchall()
+        return [dict(row) for row in rows]
+
+    @db_transaction
     def update_subject(self, subject_id: int, data: dict) -> None:
         name = data.get('title')
         teacher = data.get('teacher', '')
@@ -350,6 +364,21 @@ class SqliteAppRepository(IAppRepository):
             JOIN subjects ON events.subject_id = subjects.id
             ORDER BY events.date_time ASC
             '''
+        ).fetchall()
+        return [dict(row) for row in rows]
+
+    @db_transaction
+    def get_events_in_range(self, start_date: str, end_date: str) -> list[dict]:
+        rows = self.get_db_connection().execute(
+            '''
+            SELECT events.id, events.title, events.date_time, events.type,
+                   events.subject_id, subjects.name AS subject_name
+            FROM events
+            JOIN subjects ON events.subject_id = subjects.id
+            WHERE date(events.date_time) BETWEEN ? AND ?
+            ORDER BY events.date_time ASC
+            ''',
+            (start_date, end_date),
         ).fetchall()
         return [dict(row) for row in rows]
 

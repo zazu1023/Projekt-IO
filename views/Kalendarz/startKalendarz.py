@@ -6,3 +6,9 @@ from KivyWidgets.calendarWidget import CalendarWidget
 class StartKalendarz(Screen):
     repo = ObjectProperty(None)
     app = ObjectProperty(None)
+
+    def on_pre_enter(self):
+        for child in self.walk(restrict=True):
+            if isinstance(child, CalendarWidget):
+                child.refresh_calendar()
+                return

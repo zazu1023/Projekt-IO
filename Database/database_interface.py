@@ -40,6 +40,14 @@ class IAppRepository(ABC):
         pass
 
     @abstractmethod
+    def get_all_schedule_entries(self) -> list[dict]:
+        pass
+
+    @abstractmethod
+    def get_events_in_range(self, start_date: str, end_date: str) -> list[dict]:
+        pass
+
+    @abstractmethod
     def update_subject(self, subject_id: int, data: dict) -> None:
         pass
 
