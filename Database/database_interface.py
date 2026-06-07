@@ -12,7 +12,7 @@ class IAppRepository(ABC):
 
     
     @abstractmethod
-    def get_language(self,lang) -> str:
+    def get_language(self) -> str:
         pass
 
     """
@@ -56,6 +56,10 @@ class IAppRepository(ABC):
         pass
 
     @abstractmethod
+    def remove_all_subjects(self) -> None:
+        pass
+
+    @abstractmethod
     def ensure_progress_defaults(self) -> None:
         pass
 
@@ -70,7 +74,7 @@ class IAppRepository(ABC):
     """
 
     @abstractmethod
-    def get_daily_note(self, subject_id:int , date:str) -> dict:
+    def get_daily_note(self, subject_id:int , date:str) -> str:
         pass
 
     @abstractmethod

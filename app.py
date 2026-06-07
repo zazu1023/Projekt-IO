@@ -25,8 +25,9 @@ from screenHandler import *
 class StudentPlannerApp(App):
 
     language = StringProperty("pl")
-    theme = ObjectProperty(ThemeManager())
-
+    # Motyw: ThemeManager.with_palette('midnight' | 'rose')  — Style/palettes.py
+    # theme = ObjectProperty(ThemeManager())
+    theme = ObjectProperty(ThemeManager.with_palette('default'))
     def __init__(self, repository, **kwargs):
         super().__init__(**kwargs)
         self.repo = repository
@@ -101,19 +102,6 @@ if __name__ == "__main__":
     # inicjalizacja bazy
     repo = SqliteAppRepository(db_connection=None)
     repo.init_db()
-    
-    # init_db()
-
-    # 2. TYMCZASOWE WYPEŁNIENIE BAZY DO TESTÓW KALENDARZA
-    # To rozwiązuje błąd FOREIGN KEY. Dodajemy przedmioty z ID 1, 2, 3
-    # conn = get_connection()
-    # conn.execute("INSERT OR IGNORE INTO subjects (id, name) VALUES (1, 'IO')")
-    # conn.execute("INSERT OR IGNORE INTO subjects (id, name) VALUES (2, 'SK')")
-    # conn.execute("INSERT OR IGNORE INTO subjects (id, name) VALUES (3, 'RPiS')")
-    # conn.commit()
-    # repo.get_db_connection().execute("Delete from subjects")
-
-    # repo.add_subject(data={'title':'WDI' , 'teacher': "Rafal Kawa" , 'status': "atrisk"})
 
     DS = DatabaseStarter(repo)
 

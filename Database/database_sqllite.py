@@ -130,7 +130,7 @@ class SqliteAppRepository(IAppRepository):
         )
 
     @db_transaction
-    def get_language(self,lang) -> str:
+    def get_language(self) -> str:
         row = self.get_db_connection().execute("SELECT value FROM app_settings WHERE key = 'language'").fetchone()
         return row['value'] if row else 'pl'
 
@@ -327,7 +327,7 @@ class SqliteAppRepository(IAppRepository):
     """
 
     @db_transaction
-    def get_daily_note(self, subject_id:int , date:str) -> dict:
+    def get_daily_note(self, subject_id:int , date:str) -> str:
 
         row = self.get_db_connection().execute(
             '''

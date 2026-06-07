@@ -1,4 +1,4 @@
-from Widgets.progressBar import ProgressBarState, ProgressBarStyle
+from Widgets.progressBar import ProgressBarBackend, ProgressBarState, ProgressBarStyle
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.widget import Widget
 from kivy.metrics import dp
@@ -34,7 +34,7 @@ class ThickProgressBar(Widget):
             self.fill_color = fill_color
         self.update_canvas()
 
-class KivyProgressBarBackend:
+class KivyProgressBarBackend(ProgressBarBackend):
     def __init__(self):
         self.layout = None
         self.progress_bar = None
@@ -54,4 +54,6 @@ class KivyProgressBarBackend:
         return self.layout
     
     def setValue(self, value: int, max_value: int, fill_color=None):
+        if self.progress_bar is None:
+            return
         self.progress_bar.update_values(value, max_value, fill_color)

@@ -128,7 +128,7 @@ class ExamsAndColloquiumsScreen(Screen):
         label.bind(size=label.setter("text_size"))
         content.add_widget(label)
 
-        btn_ok = Factory.BlueButton()
+        btn_ok = Factory.StandardUiButton()
         btn_ok.text = self.app.translate("btn_will_fix", self.app.language)
         btn_ok.size_hint = (None, None)
         btn_ok.size = (dp(160), dp(40))
@@ -157,7 +157,7 @@ class ExamsAndColloquiumsScreen(Screen):
             content.add_widget(message)
 
             buttons = BoxLayout(orientation="horizontal", spacing=dp(10), size_hint_y=None, height=dp(40))
-            btn_cancel = Factory.BlueButton()
+            btn_cancel = Factory.StandardUiButton()
             btn_cancel.text = self.app.translate("btn_cancel", self.app.language)
             btn_confirm = Factory.ExamDangerButton()
             btn_confirm.text = self.app.translate("btn_delete", self.app.language)

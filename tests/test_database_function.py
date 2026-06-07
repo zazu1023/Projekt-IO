@@ -46,11 +46,11 @@ def test_init_db_creates_all_tables(db_repo):
 
 def test_language_settings(db_repo):
 
-    assert db_repo.get_language('dummy_arg') == 'pl'
+    assert db_repo.get_language() == 'pl'
     
     # zmiana jezyka
     db_repo.set_language('en')
-    assert db_repo.get_language('dummy_arg') == 'en'
+    assert db_repo.get_language() == 'en'
 
 # ==========================================
 # TESTY PRZEDMIOTOW (SUBJECTS)
@@ -413,7 +413,7 @@ def test_unicode_subject_name(db_repo):
 
 
 def test_default_language_exists(db_repo):
-    assert db_repo.get_language(None) == 'pl'
+    assert db_repo.get_language() == 'pl'
 
 
 def test_language_multiple_changes(db_repo):
@@ -421,7 +421,7 @@ def test_language_multiple_changes(db_repo):
     db_repo.set_language('de')
     db_repo.set_language('pl')
 
-    assert db_repo.get_language(None) == 'pl'
+    assert db_repo.get_language() == 'pl'
 
 
 def test_cascade_delete_daily_notes(db_repo):

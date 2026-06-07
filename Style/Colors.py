@@ -1,6 +1,8 @@
 from kivy.event import EventDispatcher
 from kivy.properties import StringProperty, ObjectProperty
 
+from Style.palettes import PALETTES, DEFAULT_PALETTE_NAME
+
 
 class UiColorsGroup(EventDispatcher):
     MAIN_BG_COLOR = StringProperty("#2c2c2e")
@@ -34,6 +36,12 @@ class ButtonColorsGroup(EventDispatcher):
 
     REMOVE_BG_COLOR = StringProperty("#c0392b")
     REMOVE_TEXT_COLOR = StringProperty("#ffffff")
+
+    STANDARD_UI_BUTTON_BG_COLOR = StringProperty("#2e588c")
+    STANDARD_UI_BUTTON_TEXT_COLOR = StringProperty("#ffffff")
+    STANDARD_UI_BUTTON_HOVER_BG_COLOR = StringProperty("#245073")
+    STANDARD_UI_BUTTON_PRESSED_BG_COLOR = StringProperty("#1a3d5c")
+    STANDARD_UI_BUTTON_PRESSED_TEXT_COLOR = StringProperty("#ffffff")
 
 
 class SubjectColorsGroup(EventDispatcher):
@@ -89,3 +97,38 @@ class ThemeManager(EventDispatcher):
     CalendarColors = ObjectProperty(CalendarColorsGroup())
     DefaultColors = ObjectProperty(DefaultColorsGroup())
     WidgetColors = ObjectProperty(WidgetsColorsGroup())
+    palette_name = StringProperty(DEFAULT_PALETTE_NAME)
+
+    def __init__(self, **kwargs):
+        palette = kwargs.pop('palette', DEFAULT_PALETTE_NAME)
+        super().__init__(**kwargs)
+        self.apply_palette(palette)
+
+    @classmethod
+    def with_palette(cls, palette_name: str = DEFAULT_PALETTE_NAME) -> 'ThemeManager':
+        return cls(palette=palette_name)
+
+    @staticmethod
+    def available_palettes() -> tuple[str, ...]:
+        return tuple(PALETTES.keys())
+
+    def apply_palette(self, palette_name: str) -> None:
+        if palette_name not in PALETTES:
+            available = ', '.join(PALETTES.keys())
+            raise ValueError(f"Unknown palette '{palette_name}'. Available: {available}")
+
+        groups = {
+            'UiColors': self.UiColors,
+            'ButtonColors': self.ButtonColors,
+            'SubjectColors': self.SubjectColors,
+            'WidgetColors': self.WidgetColors,
+            'CalendarColors': self.CalendarColors,
+            'DefaultColors': self.DefaultColors,
+        }
+
+        for group_name, colors in PALETTES[palette_name].items():
+            group = groups[group_name]
+            for prop_name, value in colors.items():
+                setattr(group, prop_name, value)
+
+        self.palette_name = palette_name

@@ -123,8 +123,8 @@
 # 3. KONKRETNE IMPLEMENTACJE STYLÓW
 # =========================================================================
 
-<BlueButton@CustomButtonWidget>:
-    style: ButtonStyle(bg_color="2e588c", text_color="#ffffff", border_radius=9)
+<StandardUiButton@CustomButtonWidget>:
+    style: ButtonStyle(bg_color=app.theme.ButtonColors.STANDARD_UI_BUTTON_BG_COLOR, text_color=app.theme.ButtonColors.STANDARD_UI_BUTTON_TEXT_COLOR, hover_bg_color=app.theme.ButtonColors.STANDARD_UI_BUTTON_HOVER_BG_COLOR, pressed_bg_color=app.theme.ButtonColors.STANDARD_UI_BUTTON_PRESSED_BG_COLOR, pressed_text_color=app.theme.ButtonColors.STANDARD_UI_BUTTON_PRESSED_TEXT_COLOR, border_radius=9)
     size_hint_y: None
     height: dp(40)
     text_size: root.width, None
@@ -158,7 +158,7 @@
                 height: self.minimum_height
                 spacing: 10
                 
-        BlueButton:
+        StandardUiButton:
             text: app.translate("btn_close", app.language)
             size_hint_y: None
             height: dp(50)

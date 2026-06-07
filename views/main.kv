@@ -90,27 +90,27 @@ MainLayout:
                     size: self.size
 
             # Przyciski nawigacyjne
-            BlueButton:
+            StandardUiButton:
                 text: app.translate("start_calendar", app.language)
                 on_release: app.change_screen('calendar')
-            BlueButton:
+            StandardUiButton:
                 text: app.translate("my_subjects_text", app.language)
                 
                 on_release: app.change_screen('mySubjects')
 
-            BlueButton:
+            StandardUiButton:
                 text: app.translate("add_subject", app.language)
                 on_release: app.change_screen('add_subject')
 
-            BlueButton:
+            StandardUiButton:
                 text: app.translate("exams_tests", app.language)
                 on_release: app.change_screen('exams_tests')
                
-            BlueButton:
+            StandardUiButton:
                 text: app.translate("rules_repository", app.language)
                 on_release: app.change_screen('rules_repository')
             
-            BlueButton:
+            StandardUiButton:
                 text: app.translate("progress_tracker", app.language)
                 on_release: app.change_screen('progress_tracker')
             

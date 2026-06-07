@@ -33,3 +33,10 @@ def test_progress_bar_style_normal_colors():
 
     assert style.resolve_fill_color(10, 100) == (0, 1, 0, 1)
     assert style.resolve_fill_color(80, 100) == (1, 0, 0, 1)
+
+
+def test_kivy_progress_bar_backend_honors_contract():
+    from KivyWidgets.kivyProgressBarBackend import KivyProgressBarBackend
+    from Widgets.progressBar import ProgressBarBackend
+
+    assert issubclass(KivyProgressBarBackend, ProgressBarBackend)
