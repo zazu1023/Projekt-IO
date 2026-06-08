@@ -36,7 +36,7 @@ MainLayout:
 
         # Środkowy tekst (Najbliższe...)
         Label:
-            text: "Najbliższe: Brak nadchodzących kolokwiów/egzaminów"
+            text: app.translate("nearest", app.language) + " " + app.events()
             color: get_color_from_hex(app.theme.UiColors.TOP_BAR_TEXT_COLOR)
             bold: True
 
