@@ -96,6 +96,16 @@ class StudentPlannerApp(App):
 
         print("Zmieniono język na:", self.language)
 
+    def events(self)->str:
+        events_list = self.repo.get_upcoming_events() or []
+    
+        self._events = events_list
+        if not events_list:
+            return self.translate("no_events", self.language)
+        else:
+            sorted_events = sorted(events_list, key=lambda e: e.get('date_time', ''))
+            return sorted_events[0].get('title', '')+ " " + sorted_events[0].get('date_time', '') + " " + self.translate(sorted_events[0].get('type', ''),self.language)
+
 
 if __name__ == "__main__":
 
