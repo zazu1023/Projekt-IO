@@ -23,6 +23,11 @@
     style: ButtonStyle(bg_color=app.theme.SubjectColors.SUBJECT_BG_COLOR_FAILED, text_color=app.theme.SubjectColors.SUBJECT_TEXT_COLOR_BRIGHT, border_radius=6, border_color="#ffffff", border_width=dp(1.5))
     size_hint: 1, 1
 
+<RemoveSubjectButton@CustomButtonWidget>:
+    style: ButtonStyle(bg_color=app.theme.ButtonColors.REMOVE_BG_COLOR, text_color=app.theme.ButtonColors.REMOVE_TEXT_COLOR, border_radius=9)
+    size_hint_y: None
+    height: dp(40)
+
 # ========================================================
 # 3. GŁÓWNY WIDOK EKRANU
 # ========================================================
@@ -236,9 +241,18 @@
                     padding: dp(15)
                     text: (root.selectedSubject.note or "") if root.selectedSubject else ""
                     
-                StandardUiButton:
-                    text: app.translate('save_changes' , app.language)
-                    size_hint: 1, None 
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
                     height: dp(40)
-                    on_release:
-                        root.save_changes()
+                    spacing: dp(10)
+
+                    StandardUiButton:
+                        text: app.translate('save_changes' , app.language)
+                        size_hint_x: 3
+                        on_release: root.save_changes()
+
+                    RemoveSubjectButton:
+                        text: app.translate('btn_delete_subject', app.language)
+                        size_hint_x: 1
+                        on_release: root.show_delete_subject_popup()

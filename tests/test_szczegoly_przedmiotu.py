@@ -90,3 +90,23 @@ def test_change_status_syncs_buttons(details_screen, subject):
     assert subject.status == 'completed'
     assert details_screen.ids['btn_status_completed'].state == 'down'
     assert details_screen.ids['btn_status_inprogress'].state == 'normal'
+
+
+def test_delete_subject_removes_and_navigates(details_screen, subject):
+    popup = MagicMock()
+    details_screen.delete_subject(popup)
+
+    details_screen.repo.remove_subject.assert_called_once_with(subject.id)
+    popup.dismiss.assert_called_once()
+    assert details_screen.selectedSubject is None
+    details_screen.app.change_screen.assert_called_once_with('mySubjects')
+
+
+def test_delete_subject_no_op_without_selection(details_screen):
+    details_screen.selectedSubject = None
+    popup = MagicMock()
+
+    details_screen.delete_subject(popup)
+
+    details_screen.repo.remove_subject.assert_not_called()
+    popup.dismiss.assert_called_once()
