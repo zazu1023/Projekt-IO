@@ -2,6 +2,8 @@
 "pl" :{
     "nearest_text": "Najbliższe: Brak nadchodzących kolokwiów/egzaminów",
     "language_button": "ANG",
+    "nearest": "Najbliższe:",
+    "no_events": "Brak nadchodzących kolokwiów/egzaminów",
 
     "start_calendar": "Start / Kalendarz",
     "add_subject": "Dodaj przedmiot",
@@ -118,6 +120,14 @@
     "type_colloquium": "Kolokwium",
     "type_project": "Projekt",
     "type_other": "Inne",
+    "Egzamin": "Egzamin",
+    "Kolokwium": "Kolokwium",
+    "Projekt": "Projekt",
+    "Inne": "Inne",
+    "Exam": "Egzamin",
+    "Colloquium": "Kolokwium",
+    "Project": "Projekt",
+    "Other": "Inne",
     "type_placeholder": "Wybierz z listy...",
     "err_empty_event_type": "Proszę wybrać typ wydarzenia z listy!"
 },
@@ -125,6 +135,8 @@
 "en" :{
     "nearest_text": "Upcoming: No upcoming tests/exams",
     "language_button": "PL",
+    "nearest": "Nearest:",
+    "no_events": "No upcoming tests/exams",
 
     "start_calendar": "Start / Calendar",
     "add_subject": "Add subject",
@@ -240,7 +252,14 @@
     "type_exam": "Exam",
     "type_colloquium": "Colloquium",
     "type_project": "Project",
-    "type_other": "Other",
+    "type_other": "Other","Egzamin": "Exam",
+    "Exam": "Exam",
+    "Kolokwium": "Colloquium",
+    "Colloquium": "Colloquium",
+    "Projekt": "Project",
+    "Project": "Project",
+    "Inne": "Other",
+    "Other": "Other",
     "type_placeholder": "Choose from list...",
     "err_empty_event_type": "Please choose an event type from the list!"
 }
