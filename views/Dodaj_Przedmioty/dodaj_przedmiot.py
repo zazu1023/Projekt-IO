@@ -13,6 +13,7 @@ from kivy.properties import ObjectProperty
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.factory import Factory
@@ -22,6 +23,19 @@ from Widgets.datePicker import DatePicker, DatePickerStyle
 from KivyWidgets.kivyDatePickerBackend import KivyDatePickerBackend
 
 kv_path = os.path.join(parent_dir, 'kv', 'dodaj_przedmiot.kv')
+
+
+def normalize_start_time(time_str):
+    """Akceptuje H:MM lub HH:MM; zwraca HH:MM albo None przy błędzie."""
+    match = re.match(r'^(\d{1,2}):(\d{2})$', (time_str or '').strip())
+    if not match:
+        return None
+    hour = int(match.group(1))
+    minute = int(match.group(2))
+    if hour > 23 or minute > 59:
+        return None
+    return f"{hour:02d}:{minute:02d}"
+
 
 class AddSubjectScreen(Screen):
     repo = ObjectProperty(None)
@@ -125,7 +139,8 @@ class AddSubjectScreen(Screen):
             return
 
         # 5. WALIDACJA GODZINY
-        if not re.match(r"^([01]\d|2[0-3]):([0-5]\d)$", start_time):
+        start_time = normalize_start_time(start_time)
+        if start_time is None:
             self.show_error_popup(self.app.translate("err_start_time", self.app.language))
             return
 
@@ -186,11 +201,14 @@ class AddSubjectScreen(Screen):
         label.bind(size=label.setter('text_size'))
         content.add_widget(label)
 
-        btn_ok = Factory.DangerButton()
+        btn_ok = Factory.StandardUiButton()
         btn_ok.text = self.app.translate("btn_will_fix", self.app.language)
-        btn_ok.size_hint_y = None
-        btn_ok.height = dp(40)
-        content.add_widget(btn_ok)
+        btn_ok.size_hint = (None, None)
+        btn_ok.size = (dp(160), dp(40))
+
+        btn_row = AnchorLayout(anchor_x='center', size_hint_y=None, height=dp(40))
+        btn_row.add_widget(btn_ok)
+        content.add_widget(btn_row)
 
         popup = Popup(
             title=self.app.translate("popup_error_form_title", self.app.language), 
