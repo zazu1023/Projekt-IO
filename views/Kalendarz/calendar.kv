@@ -4,6 +4,7 @@
 #:import CalendarEventBrick KivyWidgets.KivyBrickBackend.CalendarEventBrick
 
 <CalendarEventBrick@CalendarEventBrick>:
+    note_icon_sz: min(dp(40), max(dp(16), min(self.width, self.height) * 0.34))
     background_normal: ''
     background_color: (0, 0, 0, 0)
     orientation: 'vertical'
@@ -29,9 +30,11 @@
     BoxLayout:
         orientation: 'horizontal'
         size_hint_y: 1 if root.height < dp(44) else (0.52 if root.overlay_label else 0.62)
-        spacing: 2
+        spacing: 4
+
         Label:
             text: root.title_text
+            size_hint_x: 1
             bold: True
             font_size: '12sp' if root.width < dp(100) else '14sp'
             shorten: False
@@ -39,15 +42,22 @@
             halign: 'left'
             valign: 'top'
             text_size: self.width, None
-        Image:
-            source: 'Images/notebook.png'
-            opacity: 1 if root.has_note and root.height >= dp(44) else 0
+
+        AnchorLayout:
+            anchor_x: 'right'
+            anchor_y: 'top'
             size_hint_x: None
-            width: dp(16) if root.has_note and root.height >= dp(44) else 0
-            size_hint_y: None
-            height: dp(16) if root.has_note and root.height >= dp(44) else 0
-            allow_stretch: True
-            keep_ratio: True
+            width: root.note_icon_sz + dp(6)
+            size_hint_y: 1
+
+            Image:
+                source: 'Images/ikona_zeszyt.png'
+                size_hint: None, None
+                size: root.note_icon_sz, root.note_icon_sz
+                opacity: 1 if root.has_note else 0
+                allow_stretch: False
+                keep_ratio: True
+                mipmap: True
 
     Label:
         text: root.info_text if root.height >= dp(44) else ''

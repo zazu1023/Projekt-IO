@@ -8,4 +8,11 @@ venv/
 
 .vscode/
 
+.DS_Store
+student_planner.db
 
+build/
+dist/
+
+frontend/node_modules/
+frontend/dist/

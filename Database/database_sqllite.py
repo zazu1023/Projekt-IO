@@ -1,9 +1,10 @@
 import sqlite3
 
 from Database.database_interface import IAppRepository
+from paths import get_db_path
 
 
-DB_NAME = "student_planner.db" 
+DB_NAME = get_db_path()
 
 
 from functools import wraps

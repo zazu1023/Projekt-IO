@@ -1,8 +1,12 @@
 import json
 import Widgets.notifications
 
+# Importy używane tylko w plikach .kv — PyInstaller musi je widzieć przy budowaniu exe.
+import KivyWidgets.SessionPanel  # noqa: F401
+
 from Database.database_sqllite import SqliteAppRepository
 from Style.Colors import ThemeManager
+from paths import resource_path, configure_kivy_resources
 
 
 from kivy.config import Config
@@ -33,18 +37,19 @@ class StudentPlannerApp(App):
         self.repo = repository
 
     def build(self):
+        configure_kivy_resources()
 
         self.screens = SCREENS # wczytanie screenow z screenHandler
 
-        with open('translation.json' , 'r' , encoding='utf-8') as file:
+        with open(resource_path('translation.json'), 'r', encoding='utf-8') as file:
             data = json.load(file)
         
         self.translations = data
         
-        Builder.load_file('Style/universalWidgets.kv')
-        Builder.load_file('views/Kalendarz/calendar.kv')
+        Builder.load_file(resource_path('Style/universalWidgets.kv'))
+        Builder.load_file(resource_path('views/Kalendarz/calendar.kv'))
 
-        root_widget = Builder.load_file('views/main.kv')
+        root_widget = Builder.load_file(resource_path('views/main.kv'))
 
         self.sesja_countdown = CountdownWidget(
             target_date=datetime(2026, 6, 22, 0, 0),
@@ -69,7 +74,7 @@ class StudentPlannerApp(App):
             
             if config:
                 
-                Builder.load_file(config['kv'])
+                Builder.load_file(resource_path(config['kv']))
                 screen_kwargs = {
                     'name': target_screen,
                     'repo': self.repo,
@@ -108,6 +113,8 @@ class StudentPlannerApp(App):
 
 
 if __name__ == "__main__":
+
+    configure_kivy_resources()
 
     # inicjalizacja bazy
     repo = SqliteAppRepository(db_connection=None)
