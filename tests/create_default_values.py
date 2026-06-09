@@ -4,8 +4,8 @@ TERM_END = '2026-06-30'
 
 subjects = [
     {
-        'title': 'Wprowadzenie do informatyki',
-        'teacher': 'dr inż. Rafał Kawa',
+        'title': 'Wstęp do informatyki',
+        'teacher': 'dr Rafał Kawa',
         'status': 'atrisk',
         'conditions': 'Obecność obowiązkowa (max 3 nieobecności). Kolokwium 40%, projekt 60%.',
         'max_absences': 3,
@@ -40,7 +40,7 @@ subjects = [
             {'day_of_week': 1, 'start_time': '09:00', 'duration_minutes': 90},
         ],
         'events': [
-            {'type': 'Kolokwium', 'title': 'Kolokwium 1', 'date_time': '2026-06-02 09:00'},
+            {'type': 'Kolokwium', 'title': 'Kolokwium 1', 'date_time': '2026-06-09 09:00'},
         ],
     },
     {
@@ -62,7 +62,7 @@ subjects = [
             {'day_of_week': 4, 'start_time': '08:00', 'duration_minutes': 100},
         ],
         'events': [
-            {'type': 'Egzamin', 'title': 'Egzamin praktyczny SQL', 'date_time': '2026-06-04 08:00'},
+            {'type': 'Egzamin', 'title': 'Egzamin praktyczny SQL', 'date_time': '2026-06-11 08:00'},
         ],
     },
     {
@@ -83,7 +83,7 @@ subjects = [
             {'day_of_week': 3, 'start_time': '11:00', 'duration_minutes': 45},
         ],
         'events': [
-            {'type': 'Egzamin', 'title': 'Egzamin poprawkowy', 'date_time': '2026-06-04 11:00'},
+            {'type': 'Egzamin', 'title': 'Egzamin poprawkowy', 'date_time': '2026-06-11 11:00'},
         ],
     },
     {
@@ -105,7 +105,7 @@ subjects = [
             {'day_of_week': 3, 'start_time': '10:30', 'duration_minutes': 150},
         ],
         'events': [
-            {'type': 'Kolokwium', 'title': 'Kolokwium — wzorce projektowe', 'date_time': '2026-06-04 10:30'},
+            {'type': 'Kolokwium', 'title': 'Kolokwium — wzorce projektowe', 'date_time': '2026-06-11 10:30'},
         ],
     },
     {
@@ -127,7 +127,7 @@ subjects = [
             {'day_of_week': 4, 'start_time': '10:00', 'duration_minutes': 60},
         ],
         'events': [
-            {'type': 'Kolokwium', 'title': 'Kolokwium z procesów', 'date_time': '2026-06-05 10:00'},
+            {'type': 'Kolokwium', 'title': 'Kolokwium z procesów', 'date_time': '2026-06-12 10:00'},
         ],
     },
     {
