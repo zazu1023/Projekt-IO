@@ -115,7 +115,7 @@ if __name__ == "__main__":
 
     DS = DatabaseStarter(repo)
 
-    DS.remove_all_subjects()
-    DS.add_test_subjects()
+    # DS.remove_all_subjects()
+    # DS.add_test_subjects()
 
     StudentPlannerApp(repository=repo).run()
