@@ -1,8 +1,7 @@
 """Definicje palet kolorów aplikacji.
 
-Użycie (tylko w kodzie, bez przełącznika w UI):
-    theme = ThemeManager.with_palette('midnight')
-    app.theme = theme
+Przełączanie w UI: potrójne kliknięcie logo (default → midnight → rose).
+Programowo: app.theme.apply_palette('midnight')
 """
 
 PALETTE_DEFAULT = {
@@ -12,6 +11,7 @@ PALETTE_DEFAULT = {
         'TOP_BAR_BG_COLOR': '#f8f9fa',
         'TOP_BAR_TEXT_COLOR': '#1565c0',
         'NAV_BAR_BG_COLOR': '#0b3d91',
+        'LOGO_SOURCE': 'Images/logo_bez_tla1.png',
         'SCREEN_MAIN_TEXT_COLOR': '#ffffff',
         'SCREEN_SECONDARY_TEXT_COLOR': '#ffffff',
     },
@@ -81,6 +81,7 @@ PALETTE_MIDNIGHT = {
         'TOP_BAR_BG_COLOR': '#16161e',
         'TOP_BAR_TEXT_COLOR': '#7dcfff',
         'NAV_BAR_BG_COLOR': '#24283b',
+        'LOGO_SOURCE': 'Images/logo_theme_midnight.png',
         'SCREEN_MAIN_TEXT_COLOR': '#c0caf5',
         'SCREEN_SECONDARY_TEXT_COLOR': '#a9b1d6',
     },
@@ -150,6 +151,7 @@ PALETTE_ROSE = {
         'TOP_BAR_BG_COLOR': '#2a1a22',
         'TOP_BAR_TEXT_COLOR': '#f4a6c8',
         'NAV_BAR_BG_COLOR': '#3d2433',
+        'LOGO_SOURCE': 'Images/logo_theme_rose.png',
         'SCREEN_MAIN_TEXT_COLOR': '#fde2f0',
         'SCREEN_SECONDARY_TEXT_COLOR': '#f4c2d7',
     },

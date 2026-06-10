@@ -1,4 +1,5 @@
 #:import SessionPanel KivyWidgets.SessionPanel.SessionPanel
+#:import LogoTripleClick KivyWidgets.LogoTripleClick.LogoTripleClick
 #:import Factory kivy.factory.Factory
 
 MainLayout:
@@ -27,12 +28,10 @@ MainLayout:
             width: dp(185)
             padding: dp(5)
             
-            # Podmieniamy Label na Image:
-            Image:
-                source: 'Images/logo_bez_tla1.png'
-                allow_stretch: True      # Pozwala obrazkowi się skalować
-                keep_ratio: False         # Zachowuje proporcje logo
-                size_hint: (1, 1)        # Wypełnia cały dostępny obszar BoxLayouta
+            LogoTripleClick:
+                allow_stretch: True
+                keep_ratio: False
+                size_hint: (1, 1)
 
         # Środkowy tekst (Najbliższe...)
         Label:

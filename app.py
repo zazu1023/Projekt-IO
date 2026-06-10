@@ -2,6 +2,7 @@ import json
 import Widgets.notifications
 
 # Importy używane tylko w plikach .kv — PyInstaller musi je widzieć przy budowaniu exe.
+import KivyWidgets.LogoTripleClick  # noqa: F401
 import KivyWidgets.SessionPanel  # noqa: F401
 
 from Database.database_sqllite import SqliteAppRepository
@@ -29,8 +30,6 @@ from screenHandler import *
 class StudentPlannerApp(App):
 
     language = StringProperty("pl")
-    # Motyw: ThemeManager.with_palette('midnight' | 'rose')  — Style/palettes.py
-    # theme = ObjectProperty(ThemeManager())
     theme = ObjectProperty(ThemeManager.with_palette('default'))
     def __init__(self, repository, **kwargs):
         super().__init__(**kwargs)
@@ -100,6 +99,31 @@ class StudentPlannerApp(App):
             self.language = "pl"
 
         print("Zmieniono język na:", self.language)
+
+    def cycle_theme(self):
+        palettes = ThemeManager.available_palettes()
+        idx = palettes.index(self.theme.palette_name)
+        self.theme.apply_palette(palettes[(idx + 1) % len(palettes)])
+        self._refresh_theme_dependent_widgets()
+
+    def _refresh_theme_dependent_widgets(self):
+        if not hasattr(self, 'sm'):
+            return
+
+        from KivyWidgets.calendarWidget import CalendarWidget
+
+        current = self.sm.current
+        for screen in self.sm.screens:
+            for child in screen.walk(restrict=True):
+                if isinstance(child, CalendarWidget):
+                    child.refresh_calendar(reload_data=False)
+
+            if screen.name != current:
+                continue
+            if hasattr(screen, 'load_cards'):
+                screen.load_cards()
+            elif hasattr(screen, 'populate_cards'):
+                screen.populate_cards()
 
     def events(self)->str:
         events_list = self.repo.get_upcoming_events() or []

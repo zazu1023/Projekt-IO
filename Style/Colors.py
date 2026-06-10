@@ -11,6 +11,7 @@ class UiColorsGroup(EventDispatcher):
     TOP_BAR_BG_COLOR = StringProperty("#f8f9fa")
     TOP_BAR_TEXT_COLOR = StringProperty("#1565c0")
     NAV_BAR_BG_COLOR = StringProperty("#0b3d91")
+    LOGO_SOURCE = StringProperty("Images/logo_bez_tla1.png")
 
     SCREEN_MAIN_TEXT_COLOR = "#ffffff"
 

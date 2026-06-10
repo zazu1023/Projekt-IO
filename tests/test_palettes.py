@@ -53,3 +53,22 @@ def test_default_standard_ui_button_matches_legacy_blue():
     theme = ThemeManager.with_palette('default')
     assert theme.ButtonColors.STANDARD_UI_BUTTON_BG_COLOR == '#2e588c'
     assert theme.ButtonColors.STANDARD_UI_BUTTON_TEXT_COLOR == '#ffffff'
+
+
+def test_palette_cycle_order():
+    palettes = ThemeManager.available_palettes()
+    current = palettes[0]
+    visited = {current}
+
+    for _ in range(len(palettes) - 1):
+        idx = palettes.index(current)
+        current = palettes[(idx + 1) % len(palettes)]
+        visited.add(current)
+
+    assert visited == set(palettes)
+
+
+def test_palette_logo_sources():
+    assert ThemeManager.with_palette('default').UiColors.LOGO_SOURCE == 'Images/logo_bez_tla1.png'
+    assert ThemeManager.with_palette('midnight').UiColors.LOGO_SOURCE == 'Images/logo_theme_midnight.png'
+    assert ThemeManager.with_palette('rose').UiColors.LOGO_SOURCE == 'Images/logo_theme_rose.png'
