@@ -51,7 +51,7 @@ W repozytorium znajdują się pliki dokumentacyjne opisujące sposób przygotowa
 Instrukcja instalacji i uruchomienia aplikacji znajduje się w pliku:
 
 ```text
-[TUTAJ WPISAĆ NAZWĘ PLIKU Z INSTRUKCJĄ INSTALACJI]
+INSTRUKCJA_INSTALACJI.txt
 ```
 
 Plik zawiera informacje dotyczące m.in.:
@@ -61,6 +61,7 @@ Plik zawiera informacje dotyczące m.in.:
 * instalacji wymaganych bibliotek,
 * instalacji potrzebnych rozszerzeń,
 * uruchomienia aplikacji.
+* wstawienia testowych danych do bazy
 
 ### Dokumentacja techniczna
 

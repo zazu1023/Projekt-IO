@@ -146,7 +146,8 @@ if __name__ == "__main__":
 
     DS = DatabaseStarter(repo)
 
-    DS.remove_all_subjects()
-    DS.add_test_subjects()
+    # aby wczytać defaultowe dane odkomentuj te linie:
+    # DS.remove_all_subjects()
+    # DS.add_test_subjects()
 
     StudentPlannerApp(repository=repo).run()
