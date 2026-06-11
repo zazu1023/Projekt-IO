@@ -13,11 +13,4 @@ echo.
 echo ============================================
 echo  GOTOWE
 echo ============================================
-echo.
-echo Uruchamiaj TYLKO ten plik:
-echo   dist\StudentPlanner\StudentPlanner.exe
-echo.
-echo Caly folder dist\StudentPlanner\ trzeba kopiowac
-echo razem (exe + podfolder _internal).
-echo.
 pause
