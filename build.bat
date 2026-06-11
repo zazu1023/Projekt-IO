@@ -20,6 +20,4 @@ echo.
 echo Caly folder dist\StudentPlanner\ trzeba kopiowac
 echo razem (exe + podfolder _internal).
 echo.
-echo NIE uruchamiaj exe z folderu build\ — to niepelny build.
-echo.
 pause
