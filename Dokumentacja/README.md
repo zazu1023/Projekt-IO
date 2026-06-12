@@ -51,12 +51,6 @@ Dokumentacja/
 └── README.md
 ```
 
-Dokładna struktura projektu znajduje się w pliku:
-
-```text
-Dokumentacja/Projekt/packages_StudentPlanner.png
-```
-
 ## Dokumentacja projektu
 
 W repozytorium znajdują się pliki dokumentacyjne opisujące sposób przygotowania środowiska, uruchomienia aplikacji, analizę projektu, dokumentację techniczną, diagramy, harmonogram oraz przebieg testowania.
