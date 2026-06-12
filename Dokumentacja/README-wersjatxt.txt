@@ -50,9 +50,6 @@ Dokumentacja/
 * README.txt
 * README.md
 
-Dokładna struktura projektu znajduje się w pliku:
-
-Dokumentacja/Projekt/packages_StudentPlanner.png
 
 Dokumentacja projektu
 
